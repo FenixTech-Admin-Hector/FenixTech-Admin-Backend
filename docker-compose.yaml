@@ -1,0 +1,12 @@
+services:
+  mariadb:
+    image: 'mariadb:11.4'
+    environment:
+      - MARIADB_DATABASE=${DB_NAME}
+      - MARIADB_USER=${DB_USER}
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+    ports:
+      - '3306'
+    volumes:
+      - ./data_mariadb:/var/lib/mysql

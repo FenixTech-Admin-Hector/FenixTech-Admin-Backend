@@ -1,0 +1,52 @@
+package com.proyecto.fenixtech.model;
+
+import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@ToString(exclude = {"product", "user"})
+@EqualsAndHashCode(exclude = {"product", "user"})
+
+@Schema(description = "Modelo de CartItems", name = "CartItems")
+@Entity
+@Table(name = "cart_items")
+public class CartItems implements Serializable{
+    @Schema(description = "Identificador único del item del carrito", example = "1")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cart_item_id", nullable = false, unique = true)
+    private Integer cartItemId;
+
+    @Schema(description = "Cantidad de productos", example = "2")
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity = 1;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false, unique = true)
+    @JsonIgnoreProperties({"category", "company", "cartItems", "orderDetails"})
+    private Products product;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JsonIgnoreProperties({"company", "address", "reviews", "proposals", "orders", "cartItems", "posts", "comments"})
+    private Users user;
+
+}

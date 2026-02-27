@@ -1,0 +1,182 @@
+-- ==============================================================================
+-- PROYECTO: Plataforma E-commerce y Donación de Hardware (Esquema Definitivo)
+-- MOTOR: MariaDB / MySQL
+-- ==============================================================================
+
+-- ------------------------------------------------------------------------------
+-- MÓDULO 1: USUARIOS, PERFILES Y DIRECCIONES
+-- ------------------------------------------------------------------------------
+
+CREATE TABLE users (
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    -- ENUM: Evita crear tabla extra para roles, optimizando rendimiento
+    role ENUM('particular', 'empresa', 'admin') DEFAULT 'particular',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE companies (
+    company_id INT PRIMARY KEY AUTO_INCREMENT,
+    -- UNIQUE en user_id garantiza la relación 1 a 1
+    user_id INT UNIQUE NOT NULL, 
+    company_name VARCHAR(150) NOT NULL,
+    tax_id VARCHAR(50) NOT NULL,
+    -- Desnormalización intencionada: Calculado desde Reviews y Donaciones
+    reputation_score INT DEFAULT 0, 
+    -- JSON: Flexibilidad absoluta para métricas (CO2, e-waste, agua...) sin alterar tablas
+    impact_metrics JSON, 
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE addresses (
+    address_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    street VARCHAR(255) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    region VARCHAR(100) NOT NULL,
+    zip_code VARCHAR(20) NOT NULL,
+    country VARCHAR(100) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+
+-- ------------------------------------------------------------------------------
+-- MÓDULO 2: CATÁLOGO Y PRODUCTOS
+-- ------------------------------------------------------------------------------
+
+CREATE TABLE categories (
+    category_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    description TEXT
+);
+
+CREATE TABLE products (
+    product_id INT PRIMARY KEY AUTO_INCREMENT,
+    company_id INT NOT NULL,
+    category_id INT NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    description TEXT,
+    image_url VARCHAR(255),
+    condition_status ENUM('new', 'used_good', 'used_fair') NOT NULL,
+    listing_type ENUM('sale', 'donation') NOT NULL,
+    price DECIMAL(10, 2) DEFAULT 0.00,
+    stock_quantity INT DEFAULT 1,
+    status ENUM('active', 'sold_out', 'hidden') DEFAULT 'active',
+    FOREIGN KEY (company_id) REFERENCES Companies(company_id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES Categories(category_id)
+);
+
+-- ------------------------------------------------------------------------------
+-- MÓDULO 3: TRANSACCIONES (CARRITO, PEDIDOS Y ENVÍOS)
+-- ------------------------------------------------------------------------------
+
+CREATE TABLE cart_items (
+    cart_item_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT DEFAULT 1,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES Products(product_id) ON DELETE CASCADE
+);
+
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY AUTO_INCREMENT,
+    buyer_user_id INT NOT NULL,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    -- Desnormalización intencionada: Total calculado para agilizar reportes
+    total_amount DECIMAL(10, 2) NOT NULL, 
+    status ENUM('pending_payment', 'paid', 'processing', 'shipped', 'completed', 'cancelled') DEFAULT 'pending_payment',
+    requires_shipping BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (buyer_user_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE order_details (
+    order_detail_id INT PRIMARY KEY AUTO_INCREMENT,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    -- Desnormalización crítica: "Fotocopia" del precio en el momento de la compra
+    unit_price_at_purchase DECIMAL(10, 2) NOT NULL, 
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+
+CREATE TABLE shipments (
+    shipment_id INT PRIMARY KEY AUTO_INCREMENT,
+    -- UNIQUE garantiza 1 solo envío por pedido (Relación 1:1)
+    order_id INT UNIQUE NOT NULL, 
+    
+    -- Desnormalización crítica: NO hay FK a Addresses. Son textos "congelados" históricamente.
+    shipping_street VARCHAR(255) NOT NULL,
+    shipping_city VARCHAR(100) NOT NULL,
+    shipping_zip_code VARCHAR(20) NOT NULL,
+    shipping_country VARCHAR(100) NOT NULL,
+    
+    tracking_number VARCHAR(100),
+    carrier_name VARCHAR(100),
+    shipment_status ENUM('preparing', 'in_transit', 'delivered') DEFAULT 'preparing',
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE
+);
+
+-- ------------------------------------------------------------------------------
+-- MÓDULO 4: COMUNIDAD, RESEÑAS Y GAMIFICACIÓN
+-- ------------------------------------------------------------------------------
+
+CREATE TABLE posts (
+    post_id INT PRIMARY KEY AUTO_INCREMENT,
+    author_user_id INT NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    body TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (author_user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE comments (
+    comment_id INT PRIMARY KEY AUTO_INCREMENT,
+    post_id INT NOT NULL,
+    author_user_id INT NOT NULL,
+    body TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (post_id) REFERENCES Posts(post_id) ON DELETE CASCADE,
+    FOREIGN KEY (author_user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE proposals (
+    proposal_id INT PRIMARY KEY AUTO_INCREMENT,
+    requester_user_id INT NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    description TEXT NOT NULL,
+    status ENUM('open', 'fulfilled') DEFAULT 'open',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (requester_user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE reviews (
+    review_id INT PRIMARY KEY AUTO_INCREMENT,
+    reviewer_user_id INT NOT NULL,
+    target_company_id INT NOT NULL,
+    -- Restricción para asegurar que las estrellas estén entre 1 y 5
+    rating INT CHECK (rating >= 1 AND rating <= 5), 
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (reviewer_user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (target_company_id) REFERENCES Companies(company_id) ON DELETE CASCADE
+);
+
+CREATE TABLE badges (
+    badge_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    icon_url VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE company_badges (
+    company_id INT NOT NULL,
+    badge_id INT NOT NULL,
+    awarded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    -- CLAVE COMPUESTA: Actúa como policía impidiendo que una empresa gane 2 veces la misma insignia
+    PRIMARY KEY (company_id, badge_id), 
+    FOREIGN KEY (company_id) REFERENCES Companies(company_id) ON DELETE CASCADE,
+    FOREIGN KEY (badge_id) REFERENCES Badges(badge_id) ON DELETE CASCADE
+);
