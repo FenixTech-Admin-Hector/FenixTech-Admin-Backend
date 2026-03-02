@@ -45,7 +45,7 @@ public class CompaniesController {
         @ApiResponse(responseCode = "404", description = "Empresa no encontrada")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Companies> findById(@Valid @PathVariable Integer id){
+    public ResponseEntity<Companies> findById(@PathVariable Integer id){
         return ResponseEntity.status(HttpStatus.OK).body(companiesService.findById(id));
     }
 
@@ -55,7 +55,7 @@ public class CompaniesController {
         @ApiResponse(responseCode = "404", description = "El usuario no está asociado a ninguna empresa")
     })
     @GetMapping("/user/{id}")
-    public ResponseEntity<Companies> findByUserId(@Valid @PathVariable Integer id){
+    public ResponseEntity<Companies> findByUserId( @PathVariable Integer id){
         return ResponseEntity.status(HttpStatus.OK).body(companiesService.findByUserId(id));
     }
 
@@ -64,7 +64,7 @@ public class CompaniesController {
         @ApiResponse(responseCode = "200", description = "Empresas encontradas con éxito")
     })
     @GetMapping("/name")
-    public ResponseEntity<List<Companies>> findByName(@Valid @RequestParam(required = true) String name){
+    public ResponseEntity<List<Companies>> findByName( @RequestParam(required = true) String name){
         return ResponseEntity.status(HttpStatus.OK).body(companiesService.findByCompanyName(name));
     }
 
@@ -73,7 +73,7 @@ public class CompaniesController {
         @ApiResponse(responseCode = "200", description = "Empresas encontradas con éxito")
     })
     @GetMapping("/reputation/greater")
-    public ResponseEntity<List<Companies>> findByReputationScoreGreaterThan(@Valid @RequestParam(required = true) Integer reputation){
+    public ResponseEntity<List<Companies>> findByReputationScoreGreaterThan( @RequestParam(required = true) Integer reputation){
         return ResponseEntity.status(HttpStatus.OK).body(companiesService.findByReputationScoreGreaterThan(reputation));
     }
 
@@ -82,7 +82,7 @@ public class CompaniesController {
         @ApiResponse(responseCode = "200", description = "Empresas encontradas con éxito")
     })
     @GetMapping("/reputation/less")
-    public ResponseEntity<List<Companies>> findByReputationScoreLessThan(@Valid @RequestParam(required = true) Integer reputation){
+    public ResponseEntity<List<Companies>> findByReputationScoreLessThan( @RequestParam(required = true) Integer reputation){
         return ResponseEntity.status(HttpStatus.OK).body(companiesService.findByReputationScoreLessThan(reputation));
     }
 

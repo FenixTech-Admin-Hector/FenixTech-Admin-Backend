@@ -22,14 +22,14 @@ public interface ProductsRepository extends JpaRepository<Products, Integer>{
     List<Products> findByPriceGreaterThan(Double price);
     List<Products> findByPriceLessThan(Double price);
     List<Products> findByStockGreaterThan(Integer stock);
-    List<Products> findByStockLessThan(Integer stock);
     List<Products> findByProductTitleContainingIgnoreCase(String title);
     List<Products> findByStockEquals(Integer stock);
 
-    @Query(value = "SELECT *.p FROM products p WHERE " +
-           "(:pStatus IS NULL OR p.productStatus = :pStatus) AND " +
-           "(:lType IS NULL OR p.listingType = :lType) AND " +
-           "(:cStatus IS NULL OR p.status = :cStatus)", nativeQuery = true)
+    @Query(value = "SELECT * FROM products WHERE " +
+           "(:pStatus IS NULL OR status = :pStatus) AND " +
+           "(:lType IS NULL OR listing_type = :lType) AND " +
+           "(:cStatus IS NULL OR condition_status = :cStatus)", 
+           nativeQuery = true)
     List<Products> findByMultipleFilters(
             @Param("pStatus") ProductStatus pStatus, 
             @Param("lType") ListingType lType, 

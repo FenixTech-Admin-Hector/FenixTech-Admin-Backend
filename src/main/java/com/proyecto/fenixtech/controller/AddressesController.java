@@ -43,7 +43,7 @@ public class AddressesController {
             @ApiResponse(responseCode = "404", description = "Dirección no encontrada")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Addresses> findById(@Valid @PathVariable Integer id) {
+    public ResponseEntity<Addresses> findById(@PathVariable Integer id) {
         return ResponseEntity.status(HttpStatus.OK).body(addressesService.findById(id));
     }
 
@@ -53,7 +53,7 @@ public class AddressesController {
             @ApiResponse(responseCode = "404", description = "No se encontraron direcciones para el usuario")
     })
     @GetMapping("/user/{id}")
-    public ResponseEntity<List<Addresses>> findByUserId(@Valid @PathVariable Integer id) {
+    public ResponseEntity<List<Addresses>> findByUserId(@PathVariable Integer id) {
         return ResponseEntity.status(HttpStatus.OK).body(addressesService.findByUserId(id));
     }
 
@@ -62,40 +62,40 @@ public class AddressesController {
             @ApiResponse(responseCode = "200", description = "Direcciones obtenidas con éxito")
     })
     @GetMapping("/city")
-    public ResponseEntity<List<Addresses>> findByCity(@Valid @RequestParam(required = true) String city) {
+    public ResponseEntity<List<Addresses>> findByCity(@RequestParam(required = true) String city) {
         return ResponseEntity.status(HttpStatus.OK).body(addressesService.findByCity(city));
     }
 
     @Operation(summary = "Obtener direcciones por ciudad", description = "Devuelve una lista de direcciones filtradas por ciudad")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Direcciones obtenidas con éxito")
+            @ApiResponse(responseCode = "200", description = "Direcciones obtenidas con éxito")
     })
     @GetMapping("/region")
-    public ResponseEntity<List<Addresses>> findByRegion(@Valid @RequestParam(required = true) String region) {
+    public ResponseEntity<List<Addresses>> findByRegion(@RequestParam(required = true) String region) {
         return ResponseEntity.status(HttpStatus.OK).body(addressesService.findByRegion(region));
     }
 
     @Operation(summary = "Obtener direcciones por país", description = "Devuelve una lista de direcciones filtradas por país")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Direcciones obtenidas con éxito")
+            @ApiResponse(responseCode = "200", description = "Direcciones obtenidas con éxito")
     })
     @GetMapping("/country")
-    public ResponseEntity<List<Addresses>> findByCountry(@Valid @RequestParam(required = true) String country) {
+    public ResponseEntity<List<Addresses>> findByCountry(@RequestParam(required = true) String country) {
         return ResponseEntity.status(HttpStatus.OK).body(addressesService.findByCountry(country));
     }
 
     @Operation(summary = "Obtener direcciones por código postal", description = "Devuelve una lista de direcciones filtradas por código postal")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Direcciones obtenidas con éxito")
+            @ApiResponse(responseCode = "200", description = "Direcciones obtenidas con éxito")
     })
     @GetMapping("/zip_code")
-    public ResponseEntity<List<Addresses>> findByZipCode(@Valid @RequestParam(required = true) String zipCode) {
+    public ResponseEntity<List<Addresses>> findByZipCode(@RequestParam(required = true) String zipCode) {
         return ResponseEntity.status(HttpStatus.OK).body(addressesService.findByZipCode(zipCode));
     }
 
     @Operation(summary = "Obtener el numero de direcciones", description = "Devuelve el numero de direcciones")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Numero de direcciones obtenido con éxito")
+            @ApiResponse(responseCode = "200", description = "Numero de direcciones obtenido con éxito")
     })
     @GetMapping("/count")
     public ResponseEntity<Map<String, Object>> count() {
@@ -105,4 +105,4 @@ public class AddressesController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-} 
+}

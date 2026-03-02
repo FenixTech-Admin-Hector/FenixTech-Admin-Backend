@@ -47,7 +47,7 @@ public class UsersController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Users> findByUsersId(@Valid @PathVariable Integer id) {
+    public ResponseEntity<Users> findByUsersId(@PathVariable Integer id) {
         return ResponseEntity.status(HttpStatus.OK).body(usersService.findByUsersId(id));
     }
 
@@ -57,7 +57,7 @@ public class UsersController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     @GetMapping("/email")
-    public ResponseEntity<Users> findByEmail(@Valid @RequestParam String email) {
+    public ResponseEntity<Users> findByEmail(@RequestParam String email) {
         return ResponseEntity.status(HttpStatus.OK).body(usersService.findByEmail(email));
     }
 
@@ -67,7 +67,7 @@ public class UsersController {
             @ApiResponse(responseCode = "404", description = "El rol introducido no existe")
     })
     @GetMapping("/role")
-    public ResponseEntity<List<Users>> findByRole(@Valid @RequestParam Rol rol) {
+    public ResponseEntity<List<Users>> findByRole(@RequestParam Rol rol) {
         return ResponseEntity.status(HttpStatus.OK).body(usersService.findByRole(rol));
     }
 
@@ -96,23 +96,23 @@ public class UsersController {
     })
     @GetMapping("/created_at/between")
     public ResponseEntity<List<Users>> findByCreatedAtBetween(
-            @Valid @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-       return ResponseEntity.status(HttpStatus.OK).body(usersService.findByCreatedAtBetween(startDate, endDate));
+        return ResponseEntity.status(HttpStatus.OK).body(usersService.findByCreatedAtBetween(startDate, endDate));
     }
 
     @Operation(summary = "Obtener usuarios por año de creación", description = "Devuelve una lista de usuarios por su año de creación")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito")
+            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito")
     })
     @GetMapping("/created_at/year")
-    public ResponseEntity<List<Users>> findByCreatedAt(@Valid @RequestParam Integer year) {
+    public ResponseEntity<List<Users>> findByCreatedAt(@RequestParam Integer year) {
         return ResponseEntity.status(HttpStatus.OK).body(usersService.findByCreatedAt(year));
     }
 
     @Operation(summary = "Obtener el numero de usuarios", description = "Devuelve el numero de usuarios")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Numero de usuarios obtenido con éxito")
+            @ApiResponse(responseCode = "200", description = "Numero de usuarios obtenido con éxito")
     })
     @GetMapping("/count")
     public ResponseEntity<Map<String, Object>> count() {
@@ -121,6 +121,5 @@ public class UsersController {
         response.put("cantidad", count);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
 
 }

@@ -69,7 +69,7 @@ public class Products implements Serializable {
     private ConditionStatus status;
 
     @Schema(description = "Tipo de venta de venta del producto", example = "donation")
-    @NotNull(message = "El estado del producto es obligatorio")
+    @NotNull(message = "El tipo de venta es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(name = "listing_type", nullable = false)
     private ListingType listingType;
