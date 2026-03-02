@@ -2,7 +2,9 @@ package com.proyecto.fenixtech.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -108,5 +110,18 @@ public class UsersController {
     public ResponseEntity<List<Users>> findByCreatedAt(@Valid @RequestParam Integer year) {
         return ResponseEntity.status(HttpStatus.OK).body(usersService.findByCreatedAt(year));
     }
+
+    @Operation(summary = "Obtener el numero de usuarios", description = "Devuelve el numero de usuarios")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Numero de usuarios obtenido con éxito")
+    })
+    @GetMapping("/count")
+    public ResponseEntity<Map<String, Object>> count() {
+        Long count = usersService.count();
+        Map<String, Object> response = new HashMap<>();
+        response.put("cantidad", count);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 
 }

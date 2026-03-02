@@ -3,7 +3,6 @@ package com.proyecto.fenixtech.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.proyecto.fenixtech.model.Users;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

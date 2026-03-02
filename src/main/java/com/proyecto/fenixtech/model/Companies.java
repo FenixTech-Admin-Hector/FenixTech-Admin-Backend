@@ -3,6 +3,7 @@ package com.proyecto.fenixtech.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -59,8 +60,10 @@ public class Companies implements Serializable {
 
     @Schema(description = "Métricas de impacto de la empresa", example = "")
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "impact_metrics")
-    private String impactMetrics;
+    @Column(name = "impact_metrics", columnDefinition = "json")
+    //Usar mejor un MAP puesto que es más sencillo para poder recorrer las claves del JSON
+    private Map<String, Object> impactMetrics;
+    // private String impactMetrics;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", unique = true, nullable = false)
