@@ -64,11 +64,14 @@ public class UsersService {
     }
 
     @Transactional(readOnly = true)
-    public List<Users> findByCreatedAtBetween(LocalDate start, LocalDate end) {
+    public List<Users> findByCreatedAtBetween(LocalDate dateStart, LocalDate dateEnd) {
+        if(dateStart.isAfter(dateEnd)){
+            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de fin");
+        }
         //Convierte el LocalDate a LocalDateTime con la fecha con hora 00:00:00
-        LocalDateTime startDateTime = start.atStartOfDay();
+        LocalDateTime startDateTime = dateStart.atStartOfDay();
         //Convierte el LocalDate en LocalDateTime con la fecha con hora 23:59:59 con los maximos milisegundos
-        LocalDateTime endDateTime = end.atTime(java.time.LocalTime.MAX);
+        LocalDateTime endDateTime = dateEnd.atTime(java.time.LocalTime.MAX);
         return usersRepository.findByCreatedAtBetween(startDateTime, endDateTime);
     }
 

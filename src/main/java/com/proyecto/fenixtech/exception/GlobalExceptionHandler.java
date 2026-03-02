@@ -1,6 +1,8 @@
 package com.proyecto.fenixtech.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -217,6 +219,20 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    //Excepción para que las fechas de inicio no sea menor que la de fin
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, Object>> handleIlegalExceptionHandler(
+            IllegalArgumentException ex, HttpServletRequest request){
+                Map<String, Object> response = new HashMap<>();
+                response.put("timestamp", java.time.LocalDateTime.now());
+                response.put("status", 400);
+                response.put("error", "Bad Request");
+                response.put("message", ex.getMessage());
+                response.put("path", request.getRequestURI());
+
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
+
     // Método auxiliar para detectar 404s disfrazados
     private boolean isActually404Error(String message, String path) {
         if (message == null) {
@@ -237,6 +253,7 @@ public class GlobalExceptionHandler {
                         && !lowerMessage.contains("sql")
                         && !lowerMessage.contains("connection"));
     }
+
 
     private boolean isDevelopment() {
         // Cambia esto según tu entorno
