@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 
 import com.proyecto.fenixtech.model.Products;
 import com.proyecto.fenixtech.model.enums.ConditionStatus;
@@ -51,90 +50,19 @@ public class ProductsController {
         return ResponseEntity.status(HttpStatus.OK).body(productsService.findById(id));
     }
 
-    @Operation(summary = "Obtener productos por status", description = "Devuelve una lista de productos por su status")
+    @Operation(summary = "Obtener productos con filtros", description = "Devuelve una lista de productos con filtros aplicados (stock, tipo de venta, estado del producto y precio")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Productos obtenidos con éxito")
+        @ApiResponse(responseCode = "200", description = "Productos encontrados con éxito")
     })
-    @GetMapping("/status/product")
-    public ResponseEntity<List<Products>> findByProductStatus(
-            @RequestParam(required = true) ProductStatus status) {
-        return ResponseEntity.status(HttpStatus.OK).body(productsService.findByProductStatus(status));
-    }
-
-    @Operation(summary = "Obtener productos por tipo de venta", description = "Devuelve una lista de productos por su tipo de venta")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Productos obtenidos con éxito")
-    })
-    @GetMapping("/listing-type")
-    public ResponseEntity<List<Products>> findByListingType(@RequestParam(required = true) ListingType type) {
-        return ResponseEntity.status(HttpStatus.OK).body(productsService.findByListingType(type));
-    }
-
-    @Operation(summary = "Obtener productos por condicion", description = "Devuelve una lista de productos por su condicion")
-    @ApiResponses(value ={  
-            @ApiResponse(responseCode = "200", description = "Productos obtenidos con éxito")
-    })
-    @GetMapping("/status/condition")
-    public ResponseEntity<List<Products>> findByStatus(@RequestParam(required = true) ConditionStatus status) {
-        return ResponseEntity.status(HttpStatus.OK).body(productsService.findByStatus(status));
-    }
-
-    @Operation(summary = "Obtener productos en funcion del estado, su tipo de venta y su condicion", description = "Devuelve una lista de productos por su condicion, tipo de venta y estado de manera opcional")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Productos obtenidos con éxito")
-    })
-    @GetMapping("/filter")
-    public ResponseEntity<List<Products>> findByMultipleFilters(
-            @RequestParam(required = false) ProductStatus pStatus,
+    @GetMapping("/conditions")
+    public ResponseEntity<List<Products>> findByUltimateFilter(@RequestParam(required = false, defaultValue = "ACTIVE") ProductStatus pStatus,
             @RequestParam(required = false) ListingType lType,
-            @RequestParam(required = false) ConditionStatus cStatus) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(productsService.findByMultipleFilters(pStatus, lType, cStatus));
-    }
-
-    @Operation(summary = "Obtener productos por precio mayor que el precio introducido", description = "Devuelve una lista de productos por su precio mayor que el precio introducido")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Productos obtenidos con éxito")
-    })
-    @GetMapping("/price/greater")
-    public ResponseEntity<List<Products>> findByPriceGreaterThan(@RequestParam(required = true) Double price){
-        return ResponseEntity.status(HttpStatus.OK).body(productsService.findByPriceGreaterThan(price));
-    }
-
-    @Operation(summary = "Obtener productos por precio menor que el precio introducido", description = "Devuelve una lista de productos por su precio menor que el precio introducido")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Productos obtenidos con éxito")
-    })
-    @GetMapping("/price/less")
-    public ResponseEntity<List<Products>> findByPriceLessThan( @RequestParam(required = true) Double price){
-        return ResponseEntity.status(HttpStatus.OK).body(productsService.findByPriceLessThan(price));
-    }
-
-    @Operation(summary = "Obtener productos que están en stock", description = "Devuelve una lista de productos que están en stock")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Productos obtenidos con éxito")
-    })
-    @GetMapping("/stock/available")
-    public ResponseEntity<List<Products>> findByStockAvailable(){
-        return ResponseEntity.status(HttpStatus.OK).body(productsService.findByStockAvailable());
-    }
-
-    @Operation(summary = "Obtener productos que no están en stock", description = "Devuelve una lista de productos que no están en stock")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Productos obtenidos con éxito")
-    })
-    @GetMapping("/stock/without")
-    public ResponseEntity<List<Products>> findWithoutStock(){
-        return ResponseEntity.status(HttpStatus.OK).body(productsService.findByWithoutStock());
-    }
-
-    @Operation(summary = "Obtener productos con stock mayor que el introducido", description = "Devuelve una lista de productos con stock mayor que el introducido")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Productos obtenidos con éxito")
-    })
-    @GetMapping("/stock/greater")
-    public ResponseEntity<List<Products>> findByStockGreaterThan(@RequestParam(required = true) Integer stock){
-        return ResponseEntity.status(HttpStatus.OK).body(productsService.findByStockGreaterThan(stock));
+            @RequestParam(required = false) ConditionStatus cStatus,
+            @RequestParam(required = false, defaultValue = "0.0") Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false, defaultValue = "0") Integer minStock,
+            @RequestParam(required = false) Integer maxStock){
+        return ResponseEntity.status(HttpStatus.OK).body(productsService.findByConditions(pStatus, lType, cStatus, minPrice, maxPrice, minStock, maxStock));
     }
 
     @Operation(summary = "Obtener productos por nombre", description = "Devuelve una lista de productos que contengan una cadena de texto en su nombre")

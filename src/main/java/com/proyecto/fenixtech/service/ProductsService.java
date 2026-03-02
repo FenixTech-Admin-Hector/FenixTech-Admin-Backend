@@ -42,26 +42,6 @@ public class ProductsService {
     }
 
     @Transactional(readOnly = true)
-    public List<Products> findByProductStatus(ProductStatus productStatus){
-        return productsRepository.findByProductStatus(productStatus);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Products> findByListingType(ListingType listingType){
-        return productsRepository.findByListingType(listingType);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Products> findByStatus(ConditionStatus status){
-        return productsRepository.findByStatus(status);
-    }
-    
-    @Transactional(readOnly = true)
-    public List<Products> findByMultipleFilters(ProductStatus pStatus, ListingType lType, ConditionStatus cStatus){
-        return productsRepository.findByMultipleFilters(pStatus, lType, cStatus);
-    }
-
-    @Transactional(readOnly = true)
     public List<Products> findByCategoryId(Integer id){
         Categories category = categoriesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + id));
@@ -77,35 +57,42 @@ public class ProductsService {
         return productsRepository.findByCompany_CompanyId(id);
     }
 
-
-    @Transactional(readOnly = true)
-    public List<Products> findByPriceGreaterThan(Double price){
-        return productsRepository.findByPriceGreaterThan(price);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Products> findByPriceLessThan(Double price){
-        return productsRepository.findByPriceLessThan(price);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Products> findByStockGreaterThan(Integer stock){
-        return productsRepository.findByStockGreaterThan(stock);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Products> findByWithoutStock(){
-        return productsRepository.findByStockEquals(0);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Products> findByStockAvailable(){
-        return productsRepository.findByStockGreaterThan(0);
-    }   
-
     @Transactional(readOnly = true)
     public List<Products> findByProductTitle(String title){
         return productsRepository.findByProductTitleContainingIgnoreCase(title);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Products> findByConditions(
+            ProductStatus pStatus, ListingType lType, ConditionStatus cStatus,
+            Double minPrice, Double maxPrice, Integer minStock, Integer maxStock) {
+        
+        if (minPrice != null && minPrice < 0) {
+            throw new IllegalArgumentException("El precio mínimo no puede ser negativo.");
+        }
+        if (maxPrice != null && maxPrice < 0) {
+            throw new IllegalArgumentException("El precio máximo no puede ser negativo.");
+        }
+        if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+            throw new IllegalArgumentException("El precio mínimo no puede ser mayor al precio máximo.");
+        }
+
+        if (minStock != null && minStock < 0) {
+            throw new IllegalArgumentException("El stock mínimo no puede ser negativo.");
+        }
+        if (maxStock != null && maxStock < 0) {
+            throw new IllegalArgumentException("El stock máximo no puede ser negativo.");
+        }
+        if (minStock != null && maxStock != null && minStock > maxStock) {
+            throw new IllegalArgumentException("El stock mínimo no puede ser mayor al stock máximo.");
+        }
+        
+        String pStatusStr = (pStatus != null) ? pStatus.name().toLowerCase() : null;
+        String lTypeStr = (lType != null) ? lType.name().toLowerCase() : null;
+        String cStatusStr = (cStatus != null) ? cStatus.name().toLowerCase() : null;
+
+        return productsRepository.findByConditions(
+                pStatusStr, lTypeStr, cStatusStr, minPrice, maxPrice, minStock, maxStock);
     }
 
     @Transactional(readOnly = true)
