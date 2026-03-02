@@ -4,6 +4,7 @@ import com.proyecto.fenixtech.repository.UsersRepository;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Users;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,19 +37,28 @@ public class UsersService {
     }
 
     public List<Users> findByCreatedAtOrderByDesc() {
-        return usersRepository.findByCreatedAtOrderByDesc();
+        return usersRepository.findAllByCreatedAtOrderByDesc();
     }
 
     public List<Users> findByCreatedAtOrderByAsc() {
-        return usersRepository.findByCreatedAtOrderByAsc();
+        return usersRepository.findAllByCreatedAtOrderByAsc();
     }
 
-    public List<Users> findByCreatedAt(LocalDateTime createdAt) {
-        return usersRepository.findByCreatedAt(createdAt);
+    //Se usa el mismo metodo para buscar por año y para buscar por rango de fechas
+    public List<Users> findByCreatedAt(Integer year) {
+        //Crea un LocalDateTime a partir de un año para revsar desde el 1 de enero a las 00:00:00 de ese año
+        LocalDateTime inicioDelAno = LocalDateTime.of(year, 1, 1, 0, 0, 0);
+        //Crea un LocalDateTime a partir de un año para revisar hasta el 31 de diciembre a las 23:59:59 de ese año con los maximos milisegundos
+        LocalDateTime finDelAno = LocalDateTime.of(year, 12, 31, 23, 59, 59, 999999999);
+        return usersRepository.findByCreatedAtBetween(inicioDelAno, finDelAno);
     }
 
-    public List<Users> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end) {
-        return usersRepository.findByCreatedAtBetween(start, end);
+    public List<Users> findByCreatedAtBetween(LocalDate start, LocalDate end) {
+        //Convierte el LocalDate a LocalDateTime con la fecha con hora 00:00:00
+        LocalDateTime startDateTime = start.atStartOfDay();
+        //Convierte el LocalDate en LocalDateTime con la fecha con hora 23:59:59 con los maximos milisegundos
+        LocalDateTime endDateTime = end.atTime(java.time.LocalTime.MAX);
+        return usersRepository.findByCreatedAtBetween(startDateTime, endDateTime);
     }
 
 
