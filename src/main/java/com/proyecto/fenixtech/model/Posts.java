@@ -30,8 +30,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@ToString(exclude = {"user", "comments"})
-@EqualsAndHashCode(exclude = {"user", "comments"})
+@ToString(exclude = {"author", "comments"})
+@EqualsAndHashCode(exclude = {"author", "comments"})
 
 @Schema(description = "Modelo de Posts", name = "Posts")
 @Entity
@@ -59,12 +59,12 @@ public class Posts implements Serializable {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    @JsonIgnoreProperties({"posts", "company", "address", "reviews", "proposals", "orders", "cartItems", "comments"})
-    private Users user;
+    @JoinColumn(name = "author_user_id", nullable = false)
+    @JsonIgnoreProperties({"posts", "company", "addresses", "reviews", "proposals", "orders", "cartItems", "comments"})
+    private Users author;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({ "post", "user" })
+    @JsonIgnoreProperties({ "post", "author" })
     private List<Comments> comments = new ArrayList<>();
 
 }

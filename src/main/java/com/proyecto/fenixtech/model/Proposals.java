@@ -27,8 +27,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ToString(exclude = "user")
-@EqualsAndHashCode(exclude = "user")
+@ToString(exclude = "requester")
+@EqualsAndHashCode(exclude = "requester")
 
 
 @Schema(description = "Modelo de Propuesta", name = "Proposals")
@@ -61,8 +61,8 @@ public class Proposals implements Serializable {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnoreProperties({"proposals", "company", "address", "reviews", "orders", "cartItems", "posts", "comments"})
-    private Users user;
+    @JoinColumn(name = "requester_user_id", nullable = false)
+    @JsonIgnoreProperties({"proposals", "company", "addresses", "reviews", "orders", "cartItems", "posts", "comments"})
+    private Users requester;
 
 }

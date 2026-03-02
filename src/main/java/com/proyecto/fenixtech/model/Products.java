@@ -69,7 +69,6 @@ public class Products implements Serializable {
 
     @Schema(description = "Tipo de venta de venta del producto", example = "donation")
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "El tipo de producto es obligatorio")
     @Column(name = "listing_type", nullable = false)
     private ListingType listingType;
 
@@ -87,12 +86,12 @@ public class Products implements Serializable {
     private ProductStatus productStatus = ProductStatus.ACTIVE;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false, unique = true)
+    @JoinColumn(name = "category_id", nullable = false)
     @JsonIgnoreProperties("products")
     private Categories category;
 
     @ManyToOne
-    @JoinColumn(name = "company_id", nullable = false, unique = true)
+    @JoinColumn(name = "company_id", nullable = false)
     @JsonIgnoreProperties({"products", "companyBadges", "reviews", "user"})
     private Companies company;
 

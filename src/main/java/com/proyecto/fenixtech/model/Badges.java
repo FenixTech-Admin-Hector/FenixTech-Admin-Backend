@@ -25,8 +25,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ToString(exclude = "companyBadge")
-@EqualsAndHashCode(exclude = "companyBadge")
+@ToString(exclude = "companyBadges")
+@EqualsAndHashCode(exclude = "companyBadges")
 
 @Schema(description = "Modelo de Badges", name = "Badges")
 @Entity
@@ -50,7 +50,7 @@ public class Badges implements Serializable {
 
     @OneToMany(mappedBy = "badge", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({"badge", "company"})
-    private List<CompanyBadges> companyBadge = new ArrayList<>();
+    private List<CompanyBadges> companyBadges = new ArrayList<>();
 
     
 
