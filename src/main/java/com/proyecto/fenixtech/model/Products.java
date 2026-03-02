@@ -23,6 +23,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -62,12 +63,13 @@ public class Products implements Serializable {
     private String imageUrl;
 
     @Schema(description = "Estado del producto", example = "new")
+    @NotNull(message = "El estado del producto es obligatorio")
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "El estado del producto es obligatorio")
     @Column(name = "condition_status", nullable = false)
     private ConditionStatus status;
 
     @Schema(description = "Tipo de venta de venta del producto", example = "donation")
+    @NotNull(message = "El estado del producto es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(name = "listing_type", nullable = false)
     private ListingType listingType;
