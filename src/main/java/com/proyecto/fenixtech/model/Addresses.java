@@ -4,14 +4,7 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +20,7 @@ import lombok.ToString;
 
 @Schema(description = "Model de direcciones", name = "Adresses")
 @Entity
-@Table(name = "adresses")
+@Table(name = "addresses")
 public class Addresses implements Serializable {
     @Schema(description = "Identificador único de la dirección", example = "1")
     @Id
@@ -60,8 +53,8 @@ public class Addresses implements Serializable {
     @Column(name = "country", nullable = false)
     private String country;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", unique = true, nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnoreProperties({ "company", "address", "reviews", "proposals", "orders", "cartItems", "posts", "comments" })
     private Users user;
 

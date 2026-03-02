@@ -49,10 +49,10 @@ public class Companies implements Serializable {
     @Column(name = "company_name", nullable = false)
     private String companyName;
 
-    @Schema(description = "Tax ID de la empresa", example = "123456789")
-    @NotBlank(message = "El tax ID es obligatorio")
-    @Column(name = "tax_id", nullable = false, unique = true)
-    private String taxId;
+    @Schema(description = "CIF de la empresa", example = "123456789")
+    @NotBlank(message = "El CIF es obligatorio")
+    @Column(name = "cif", nullable = false, unique = true)
+    private String cif;
 
     @Schema(description = "Puntuación de reputacion de la empresa", example = "4")
     @Column(name = "reputation_score")
@@ -66,8 +66,8 @@ public class Companies implements Serializable {
     // private String impactMetrics;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", unique = true, nullable = false)
-    @JsonIgnoreProperties({ "company", "address", "reviews", "proposals", "orders", "cartItems", "posts", "comments" })
+    @JoinColumn(name = "user_id", unique = true, nullable = false)
+    @JsonIgnoreProperties({ "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments" })
     private Users user;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -78,8 +78,8 @@ public class Companies implements Serializable {
     @JsonIgnoreProperties({ "company", "badge" })
     private List<CompanyBadges> companyBadges = new ArrayList<>();
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({ "company", "user" })
+    @OneToMany(mappedBy = "targetCompany", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({ "targetCompany", "user" })
     private List<Reviews> reviews = new ArrayList<>();
 
 }

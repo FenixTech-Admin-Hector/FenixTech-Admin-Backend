@@ -40,13 +40,13 @@ public class CartItems implements Serializable{
     private Integer quantity = 1;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false, unique = true)
+    @JoinColumn(name = "product_id", nullable = false)
     @JsonIgnoreProperties({"category", "company", "cartItems", "orderDetails"})
     private Products product;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    @JsonIgnoreProperties({"company", "address", "reviews", "proposals", "orders", "cartItems", "posts", "comments"})
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments"})
     private Users user;
 
 }

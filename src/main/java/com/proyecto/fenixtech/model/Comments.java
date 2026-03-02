@@ -26,8 +26,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@ToString(exclude = { "post", "user" })
-@EqualsAndHashCode(exclude = { "post", "user" })
+@ToString(exclude = { "post", "author" })
+@EqualsAndHashCode(exclude = { "post", "author" })
 
 @Schema(description = "Modelo de Comentarios", name = "Comments")
 @Entity
@@ -51,12 +51,12 @@ public class Comments implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
-    @JsonIgnoreProperties({"user", "comments"})
+    @JsonIgnoreProperties({"author", "comments"})
     private Posts post;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnoreProperties({"comments", "posts", "company", "address", "reviews", "proposals", "orders", "cartItems"})
-    private Users user;
+    @JoinColumn(name = "author_user_id", nullable = false)
+    @JsonIgnoreProperties({"comments", "posts", "company", "addresses", "reviews", "proposals", "orders", "cartItems"})
+    private Users author;
 
 }

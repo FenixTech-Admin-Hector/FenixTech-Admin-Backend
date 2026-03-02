@@ -38,8 +38,8 @@ public class Shipments implements Serializable {
     private Integer shipmentId;
 
     @Schema(description = "Dirección de envío", example = "Calle Falsa 123")
-    @Column(name = "shipping_address", nullable = false)
-    private String shippingAddress;
+    @Column(name = "shipping_street", nullable = false)
+    private String shippingStreet;
 
     @Schema(description = "Ciudad de envío", example = "Madrid")
     @Column(name = "shipping_city", nullable = false)
@@ -62,12 +62,12 @@ public class Shipments implements Serializable {
     private String carrier;
 
     @Schema(description = "Estado del envío", example = "shipped")
-    @Column(name = "status")
+    @Column(name = "shipment_status")
     private ShipmentStatus status = ShipmentStatus.PREPARING;
 
     @OneToOne
     @JoinColumn(name = "order_id", referencedColumnName = "order_id", unique = true, nullable = false)
-    @JsonIgnoreProperties({"shipment", "orderDetails", "user"} )
+    @JsonIgnoreProperties({"shipment", "orderDetails", "buyer"} )
     private Orders order;
 
 }

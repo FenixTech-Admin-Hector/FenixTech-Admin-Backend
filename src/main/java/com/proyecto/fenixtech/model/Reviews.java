@@ -28,8 +28,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ToString(exclude = { "user", "company" })
-@EqualsAndHashCode(exclude = { "user", "company" })
+@ToString(exclude = { "reviewer", "targetCompany" })
+@EqualsAndHashCode(exclude = { "reviewer", "targetCompany" })
 
 
 @Schema(description = "Modelo de Reviews", name = "Reviews")
@@ -59,13 +59,13 @@ public class Reviews implements Serializable{
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnoreProperties({"reviews", "company", "address", "proposals", "orders", "cartItems", "posts", "comments"})
-    private Users user;
+    @JoinColumn(name = "reviewer_user_id", nullable = false)
+    @JsonIgnoreProperties({"reviews", "company", "addresses", "proposals", "orders", "cartItems", "posts", "comments"})
+    private Users reviewer;
 
     @ManyToOne
-    @JoinColumn(name = "company_id", nullable = false)
+    @JoinColumn(name = "target_company_id", nullable = false)
     @JsonIgnoreProperties({"reviews", "companyBadges", "products", "user"})
-    private Companies company;
+    private Companies targetCompany;
 
 }
