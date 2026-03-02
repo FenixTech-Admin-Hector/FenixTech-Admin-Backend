@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-
 public class CompaniesService {
     @Autowired
     private CompaniesRepository companiesRepository;
@@ -41,7 +40,7 @@ public class CompaniesService {
         Users user = usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id:" + id));
 
-        return companiesRepository.findByUsersId(id)
+        return companiesRepository.findByUser_UserId(id)
                 .orElseThrow(() -> new ResourceNotFoundException("El usuario" + id+ "no está asociado a ninguna empresa"));
     }
 

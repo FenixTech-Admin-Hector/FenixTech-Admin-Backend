@@ -23,7 +23,7 @@ public interface CompaniesRepository extends JpaRepository<Companies, Integer> {
      * existById(id)
      */
 
-    Optional <Companies> findByUsersId(Integer id);
+    Optional <Companies> findByUser_UserId(Integer id);
     List<Companies> findByCompanyNameContainingIgnoringCase(String name);
     List<Companies> findByReputationScoreIsGreaterThan(Integer reputationScore);
     List<Companies> findByReputationScoreIsLessThan(Integer reputationScore);

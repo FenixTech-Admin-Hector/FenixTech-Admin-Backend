@@ -45,12 +45,12 @@ public class UsersService {
 
     @Transactional(readOnly = true)
     public List<Users> findByCreatedAtOrderByDesc() {
-        return usersRepository.findAllByCreatedAtOrderByDesc();
+        return usersRepository.findAllByOrderByCreatedAtDesc();
     }
 
     @Transactional(readOnly = true)
     public List<Users> findByCreatedAtOrderByAsc() {
-        return usersRepository.findAllByCreatedAtOrderByAsc();
+        return usersRepository.findAllByOrderByCreatedAtAsc();
     }
 
     @Transactional(readOnly = true)

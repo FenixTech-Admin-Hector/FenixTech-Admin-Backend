@@ -26,8 +26,8 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
      */
     List<Users> findByRole(Rol role);
     Optional<Users> findByEmail(String email);
-    List<Users> findAllByCreatedAtOrderByDesc();
-    List<Users> findAllByCreatedAtOrderByAsc();
+    List<Users> findAllByOrderByCreatedAtDesc();
+    List<Users> findAllByOrderByCreatedAtAsc();
     List<Users> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
 

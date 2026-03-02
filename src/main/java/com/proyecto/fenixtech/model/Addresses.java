@@ -18,7 +18,7 @@ import lombok.ToString;
 @ToString(exclude = "user")
 @EqualsAndHashCode(exclude = "user")
 
-@Schema(description = "Model de direcciones", name = "Adresses")
+@Schema(description = "Model de direcciones", name = "Addresses")
 @Entity
 @Table(name = "addresses")
 public class Addresses implements Serializable {
@@ -55,7 +55,7 @@ public class Addresses implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnoreProperties({ "company", "address", "reviews", "proposals", "orders", "cartItems", "posts", "comments" })
+    @JsonIgnoreProperties({ "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments" })
     private Users user;
 
 }
