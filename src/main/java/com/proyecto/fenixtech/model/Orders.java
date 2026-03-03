@@ -32,10 +32,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@ToString(exclude = {"user", "orderDetails", "shipment"})
-@EqualsAndHashCode(exclude = {"user", "orderDetails", "shipment"})
-
-
+@ToString(exclude = {"buyer", "orderDetails", "shipment"})
+@EqualsAndHashCode(exclude = {"buyer", "orderDetails", "shipment"})
 
 @Schema(description = "Modelo de Ordenes", name = "Orders")
 @Entity
@@ -62,13 +60,13 @@ public class Orders implements Serializable {
     private OrderStatus status = OrderStatus.PENDING_PAYMENT;
 
     @Schema(description = "Necesita envío el pedido", example = "true")
-    @Column(name = "shipping_required")
-    private Boolean shippingRequired = false;;
+    @Column(name = "requires_shipping")
+    private Boolean requiresShipping = false;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    @JsonIgnoreProperties({"orders", "company", "address", "reviews", "proposals", "cartItems", "posts", "comments"})
-    private Users user;
+    @JoinColumn(name = "buyer_user_id", nullable = false)
+    @JsonIgnoreProperties({"orders", "company", "addresses", "reviews", "proposals", "cartItems", "posts", "comments"})
+    private Users buyer;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({"order", "product"})

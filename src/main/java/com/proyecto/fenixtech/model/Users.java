@@ -24,6 +24,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,8 +35,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@ToString(exclude = { "company", "address", "reviews", "proposals", "orders", "cartItems", "posts", "comments" })
-@EqualsAndHashCode(exclude = { "company", "address", "reviews", "proposals", "orders", "cartItems", "posts",
+@ToString(exclude = { "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments" })
+@EqualsAndHashCode(exclude = { "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts",
         "comments" })
 
 @Schema(description = "Modelo de Usuario", name = "Users")
@@ -66,12 +67,12 @@ public class Users implements Serializable {
     private String firstName;
 
     @Schema(description = "Apellido del usuario", example = "Pérez")
-    @NotBlank(message = "El apeliido es obligatorio")
+    @NotBlank(message = "El apelido es obligatorio")
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
     @Schema(description = "Rol del usuario", example = "admin")
-    @NotBlank(message = "El rol es obligatorio")
+    @NotNull(message = "El rol es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Rol role;
@@ -85,32 +86,32 @@ public class Users implements Serializable {
     @JsonIgnoreProperties({ "user", "companyBadges", "products", "reviews" })
     private Companies company;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties({ "user", "company" })
-    private Addresses address;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({ "user"})
+    private List<Addresses> addresses = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({ "user", "product" })
     private List<CartItems> cartItems = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "buyer")
     @JsonIgnoreProperties({"user", "orderDetails", "shipment"})
     private List<Orders> orders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({ "user", "company" })
+    @OneToMany(mappedBy = "reviewer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({ "reviewer", "company" })
     private List<Reviews> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties({"user", "comments"})
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"author", "comments"})
     private List<Posts> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({ "user", "post" })
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({ "author", "post" })
     private List<Comments> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("user")
+    @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("requester")
     private List<Proposals> proposals = new ArrayList<>();
 
 }

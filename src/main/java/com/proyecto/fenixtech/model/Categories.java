@@ -1,6 +1,8 @@
 package com.proyecto.fenixtech.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -22,8 +24,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@ToString(exclude = "product")
-@EqualsAndHashCode(exclude = "product")
+@ToString(exclude = "products")
+@EqualsAndHashCode(exclude = "products")
 
 @Schema(description = "Modelo de Categorías", name = "Categories")
 @Entity
@@ -37,16 +39,16 @@ public class Categories implements Serializable{
 
     @Schema(description = "Nombre de la categoría", example = "Electrónica")
     @NotBlank(message = "El nombre de la categoría es obligatorio")
-    @Column(name = "category_name", nullable = false, unique = true)
-    private String categoryName;
+    @Column(name = "name", nullable = false, unique = true)
+    private String name;
 
     @Schema(description = "Descripción de la categoría", example = "Dispositivos electrónicos usados")
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @OneToMany(mappedBy = "category", orphanRemoval = true)
     @JsonIgnoreProperties({"category", "company", "cartItems", "orderDetails"})
-    private Products product;
+    private List<Products> products = new ArrayList<>();
 
 
 

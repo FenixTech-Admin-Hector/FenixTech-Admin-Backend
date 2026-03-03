@@ -50,7 +50,7 @@ public class OrderDetails implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
-    @JsonIgnoreProperties({"orderDetails", "shipment", "user", "cartItems"})
+    @JsonIgnoreProperties({"orderDetails", "shipment", "buyer"})
     private Orders order;
 
     @ManyToOne
