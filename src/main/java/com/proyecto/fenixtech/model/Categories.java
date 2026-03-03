@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,8 +25,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@ToString(exclude = "products")
-@EqualsAndHashCode(exclude = "products")
+@ToString(exclude = {"products", "subcategories"})
+@EqualsAndHashCode(exclude = {"products", "subcategories"})
 
 @Schema(description = "Modelo de Categorías", name = "Categories")
 @Entity
@@ -49,6 +50,11 @@ public class Categories implements Serializable{
     @OneToMany(mappedBy = "category", orphanRemoval = true)
     @JsonIgnoreProperties({"category", "company", "cartItems", "orderDetails"})
     private List<Products> products = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"category"})
+    private List<Subcategories> subcategories = new ArrayList<>();
+
 
 
 
