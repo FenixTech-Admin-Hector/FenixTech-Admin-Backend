@@ -37,7 +37,7 @@ public class CompaniesService {
 
     @Transactional(readOnly = true)
     public Companies findByUserId(Integer id){
-        Users user = usersRepository.findById(id)
+        usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id:" + id));
 
         return companiesRepository.findByUser_UserId(id)
@@ -50,14 +50,32 @@ public class CompaniesService {
     }
 
     @Transactional(readOnly = true)
-    public List<Companies> findByReputationScoreGreaterThan(Integer reputationScore){
-        return companiesRepository.findByReputationScoreIsGreaterThan(reputationScore);
+    public List<Companies> findByImpactFilters(Integer minReputation, Integer maxReputation, Double minCo2Saved, Integer minItemsDonated){
+        if(minReputation != null && minReputation < 0){
+            throw new IllegalArgumentException("La calificación mínima no puede ser negativa");
+        }
+        if(maxReputation != null && maxReputation < 0){
+            throw new IllegalArgumentException("La calificación máxima no puede ser negativa");
+        }
+        if(minReputation != null && maxReputation != null && minReputation > maxReputation){
+            throw new IllegalArgumentException("La calificación mínima no puede ser superior a la calificación máxima");
+        }
+        if(minCo2Saved != null && minCo2Saved < 0){
+            throw new IllegalArgumentException("El ahorro mínimo no puede ser negativo");
+        }
+        if(minItemsDonated != null && minItemsDonated < 0){
+            throw new IllegalArgumentException("El mínimo de artículos donados no puede ser negativo");
+        }
+
+        return companiesRepository.findByImpactFilters(minReputation, maxReputation, minCo2Saved, minItemsDonated);
     }
 
     @Transactional(readOnly = true)
-    public List<Companies> findByReputationScoreLessThan(Integer reputationScore){
-        return companiesRepository.findByReputationScoreIsLessThan(reputationScore);
+    public List<Companies> findTop3ByReputationScore(){
+        return companiesRepository.findTop3ByOrderByReputationScoreDesc();
     }
+
+
 
     @Transactional(readOnly = true)
     public Long count(){

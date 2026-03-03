@@ -68,23 +68,20 @@ public class CompaniesController {
         return ResponseEntity.status(HttpStatus.OK).body(companiesService.findByCompanyName(name));
     }
 
-    @Operation(summary = "Obtener empresas por puntuación de reputacion", description ="Devuelve una lista de empresas con mayor reputacion que la introducida")
+    @Operation(summary = "Obtener empresas por una serie de filtros", description ="Devuelve una lista de empresas en función de sus puntos de reputación y sus métricas de impacto")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Empresas encontradas con éxito")
     })
-    @GetMapping("/reputation/greater")
-    public ResponseEntity<List<Companies>> findByReputationScoreGreaterThan( @RequestParam(required = true) Integer reputation){
-        return ResponseEntity.status(HttpStatus.OK).body(companiesService.findByReputationScoreGreaterThan(reputation));
+    @GetMapping("/filters")
+    public ResponseEntity<List<Companies>> findByImpactFilters(@RequestParam(required = false, defaultValue = "0") Integer minReputation,
+    @RequestParam(required = false) Integer maxReputation, @RequestParam(required = false, defaultValue = "0.0") Double minCo2Saved, @RequestParam(required = false, defaultValue = "0") Integer minItemsDonated){
+        return ResponseEntity.status(HttpStatus.OK).body(companiesService.findByImpactFilters(minReputation, maxReputation, minCo2Saved, minItemsDonated));
+    }
+    @GetMapping("/top3")
+    public ResponseEntity<List<Companies>> findTop3ByReputationScore(){
+        return ResponseEntity.status(HttpStatus.OK).body(companiesService.findTop3ByReputationScore());
     }
 
-    @Operation(summary = "Obtener empresas por puntuación de reputacion", description ="Devuelve una lista de empresas con mayor reputacion que la introducida")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Empresas encontradas con éxito")
-    })
-    @GetMapping("/reputation/less")
-    public ResponseEntity<List<Companies>> findByReputationScoreLessThan( @RequestParam(required = true) Integer reputation){
-        return ResponseEntity.status(HttpStatus.OK).body(companiesService.findByReputationScoreLessThan(reputation));
-    }
 
     @Operation(summary = "Obtener el numero de empresas", description = "Devuelve el numero de empresas")
     @ApiResponses(value = {
