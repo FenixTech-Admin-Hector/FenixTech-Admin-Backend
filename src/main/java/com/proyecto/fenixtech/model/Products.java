@@ -34,8 +34,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ToString(exclude = {"category", "company", "cartItems", "orderDetails"})
-@EqualsAndHashCode(exclude = {"category", "company", "cartItems", "orderDetails"})
+@ToString(exclude = {"subcategory", "company", "cartItems", "orderDetails"})
+@EqualsAndHashCode(exclude = {"subcategory", "company", "cartItems", "orderDetails"})
 
 
 @Schema(description = "Modelo de Productos", name = "Products")
@@ -88,9 +88,9 @@ public class Products implements Serializable {
     private ProductStatus productStatus = ProductStatus.ACTIVE;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "subcategory_id", nullable = false)
     @JsonIgnoreProperties("products")
-    private Categories category;
+    private Subcategories subcategory;
 
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)

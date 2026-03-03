@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS products (
     stock_quantity INT DEFAULT 1,
     status ENUM('active', 'sold_out', 'hidden') DEFAULT 'active',
     FOREIGN KEY (company_id) REFERENCES Companies(company_id) ON DELETE CASCADE,
-    FOREIGN KEY (category_id) REFERENCES Categories(category_id)
+    FOREIGN KEY (subcategory_id) REFERENCES Subcategories(subcategory_id)
 );
 
 -- ------------------------------------------------------------------------------
