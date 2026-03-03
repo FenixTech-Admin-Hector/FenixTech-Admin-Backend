@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Tag(name = "Comments", description = "API para gestión de comentarios")
-@RequestMapping("/api")
+@RequestMapping("/api/comments")
 @RestController
 public class CommentsController {
 
@@ -31,7 +31,7 @@ public class CommentsController {
             @ApiResponse(responseCode = "200", description = "Comentarios obtenidos con éxito"),
             @ApiResponse(responseCode = "404", description = "Post no encontrado")
     })
-    @GetMapping("/posts/{postId}/comments")
+    @GetMapping("/posts/{postId}")
     public ResponseEntity<Page<Comments>> findCommentsByPostId(
             @PathVariable Integer postId,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -43,7 +43,7 @@ public class CommentsController {
             @ApiResponse(responseCode = "200", description = "Comentarios obtenidos con éxito"),
             @ApiResponse(responseCode = "404", description = "No se encontraron comentarios para el usuario")
     })
-    @GetMapping("/users/{userId}/comments")
+    @GetMapping("/users/{userId}")
     public ResponseEntity<List<Comments>> findCommentsByUserId(@PathVariable Integer userId) {
         return ResponseEntity.ok(commentsService.findCommentsByUserId(userId));
     }
@@ -52,7 +52,7 @@ public class CommentsController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Número de comentarios obtenido con éxito")
     })
-    @GetMapping("/comments/count")
+    @GetMapping("/count")
     public ResponseEntity<Map<String, Long>> countAllComments() {
         Long count = commentsService.countAllComments();
         Map<String, Long> response = new HashMap<>();
