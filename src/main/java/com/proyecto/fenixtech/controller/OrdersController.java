@@ -60,73 +60,26 @@ public class OrdersController {
         return ResponseEntity.status(HttpStatus.OK).body(ordersService.findByBuyerId(id));
     }
 
-    @Operation(summary = "Obtener pedidos por estado", description = "Devuelve una lista de pedidos filtrados por su estado")
+    @Operation(summary = "Obtener pedidos por una serie de filtros", description = "Devuelve una lista de pedidos filtrados por su estado, tipo de venta, importe y fecha")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pedidos obtenidos con éxito")
     })
-    @GetMapping("/status")
-    public ResponseEntity<List<Orders>> findByStatus(@RequestParam OrderStatus status) {
-        return ResponseEntity.status(HttpStatus.OK).body(ordersService.findByStatus(status));
-    }
+    @GetMapping("/filters")
+    public ResponseEntity<List<Orders>> findByConditions(
+            @RequestParam(required = false) Double minAmount,
+            @RequestParam(required = false) Double maxAmount,
+            @RequestParam(required = false) LocalDate minDate,
+            @RequestParam(required = false) LocalDate maxDate,
+            @RequestParam(required = false, defaultValue = "PENDING_PAYMENT") OrderStatus status,
+            @RequestParam(required = false) Boolean requiresShipping) {
 
-    @Operation(summary = "Obtener pedidos con importe mayor que el introducido", description = "Devuelve una lista de pedidos con importe mayor que el introducido")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Pedidos obtenidos con éxito")
-    })
-    @GetMapping("/total_amount/greater")
-    public ResponseEntity<List<Orders>> findByTotalAmountGreaterThen(@RequestParam (required = true) Double amount){
-        return ResponseEntity.status(HttpStatus.OK).body(ordersService.findByTotalAmountGreaterThan(amount));
-    }
-
-    
-    @Operation(summary = "Obtener pedidos con importe menor que el introducido", description = "Devuelve una lista de pedidos con importe menor que el introducido")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Pedidos obtenidos con éxito")
-    })
-    @GetMapping("/total_amount/less")
-    public ResponseEntity<List<Orders>> findByTotalAmountLessThen(@RequestParam (required = true) Double amount){
-        return ResponseEntity.status(HttpStatus.OK).body(ordersService.findByTotalAmountLessThan(amount));
-    }
-
-    @Operation(summary = "Obtener pedidos con envio", description = "Devuelve una lista de pedidos con envio")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Pedidos obtenidos con éxito")
-    })
-    @GetMapping("/shipping")
-    public ResponseEntity<List<Orders>> findByShipping(@RequestParam(required = true) Boolean requiresShipping){
-        return ResponseEntity.status(HttpStatus.OK).body(ordersService.findByShipping(requiresShipping));
-    }
-
-    @Operation(summary = "Obtener pedidos por estado y envio", description = "Devuelve una lista de pedidos con estado y envio")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Pedidos obtenidos con éxito")
-    })
-    @GetMapping("/conditions")
-    public ResponseEntity<List<Orders>> findByStatusAndShipping(@RequestParam(required = true) OrderStatus orderStatus,@RequestParam(required = true)Boolean requiresShipping){
-        return ResponseEntity.status(HttpStatus.OK).body(ordersService.findByStatusAndRequiresShipping(requiresShipping, orderStatus));
-    }
-
-    @Operation(summary = "Obtener pedidos por año", description = "Devuelve una lista de pedidos por un año en concreto")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Pedidos obtenidos con éxito")
-    })
-    @GetMapping("/year")
-    public ResponseEntity<List<Orders>> findByYear(@RequestParam(required = true) Integer year){
-        return ResponseEntity.status(HttpStatus.OK).body(ordersService.findByOrderDate(year));
-    }
-
-    @Operation(summary = "Obtener pedidos  un rango de fechas", description = "Devuelve una lista de pedidos por un rango de fechas en concreto")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Pedidos obtenidos con éxito")
-    })
-    @GetMapping("/date")
-    public ResponseEntity<List<Orders>> findByDate(@RequestParam(required = true) LocalDate dateStart, @RequestParam(required = true) LocalDate dateEnd){
-        return ResponseEntity.status(HttpStatus.OK).body(ordersService.findByOrderDateBetween(dateStart, dateEnd));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ordersService.findByConditions(minAmount, maxAmount, minDate, maxDate, status, requiresShipping));
     }
 
     @Operation(summary = "Obtener el numero de pedidos", description = "Devuelve el numero de pedidos")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Numero de pedidos obtenido con éxito")
+            @ApiResponse(responseCode = "200", description = "Numero de pedidos obtenido con éxito")
     })
     @GetMapping("/count")
     public ResponseEntity<Map<String, Object>> count() {
@@ -135,10 +88,5 @@ public class OrdersController {
         response.put("cantidad", count);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
-
-
-
-
 
 }

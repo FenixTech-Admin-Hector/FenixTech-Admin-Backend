@@ -45,51 +45,29 @@ public class OrdersService {
     }
 
     @Transactional(readOnly = true)
-    public List<Orders> findByStatus(OrderStatus status){
-        return ordersRepository.findByStatus(status);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Orders> findByTotalAmountGreaterThan(Double amount){
-        return ordersRepository.findByTotalAmountGreaterThan(amount);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Orders> findByTotalAmountLessThan(Double amount){
-        return ordersRepository.findByTotalAmountLessThan(amount);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Orders> findWithShipping(){
-        return ordersRepository.findByRequiresShipping(true);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Orders> findByShipping(Boolean requiresShipping){
-        return ordersRepository.findByRequiresShipping(requiresShipping);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Orders> findByOrderDate(Integer year){
-        LocalDateTime yearStart = LocalDateTime.of(year, 1, 1, 0, 0, 0);
-        LocalDateTime yearEnd = LocalDateTime.of(year, 12, 31, 23, 59, 59, 999999999);
-        return ordersRepository.findByOrderDateBetween(yearStart, yearEnd);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Orders> findByOrderDateBetween(LocalDate dateStart, LocalDate dateEnd){
-        if(dateStart.isAfter(dateEnd)){
+    public List<Orders> findByConditions(Double minAmount, Double maxAmount, LocalDate minDate, LocalDate maxDate, OrderStatus status, Boolean requiresShipping){
+        if(minDate != null && maxDate != null && minDate.isAfter(maxDate)){
             throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de fin");
         }
-        LocalDateTime start = dateStart.atStartOfDay();
-        LocalDateTime end = dateEnd.atTime(java.time.LocalTime.MAX);
-        return ordersRepository.findByOrderDateBetween(start, end);
+        
+        LocalDateTime _minDate = (minDate != null) ? minDate.atStartOfDay() : null;
+        LocalDateTime _maxDate = (maxDate != null) ? maxDate.atTime(java.time.LocalTime.MAX) : null;
+
+        if(minAmount != null && minAmount < 0){
+            throw new IllegalArgumentException("El importe mínimo no puede ser negativo");
+        }
+        if(maxAmount != null && maxAmount < 0){
+            throw new IllegalArgumentException("El importe máximo no puede ser negativo");
+        }
+        if(minAmount != null && maxAmount != null && minAmount > maxAmount){
+            throw new IllegalArgumentException("El importe mínimo no puede ser mayor al importe máximo");
+        }
+
+        String statusStr = (status != null) ? status.name().toLowerCase() : null;
+
+        return ordersRepository.findByConditions(minAmount, maxAmount, _minDate, _maxDate, statusStr, requiresShipping);
     }
 
-    @Transactional(readOnly = true)
-    public List<Orders> findByStatusAndRequiresShipping(Boolean requiresShipping, OrderStatus status){
-        return ordersRepository.findByStatusAndRequiresShipping(requiresShipping, status);
-    }
 
 
     @Transactional(readOnly = true)
