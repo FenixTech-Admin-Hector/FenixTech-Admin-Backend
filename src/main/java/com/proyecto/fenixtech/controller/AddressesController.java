@@ -19,7 +19,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 
 @Tag(name = "Addresses", description = "API para gestión de direcciones")
 @RequestMapping("/api/addresses")
@@ -57,40 +56,19 @@ public class AddressesController {
         return ResponseEntity.status(HttpStatus.OK).body(addressesService.findByUserId(id));
     }
 
-    @Operation(summary = "Obtener direcciones por ciudad", description = "Devuelve una lista de direcciones filtradas por ciudad")
+    @Operation(summary = "Obtener direcciones por filtros", description = "Devuelve una lista de direcciones filtradas por ciudad, calle, región y país")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Direcciones obtenidas con éxito")
     })
-    @GetMapping("/city")
-    public ResponseEntity<List<Addresses>> findByCity(@RequestParam(required = true) String city) {
-        return ResponseEntity.status(HttpStatus.OK).body(addressesService.findByCity(city));
-    }
-
-    @Operation(summary = "Obtener direcciones por ciudad", description = "Devuelve una lista de direcciones filtradas por ciudad")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Direcciones obtenidas con éxito")
-    })
-    @GetMapping("/region")
-    public ResponseEntity<List<Addresses>> findByRegion(@RequestParam(required = true) String region) {
-        return ResponseEntity.status(HttpStatus.OK).body(addressesService.findByRegion(region));
-    }
-
-    @Operation(summary = "Obtener direcciones por país", description = "Devuelve una lista de direcciones filtradas por país")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Direcciones obtenidas con éxito")
-    })
-    @GetMapping("/country")
-    public ResponseEntity<List<Addresses>> findByCountry(@RequestParam(required = true) String country) {
-        return ResponseEntity.status(HttpStatus.OK).body(addressesService.findByCountry(country));
-    }
-
-    @Operation(summary = "Obtener direcciones por código postal", description = "Devuelve una lista de direcciones filtradas por código postal")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Direcciones obtenidas con éxito")
-    })
-    @GetMapping("/zip_code")
-    public ResponseEntity<List<Addresses>> findByZipCode(@RequestParam(required = true) String zipCode) {
-        return ResponseEntity.status(HttpStatus.OK).body(addressesService.findByZipCode(zipCode));
+    @GetMapping("/filters")
+    public ResponseEntity<List<Addresses>> findByConditions(
+            @RequestParam(required = false) String street,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String region,
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String zipCode){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(addressesService.findByConditions(street, city, region, country, zipCode));
     }
 
     @Operation(summary = "Obtener el numero de direcciones", description = "Devuelve el numero de direcciones")

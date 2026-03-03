@@ -33,7 +33,7 @@ public class CartItemsController {
             @ApiResponse(responseCode = "200", description = "Items obtenidos con éxito")
     })
     @GetMapping
-    public ResponseEntity<List<CartItems>>findAllCartItems() {
+    public ResponseEntity<List<CartItems>> findAllCartItems() {
         return ResponseEntity.status(HttpStatus.OK).body(cartItemsService.findAllCartItems());
     }
 
@@ -63,31 +63,24 @@ public class CartItemsController {
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
     @GetMapping("/product/{id}")
-    public ResponseEntity<List<CartItems>> findByProductId(@PathVariable Integer id){
+    public ResponseEntity<List<CartItems>> findByProductId(@PathVariable Integer id) {
         return ResponseEntity.status(HttpStatus.OK).body(cartItemsService.findByProductId(id));
     }
 
-    @Operation(summary = "Obtener items del carrito por cantidad mayor que la introducida", description = "Devuelve una lista de items con cantidad mayor que la introducida")
+    @Operation(summary = "Obtener items del carrito en función de la cantidad", description = "Devuelve una lista de items con en función de un rango de catidades")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Items obtenidos con éxito")
     })
-    @GetMapping("/quantity/greater")
-    public ResponseEntity<List<CartItems>> findByQuantityGreaterThan(@RequestParam(required = true) Integer quantity){
-        return ResponseEntity.status(HttpStatus.OK).body(cartItemsService.findByQuantityGreaterThan(quantity));
-    }
-
-    @Operation(summary = "Obtener items del carrito por cantidad menor que la introducida", description = "Devuelve una lista de items con cantidad menor que la introducida")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Items obtenidos con éxito")
-    })
-    @GetMapping("/quantity/less")
-    public ResponseEntity<List<CartItems>> findByQuantityLessThan(@RequestParam(required = true) Integer quantity){
-        return ResponseEntity.status(HttpStatus.OK).body(cartItemsService.findByQuantityLessThan(quantity));
-    }
+    @GetMapping("/quantity")
+    public ResponseEntity<List<CartItems>> findByQuantityFilters(
+            @RequestParam(required = false, defaultValue = "1") Integer minQty,
+            @RequestParam(required = false) Integer maxQty){
+    return ResponseEntity.status(HttpStatus.OK).body(cartItemsService.findByQuantityFilters(minQty, maxQty));
+            }
 
     @Operation(summary = "Obtener el numero de items del carrito", description = "Devuelve el numero de items del carrito")
-    @ApiResponses(value ={
-        @ApiResponse(responseCode = "200", description = "Numero de items del carrito obtenido con éxito")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Numero de items del carrito obtenido con éxito")
     })
     @GetMapping("/count")
     public ResponseEntity<Map<String, Object>> count() {

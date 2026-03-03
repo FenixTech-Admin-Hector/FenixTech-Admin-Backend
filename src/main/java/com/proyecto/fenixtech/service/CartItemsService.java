@@ -54,13 +54,18 @@ public class CartItemsService {
     }
 
     @Transactional(readOnly = true)
-    public List<CartItems> findByQuantityGreaterThan(Integer quantity) {
-        return cartItemsRepository.findByQuantityGreaterThan(quantity);
-    }
+    public List<CartItems> findByQuantityFilters(Integer minQty, Integer maxQty) {
+        if(minQty != null && minQty < 0) {
+            throw new IllegalArgumentException("La cantidad mínima no puede ser negativa");
+        }
+        if(maxQty != null && maxQty < 0) {
+            throw new IllegalArgumentException("La cantidad máxima no puede ser negativa");
+        }
+        if(minQty != null && maxQty != null && minQty > maxQty) {
+            throw new IllegalArgumentException("La cantidad mínima no puede ser mayor a la cantidad máxima");
+        }
 
-    @Transactional(readOnly = true)
-    public List<CartItems> findByQuantityLessThan(Integer quantity) {
-        return cartItemsRepository.findByQuantityLessThan(quantity);
+        return cartItemsRepository.findByQuantityFilters(minQty, maxQty);
     }
 
     @Transactional(readOnly = true)

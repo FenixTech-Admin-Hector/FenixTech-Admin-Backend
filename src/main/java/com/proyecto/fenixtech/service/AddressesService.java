@@ -25,13 +25,13 @@ public class AddressesService {
     @Transactional(readOnly = true)
     public Addresses findById(Integer id){
         return addressesRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Dirección no encontrada con id:" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Dirección no encontrada con id: " + id));
     }
 
     @Transactional(readOnly = true)
     public List<Addresses> findByUserId(Integer id){
         Users user = usersRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id:" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
         List<Addresses> userAddresses = addressesRepository.findByUser_UserId(id);
 
         if (userAddresses.isEmpty()) {
@@ -43,24 +43,10 @@ public class AddressesService {
     }
 
     @Transactional(readOnly = true)
-    public List<Addresses> findByCity(String city){
-        return addressesRepository.findByCityIgnoringCase(city);
+    public List<Addresses> findByConditions(String street, String city, String region, String country, String zipCode){
+        return addressesRepository.findByConditions(street, city, region, country, zipCode );
     }
 
-    @Transactional(readOnly = true)
-    public List<Addresses> findByRegion(String region){
-        return addressesRepository.findByRegionIgnoringCase(region);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Addresses> findByZipCode(String zipCode){
-        return addressesRepository.findByZipCode(zipCode);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Addresses> findByCountry(String country){
-        return addressesRepository.findByCountryIgnoringCase(country);
-    }
 
     @Transactional(readOnly = true)
     public Long count(){
