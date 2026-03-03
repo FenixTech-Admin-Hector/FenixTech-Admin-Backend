@@ -40,7 +40,13 @@ public class PostsService {
      }
 
      @Transactional(readOnly = true)
-     public List<Posts> findRecentPosts(Integer limit) {
+     public List<Posts> findRecentPosts() {
         return postsRepository.findTop5ByOrderByCreatedAtDesc();
      }
+
+
+    @Transactional(readOnly = true)
+    public Long count(){
+        return postsRepository.count();
+    }
 }

@@ -5,7 +5,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -72,7 +74,20 @@ public class PostsController {
     })
     @GetMapping("/recent")
     public ResponseEntity<List<Posts>> findRecentPosts() {
-        return ResponseEntity.ok(postsService.findRecentPosts(5));
+        return ResponseEntity.ok(postsService.findRecentPosts());
+    }
+
+    @Operation(summary = "Obtener el número total de posts", description = "Devuelve el número total de posts")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Número de posts obtenido con éxito")
+    })
+
+    @GetMapping("/count")
+    public ResponseEntity<Map<String, Long>> count() {
+        Long count = postsService.count();
+        Map<String, Long> response = new HashMap<>();
+        response.put("count", count);
+        return ResponseEntity.ok(response);
     }
 
 }
