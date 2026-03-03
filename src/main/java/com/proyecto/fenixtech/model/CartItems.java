@@ -41,7 +41,7 @@ public class CartItems implements Serializable{
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
-    @JsonIgnoreProperties({"category", "company", "cartItems", "orderDetails"})
+    @JsonIgnoreProperties({"subcategory", "company", "cartItems", "orderDetails"})
     private Products product;
 
     @ManyToOne
