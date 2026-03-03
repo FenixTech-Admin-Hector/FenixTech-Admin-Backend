@@ -1,6 +1,7 @@
 package com.proyecto.fenixtech.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,8 +69,8 @@ public class OrdersController {
     public ResponseEntity<List<Orders>> findByConditions(
             @RequestParam(required = false) Double minAmount,
             @RequestParam(required = false) Double maxAmount,
-            @RequestParam(required = false) LocalDate minDate,
-            @RequestParam(required = false) LocalDate maxDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate minDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate maxDate,
             @RequestParam(required = false, defaultValue = "PENDING_PAYMENT") OrderStatus status,
             @RequestParam(required = false) Boolean requiresShipping) {
 

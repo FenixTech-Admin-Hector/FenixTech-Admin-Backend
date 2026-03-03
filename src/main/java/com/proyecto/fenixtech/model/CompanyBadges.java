@@ -2,6 +2,7 @@ package com.proyecto.fenixtech.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -29,7 +30,7 @@ import lombok.ToString;
 
 @Schema(description = "Modelo de Insignias de Empresas", name = "CompanyBadges")
 @Entity
-@Table(name = "CompanyBadges")
+@Table(name = "company_badges")
 public class CompanyBadges implements Serializable {
     @Schema(description = "Identificador compuesto de la relación entre empresa e insignias")
     @EmbeddedId
@@ -38,7 +39,7 @@ public class CompanyBadges implements Serializable {
     @Schema(description = "Fecha de asignación de la insignia a la empresa", example = "2026-01-01")
     @CreationTimestamp
     @Column(name = "awarded_at", updatable = false)
-    private LocalDate awardedAt;
+    private LocalDateTime awardedAt = LocalDateTime.now();
     
     @ManyToOne
     @MapsId("companyId")
