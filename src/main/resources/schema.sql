@@ -7,7 +7,7 @@
 -- MÓDULO 1: USUARIOS, PERFILES Y DIRECCIONES
 -- ------------------------------------------------------------------------------
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE companies (
+CREATE TABLE IF NOT EXISTS companies (
     company_id INT PRIMARY KEY AUTO_INCREMENT,
     -- UNIQUE en user_id garantiza la relación 1 a 1
     user_id INT UNIQUE NOT NULL, 
@@ -31,7 +31,7 @@ CREATE TABLE companies (
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE addresses (
+CREATE TABLE IF NOT EXISTS addresses (
     address_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     street VARCHAR(255) NOT NULL,
@@ -46,13 +46,13 @@ CREATE TABLE addresses (
 -- MÓDULO 2: CATÁLOGO Y PRODUCTOS
 -- ------------------------------------------------------------------------------
 
-CREATE TABLE categories (
+CREATE TABLE IF NOT EXISTS categories (
     category_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     description TEXT
 );
 
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
     product_id INT PRIMARY KEY AUTO_INCREMENT,
     company_id INT NOT NULL,
     category_id INT NOT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE products (
 -- MÓDULO 3: TRANSACCIONES (CARRITO, PEDIDOS Y ENVÍOS)
 -- ------------------------------------------------------------------------------
 
-CREATE TABLE cart_items (
+CREATE TABLE IF NOT EXISTS cart_items (
     cart_item_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     product_id INT NOT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE cart_items (
     FOREIGN KEY (product_id) REFERENCES Products(product_id) ON DELETE CASCADE
 );
 
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
     order_id INT PRIMARY KEY AUTO_INCREMENT,
     buyer_user_id INT NOT NULL,
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -92,7 +92,7 @@ CREATE TABLE orders (
     FOREIGN KEY (buyer_user_id) REFERENCES Users(user_id)
 );
 
-CREATE TABLE order_details (
+CREATE TABLE IF NOT EXISTS order_details (
     order_detail_id INT PRIMARY KEY AUTO_INCREMENT,
     order_id INT NOT NULL,
     product_id INT NOT NULL,
@@ -103,7 +103,7 @@ CREATE TABLE order_details (
     FOREIGN KEY (product_id) REFERENCES Products(product_id)
 );
 
-CREATE TABLE shipments (
+CREATE TABLE IF NOT EXISTS shipments (
     shipment_id INT PRIMARY KEY AUTO_INCREMENT,
     -- UNIQUE garantiza 1 solo envío por pedido (Relación 1:1)
     order_id INT UNIQUE NOT NULL, 
@@ -124,7 +124,7 @@ CREATE TABLE shipments (
 -- MÓDULO 4: COMUNIDAD, RESEÑAS Y GAMIFICACIÓN
 -- ------------------------------------------------------------------------------
 
-CREATE TABLE posts (
+CREATE TABLE IF NOT EXISTS posts (
     post_id INT PRIMARY KEY AUTO_INCREMENT,
     author_user_id INT NOT NULL,
     title VARCHAR(200) NOT NULL,
@@ -133,7 +133,7 @@ CREATE TABLE posts (
     FOREIGN KEY (author_user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE comments (
+CREATE TABLE IF NOT EXISTS comments (
     comment_id INT PRIMARY KEY AUTO_INCREMENT,
     post_id INT NOT NULL,
     author_user_id INT NOT NULL,
@@ -143,7 +143,7 @@ CREATE TABLE comments (
     FOREIGN KEY (author_user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE proposals (
+CREATE TABLE IF NOT EXISTS proposals (
     proposal_id INT PRIMARY KEY AUTO_INCREMENT,
     requester_user_id INT NOT NULL,
     title VARCHAR(200) NOT NULL,
@@ -153,7 +153,7 @@ CREATE TABLE proposals (
     FOREIGN KEY (requester_user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE reviews (
+CREATE TABLE IF NOT EXISTS reviews (
     review_id INT PRIMARY KEY AUTO_INCREMENT,
     reviewer_user_id INT NOT NULL,
     target_company_id INT NOT NULL,
@@ -165,13 +165,13 @@ CREATE TABLE reviews (
     FOREIGN KEY (target_company_id) REFERENCES Companies(company_id) ON DELETE CASCADE
 );
 
-CREATE TABLE badges (
+CREATE TABLE IF NOT EXISTS badges (
     badge_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     icon_url VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE company_badges (
+CREATE TABLE IF NOT EXISTS company_badges (
     company_id INT NOT NULL,
     badge_id INT NOT NULL,
     awarded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
