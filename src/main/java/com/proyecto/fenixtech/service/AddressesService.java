@@ -32,13 +32,8 @@ public class AddressesService {
     public List<Addresses> findByUserId(Integer id){
         Users user = usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
-        List<Addresses> userAddresses = addressesRepository.findByUser_UserId(id);
 
-        if (userAddresses.isEmpty()) {
-            throw new ResourceNotFoundException("El usuario con id " + id + " no tiene ninguna dirección");
-        }
-
-        return userAddresses;
+        return  addressesRepository.findByUser_UserId(id);
 
     }
 
