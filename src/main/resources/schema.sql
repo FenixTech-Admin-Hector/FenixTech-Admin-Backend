@@ -58,12 +58,13 @@ CREATE TABLE IF NOT EXISTS subcategories (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     FOREIGN KEY (category_id) REFERENCES Categories(category_id) ON DELETE CASCADE
-)
+);
 
 CREATE TABLE IF NOT EXISTS products (
     product_id INT PRIMARY KEY AUTO_INCREMENT,
     company_id INT NOT NULL,
     category_id INT NOT NULL,
+    subcategory_id INT,
     title VARCHAR(200) NOT NULL,
     description TEXT,
     image_url VARCHAR(255),

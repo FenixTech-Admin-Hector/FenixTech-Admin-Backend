@@ -8,7 +8,7 @@ services:
       - MARIADB_PASSWORD=${DB_PASSWORD}
       - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     ports:
-      - '${DB_PORT}:3306'
+      - '${DB_LOCAL_PORT}:3306'
     volumes:
       - ./data_mariadb:/var/lib/mysql
     networks:
@@ -18,7 +18,7 @@ services:
   app-spring:
     build: .  # Le dice a Docker: "Busca el Dockerfile en esta misma carpeta y constrúyelo"
     ports:
-      - '${APP_PORT}:8080'
+      - '${APP_LOCAL_PORT}:8080'
     environment:
       # Así es como Spring Boot sabrá dónde encontrar a MariaDB
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/${DB_NAME}

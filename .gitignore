@@ -59,3 +59,5 @@ Thumbs.db
 !.mvn/wrapper/maven-wrapper.jar
 !mvnw
 !mvnw.cmd
+
+data_mariadb/
