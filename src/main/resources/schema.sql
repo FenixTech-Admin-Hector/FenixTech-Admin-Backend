@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS companies (
     -- UNIQUE en user_id garantiza la relación 1 a 1
     user_id INT UNIQUE NOT NULL, 
     company_name VARCHAR(150) NOT NULL,
-    tax_id VARCHAR(50) NOT NULL,
+    cif VARCHAR(50) NOT NULL,
     -- Desnormalización intencionada: Calculado desde Reviews y Donaciones
     reputation_score INT DEFAULT 0, 
     -- JSON: Flexibilidad absoluta para métricas (CO2, e-waste, agua...) sin alterar tablas
