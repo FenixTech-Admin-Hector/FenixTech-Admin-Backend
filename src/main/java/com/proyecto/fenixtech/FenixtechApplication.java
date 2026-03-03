@@ -9,5 +9,5 @@ public class FenixtechApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(FenixtechApplication.class, args);
 	}
-
+	
 }
