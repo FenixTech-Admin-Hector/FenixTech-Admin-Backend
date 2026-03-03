@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS subcategories (
     subcategory_id INT PRIMARY KEY AUTO_INCREMENT,
     category_id INT NOT NULL,
     name VARCHAR(100) NOT NULL,
-    description TEXT
+    description TEXT,
     FOREIGN KEY (category_id) REFERENCES Categories(category_id) ON DELETE CASCADE
 )
 
