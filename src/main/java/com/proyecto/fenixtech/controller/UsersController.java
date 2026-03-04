@@ -26,7 +26,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 @Tag(name = "Usuers", description = "API para gestión de usuarios")
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 @RestController
 public class UsersController {
     @Autowired

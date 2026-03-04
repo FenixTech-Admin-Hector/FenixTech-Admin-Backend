@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 @Tag(name = "Subcategories", description = "API para gestión de subcategorías")
-@RequestMapping("/api/subcategories")
+@RequestMapping("/subcategories")
 @RestController
 public class SubcategoriesController {
     @Autowired 

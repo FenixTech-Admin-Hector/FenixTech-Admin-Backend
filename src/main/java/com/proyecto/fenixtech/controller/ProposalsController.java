@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Tag(name = "Proposals", description = "API para gestión de propuestas")
-@RequestMapping("/api/proposals")
+@RequestMapping("/proposals")
 @RestController
 public class ProposalsController {
     @Autowired

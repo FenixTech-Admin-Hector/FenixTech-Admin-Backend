@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 @Tag(name = "Companies", description = "API para gestión de empresas")
-@RequestMapping("/api/companies")
+@RequestMapping("/companies")
 @RestController
 public class CompaniesController {
     @Autowired 

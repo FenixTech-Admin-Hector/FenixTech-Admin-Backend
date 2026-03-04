@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @Tag(name = "Badges", description = "API para gestión de badges")
-@RequestMapping("/api/badges")
+@RequestMapping("/badges")
 @RestController
 public class BadgesController {
     @Autowired

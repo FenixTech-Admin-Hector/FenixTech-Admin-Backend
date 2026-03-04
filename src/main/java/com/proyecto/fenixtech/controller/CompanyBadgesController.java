@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "CompanyBadges", description = "API para gestión de insignias de empresas")
-@RequestMapping("/api/company_badges")
+@RequestMapping("/company_badges")
 @RestController
 public class CompanyBadgesController {
     @Autowired

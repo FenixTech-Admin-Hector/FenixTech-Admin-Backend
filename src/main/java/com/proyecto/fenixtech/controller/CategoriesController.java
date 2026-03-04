@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @Tag(name = "Categories", description = "API para gestión de categorías")
-@RequestMapping("/api/categories")
+@RequestMapping("/categories")
 @RestController
 public class CategoriesController {
     @Autowired

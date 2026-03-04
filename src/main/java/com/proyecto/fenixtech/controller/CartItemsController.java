@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "CartItems", description = "API para gestión de items del carrito")
-@RequestMapping("/api/cart_items")
+@RequestMapping("/cart_items")
 @RestController
 public class CartItemsController {
     @Autowired

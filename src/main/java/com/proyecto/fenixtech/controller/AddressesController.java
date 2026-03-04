@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Addresses", description = "API para gestión de direcciones")
-@RequestMapping("/api/addresses")
+@RequestMapping("/addresses")
 @RestController
 public class AddressesController {
     @Autowired

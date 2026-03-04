@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Posts", description = "API para gestión de posts")
-@RequestMapping("/api/posts")
+@RequestMapping("/posts")
 @RestController
 public class PostsController {
     @Autowired
