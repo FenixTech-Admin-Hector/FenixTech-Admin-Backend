@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Orders;
-import com.proyecto.fenixtech.model.Users;
+
 import com.proyecto.fenixtech.model.enums.OrderStatus;
 
 import java.time.LocalDate;
@@ -39,7 +39,7 @@ public class OrdersService {
 
     @Transactional(readOnly = true)
     public List<Orders> findByBuyerId(Integer id){
-        Users user = usersRepository.findById(id)
+        usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
         return ordersRepository.findByBuyer_UserId(id);
     }

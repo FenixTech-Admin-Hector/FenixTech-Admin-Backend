@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ProductsRepository extends JpaRepository<Products, Integer>{
-    List<Products> findByCategory_CategoryId(Integer id);
+    List<Products> findBySubcategory_SubcategoryId(Integer id);
     List<Products> findByCompany_CompanyId(Integer id);
     List<Products> findByProductTitleContainingIgnoreCase(String title);
 

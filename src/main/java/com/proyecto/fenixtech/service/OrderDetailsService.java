@@ -8,8 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.OrderDetails;
-import com.proyecto.fenixtech.model.Orders;
-import com.proyecto.fenixtech.model.Products;
+
 
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class OrderDetailsService {
 
     @Transactional(readOnly = true)
     public List<OrderDetails> findByOrderId(Integer orderId) {
-        Orders order = ordersRepository.findById(orderId)
+        ordersRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado con id: " + orderId));
         
         return orderDetailsRepository.findByOrder_OrderId(orderId);
@@ -49,7 +48,7 @@ public class OrderDetailsService {
 
     @Transactional(readOnly = true)
     public List<OrderDetails> findByProductId(Integer productId) {
-        Products product = productsRepository.findById(productId)
+        productsRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + productId));
 
         return orderDetailsRepository.findByProduct_ProductId(productId);

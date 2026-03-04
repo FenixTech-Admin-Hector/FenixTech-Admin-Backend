@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @Tag(name = "Orders", description = "API para gestión de pedidos")
-@RequestMapping("/api/orders")
+@RequestMapping("/orders")
 @RestController
 public class OrdersController {
     @Autowired

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Tag(name = "Comments", description = "API para gestión de comentarios")
-@RequestMapping("/api/comments")
+@RequestMapping("/comments")
 @RestController
 public class CommentsController {
 

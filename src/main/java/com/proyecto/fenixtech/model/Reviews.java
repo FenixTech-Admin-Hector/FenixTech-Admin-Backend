@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -58,12 +59,12 @@ public class Reviews implements Serializable{
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewer_user_id", nullable = false)
     @JsonIgnoreProperties({"reviews", "company", "addresses", "proposals", "orders", "cartItems", "posts", "comments"})
     private Users reviewer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_company_id", nullable = false)
     @JsonIgnoreProperties({"reviews", "companyBadges", "products", "user"})
     private Companies targetCompany;

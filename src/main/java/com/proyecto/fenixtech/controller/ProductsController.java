@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 @Tag(name = "Products", description = "API para gestión de productos")
-@RequestMapping("/api/products")
+@RequestMapping("/products")
 @RestController
 public class ProductsController {
     @Autowired
@@ -74,17 +74,17 @@ public class ProductsController {
         return ResponseEntity.status(HttpStatus.OK).body(productsService.findByProductTitle(title));
     }
 
-    @Operation(summary = "Obtener productos por categoria", description = "Devuelve una lista de productos por su categoria")
+    @Operation(summary = "Obtener productos por subcategoria", description = "Devuelve una lista de productos por su subcategoria")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Productos encontrados con éxito"),
         @ApiResponse(responseCode = "404", description = "La categoria no existe")
     })
-    @GetMapping("/category/{id}")
-    public ResponseEntity<List<Products>> findByCategoryId(@PathVariable Integer id) {
-        return ResponseEntity.status(HttpStatus.OK).body(productsService.findByCategoryId(id));
+    @GetMapping("/subcategory/{id}")
+    public ResponseEntity<List<Products>> findBySubcategoryId(@PathVariable Integer id) {
+        return ResponseEntity.status(HttpStatus.OK).body(productsService.findBySubcategoryId(id));
     }
 
-    @Operation(summary = "Obtener productos por compñía", description = "Devuelve una lista de productos por su compañía asociada")
+    @Operation(summary = "Obtener productos por compañía", description = "Devuelve una lista de productos por su compañía asociada")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Productos encontrados con éxito"),
         @ApiResponse(responseCode = "404", description = "La compañía no existe")

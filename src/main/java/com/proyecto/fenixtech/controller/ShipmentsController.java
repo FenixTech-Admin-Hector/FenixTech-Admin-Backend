@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Shipments", description = "API para gestión de envíos")
-@RequestMapping("/api/shipments")
+@RequestMapping("/shipments")
 @RestController
 public class ShipmentsController {
     @Autowired

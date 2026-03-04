@@ -1,7 +1,6 @@
 package com.proyecto.fenixtech.model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
@@ -41,13 +41,13 @@ public class CompanyBadges implements Serializable {
     @Column(name = "awarded_at", updatable = false)
     private LocalDateTime awardedAt = LocalDateTime.now();
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("companyId")
     @JoinColumn(name = "company_id")
     @JsonIgnoreProperties("companyBadges")
     private Companies company;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("badgeId")
     @JoinColumn(name = "badge_id")
     @JsonIgnoreProperties("companyBadge")

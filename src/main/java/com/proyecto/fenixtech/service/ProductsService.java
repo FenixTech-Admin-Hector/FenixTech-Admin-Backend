@@ -1,13 +1,12 @@
 package com.proyecto.fenixtech.service;
-import com.proyecto.fenixtech.repository.CategoriesRepository;
 import com.proyecto.fenixtech.repository.CompaniesRepository;
 import com.proyecto.fenixtech.repository.ProductsRepository;
+import com.proyecto.fenixtech.repository.SubcategoriesRepository;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
-import com.proyecto.fenixtech.model.Categories;
 import com.proyecto.fenixtech.model.Products;
-import com.proyecto.fenixtech.model.Companies;
 import com.proyecto.fenixtech.model.enums.ConditionStatus;
 import com.proyecto.fenixtech.model.enums.ListingType;
 import com.proyecto.fenixtech.model.enums.ProductStatus;
@@ -23,7 +22,7 @@ public class ProductsService {
     private ProductsRepository productsRepository;
 
     @Autowired
-    private CategoriesRepository categoriesRepository;
+    private SubcategoriesRepository subcategoriesRepository;
 
     @Autowired
     private CompaniesRepository companiesRepository;
@@ -42,16 +41,16 @@ public class ProductsService {
     }
 
     @Transactional(readOnly = true)
-    public List<Products> findByCategoryId(Integer id){
-        Categories category = categoriesRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + id));
+    public List<Products> findBySubcategoryId(Integer id){
+        subcategoriesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Subcategoría no encontrada con id: " + id));
 
-        return productsRepository.findByCategory_CategoryId(id);    
+        return productsRepository.findBySubcategory_SubcategoryId(id);    
     }
 
     @Transactional(readOnly = true)
     public List<Products> findByCompanyId(Integer id){
-        Companies company = companiesRepository.findById(id)
+        companiesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa no encontrada con id: " + id));
 
         return productsRepository.findByCompany_CompanyId(id);

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Tag(name = "Reviews", description = "API para gestión de reviews")
-@RequestMapping("/api/reviews")
+@RequestMapping("/reviews")
 @RestController
 public class ReviewsController {
 

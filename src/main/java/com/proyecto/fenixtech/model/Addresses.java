@@ -53,7 +53,7 @@ public class Addresses implements Serializable {
     @Column(name = "country", nullable = false)
     private String country;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnoreProperties({ "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments" })
     private Users user;

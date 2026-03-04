@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Tag(name = "Proposals", description = "API para gestión de propuestas")
-@RequestMapping("/api/proposals")
+@RequestMapping("/proposals")
 @RestController
 public class ProposalsController {
     @Autowired

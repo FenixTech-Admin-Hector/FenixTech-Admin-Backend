@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -58,7 +59,7 @@ public class Posts implements Serializable {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_user_id", nullable = false)
     @JsonIgnoreProperties({"posts", "company", "addresses", "reviews", "proposals", "orders", "cartItems", "comments"})
     private Users author;
