@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     -- ENUM: Evita crear tabla extra para roles, optimizando rendimiento
-    role ENUM('particular', 'empresa', 'admin') DEFAULT 'particular',
+    role ENUM('PARTICULAR', 'EMPRESA', 'ADMIN') DEFAULT 'PARTICULAR',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -68,11 +68,11 @@ CREATE TABLE IF NOT EXISTS products (
     title VARCHAR(200) NOT NULL,
     description TEXT,
     image_url VARCHAR(255),
-    condition_status ENUM('new', 'used_good', 'used_fair') NOT NULL,
-    listing_type ENUM('sale', 'donation') NOT NULL,
+    condition_status ENUM('NEW', 'USED_GOOD', 'USED_FAIR') NOT NULL,
+    listing_type ENUM('SALE', 'DONATION') NOT NULL,
     price DECIMAL(10, 2) DEFAULT 0.00,
     stock_quantity INT DEFAULT 1,
-    status ENUM('active', 'sold_out', 'hidden') DEFAULT 'active',
+    status ENUM('ACTIVE', 'SOLD_OUT', 'HIDDEN') DEFAULT 'ACTIVE',
     FOREIGN KEY (company_id) REFERENCES Companies(company_id) ON DELETE CASCADE,
     FOREIGN KEY (subcategory_id) REFERENCES Subcategories(subcategory_id)
 );
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS orders (
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     -- Desnormalización intencionada: Total calculado para agilizar reportes
     total_amount DECIMAL(10, 2) NOT NULL, 
-    status ENUM('pending_payment', 'paid', 'processing', 'shipped', 'completed', 'cancelled') DEFAULT 'pending_payment',
+    status ENUM('PENDING_PAYMENT', 'PAID', 'PROCESSING', 'SHIPPED', 'COMPLETED', 'CANCELLED') DEFAULT 'PENDING_PAYMENT',
     requires_shipping BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (buyer_user_id) REFERENCES Users(user_id)
 );
@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS shipments (
     
     tracking_number VARCHAR(100),
     carrier_name VARCHAR(100),
-    shipment_status ENUM('preparing', 'in_transit', 'delivered') DEFAULT 'preparing',
+    shipment_status ENUM('PREPARING', 'IN_TRANSIT', 'DELIVERED') DEFAULT 'PREPARING',
     FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE
 );
 
@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS proposals (
     requester_user_id INT NOT NULL,
     title VARCHAR(200) NOT NULL,
     description TEXT NOT NULL,
-    status ENUM('open', 'fulfilled') DEFAULT 'open',
+    status ENUM('OPEN', 'FULFILLED') DEFAULT 'OPEN',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (requester_user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );

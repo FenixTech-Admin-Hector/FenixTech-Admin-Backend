@@ -8,6 +8,8 @@ import com.proyecto.fenixtech.model.enums.ShipmentStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -62,6 +64,7 @@ public class Shipments implements Serializable {
     private String carrier;
 
     @Schema(description = "Estado del envío", example = "shipped")
+    @Enumerated(EnumType.STRING)
     @Column(name = "shipment_status")
     private ShipmentStatus status = ShipmentStatus.PREPARING;
 
