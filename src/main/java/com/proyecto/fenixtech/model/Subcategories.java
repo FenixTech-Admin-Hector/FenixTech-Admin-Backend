@@ -51,7 +51,7 @@ public class Subcategories implements Serializable {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "subcategory_id", nullable = false)
+    @JoinColumn(name = "categories_id", insertable = false, updatable = false, nullable = false)
     @JsonIgnoreProperties("subcategories")
     private Categories category;
 
