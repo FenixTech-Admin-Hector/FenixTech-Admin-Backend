@@ -11,6 +11,8 @@ import com.proyecto.fenixtech.model.enums.ProposalStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -53,6 +55,7 @@ public class Proposals implements Serializable {
     private String description;
 
     @Schema(description = "Estado de la propuesta", example = "open")
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ProposalStatus status = ProposalStatus.OPEN;
 
