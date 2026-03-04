@@ -22,6 +22,15 @@ public class ReviewsController {
     @Autowired
     private ReviewsService reviewsService;
 
+    @Operation(summary = "Obtener todas las reviews", description = "Devuelve una lista de todas las reviews")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Reviews obtenidas con éxito")
+    })
+    @GetMapping
+    public ResponseEntity<List<Reviews>> findAllReviews() {
+        return ResponseEntity.ok(reviewsService.findAllReviews());
+    }
+
     @Operation(summary = "Obtener reviews de una empresa", description = "Devuelve una lista de reviews para una empresa específica")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Reviews obtenidas con éxito"),

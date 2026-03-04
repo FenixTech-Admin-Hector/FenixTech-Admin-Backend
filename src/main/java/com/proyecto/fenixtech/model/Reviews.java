@@ -51,7 +51,7 @@ public class Reviews implements Serializable{
     private Integer rating;
 
     @Schema(description = "Comentario de la reseña", example = "Excelente servicio y producto.")
-    @Column(name = "comment", columnDefinition = "TEXT")
+    @Column(name = "review_comment", columnDefinition = "TEXT")
     private String comment;
 
     @Schema(description = "Fecha de creación de la reseña")

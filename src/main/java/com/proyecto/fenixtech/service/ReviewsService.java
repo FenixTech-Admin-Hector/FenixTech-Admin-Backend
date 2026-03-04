@@ -24,6 +24,12 @@ public class ReviewsService {
     private UsersRepository usersRepository;
 
     @Transactional(readOnly = true)
+    public List<Reviews> findAllReviews() {
+        return reviewsRepository.findAll();
+    }
+
+
+    @Transactional(readOnly = true)
     public List<Reviews> findReviewsByCompanyId(Integer companyId) {
         companiesRepository.findById(companyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa no encontrada con id: " + companyId));

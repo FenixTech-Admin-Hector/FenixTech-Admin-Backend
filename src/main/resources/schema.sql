@@ -168,7 +168,7 @@ CREATE TABLE IF NOT EXISTS reviews (
     target_company_id INT NOT NULL,
     -- Restricción para asegurar que las estrellas estén entre 1 y 5
     rating INT CHECK (rating >= 1 AND rating <= 5), 
-    comment TEXT,
+    review_comment TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (reviewer_user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (target_company_id) REFERENCES Companies(company_id) ON DELETE CASCADE

@@ -203,7 +203,7 @@ INSERT INTO proposals (requester_user_id, title, description, status, created_at
 (20, 'Memorias USB', 'Pendrives 16GB', 'OPEN', '2024-01-15 11:00:00');
 
 -- Reviews (15 records)
-INSERT INTO reviews (reviewer_user_id, target_company_id, rating, comment, created_at) VALUES
+INSERT INTO reviews (reviewer_user_id, target_company_id, rating, review_comment, created_at) VALUES
 (16, 1, 5, 'Excelente servicio', '2024-02-01 10:00:00'),
 (17, 2, 4, 'Buen producto', '2024-02-02 11:00:00'),
 (18, 3, 3, 'Envio lento', '2024-02-03 12:00:00'),
