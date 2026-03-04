@@ -7,8 +7,6 @@ import com.proyecto.fenixtech.repository.UsersRepository;
 import org.springframework.transaction.annotation.Transactional;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.CartItems;
-import com.proyecto.fenixtech.model.Products;
-import com.proyecto.fenixtech.model.Users;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,6 @@ public class CartItemsService {
     @Autowired
     private ProductsRepository productsRepository;
 
-
     @Transactional(readOnly = true)
     public List<CartItems> findAllCartItems() {
         return cartItemsRepository.findAll();
@@ -39,7 +36,7 @@ public class CartItemsService {
 
     @Transactional(readOnly = true)
     public List<CartItems> findByUserId(Integer userId) {
-        Users user = usersRepository.findById(userId)
+        usersRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + userId));
 
         return cartItemsRepository.findByUser_UserId(userId);
@@ -47,7 +44,7 @@ public class CartItemsService {
 
     @Transactional(readOnly = true)
     public List<CartItems> findByProductId(Integer productId) {
-        Products product = productsRepository.findById(productId)
+        productsRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + productId));
 
         return cartItemsRepository.findByProduct_ProductId(productId);
@@ -55,13 +52,13 @@ public class CartItemsService {
 
     @Transactional(readOnly = true)
     public List<CartItems> findByQuantityFilters(Integer minQty, Integer maxQty) {
-        if(minQty != null && minQty < 0) {
+        if (minQty != null && minQty < 0) {
             throw new IllegalArgumentException("La cantidad mínima no puede ser negativa");
         }
-        if(maxQty != null && maxQty < 0) {
+        if (maxQty != null && maxQty < 0) {
             throw new IllegalArgumentException("La cantidad máxima no puede ser negativa");
         }
-        if(minQty != null && maxQty != null && minQty > maxQty) {
+        if (minQty != null && maxQty != null && minQty > maxQty) {
             throw new IllegalArgumentException("La cantidad mínima no puede ser mayor a la cantidad máxima");
         }
 

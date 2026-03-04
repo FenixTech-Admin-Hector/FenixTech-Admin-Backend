@@ -7,8 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Products;
-import com.proyecto.fenixtech.model.Subcategories;
-import com.proyecto.fenixtech.model.Companies;
 import com.proyecto.fenixtech.model.enums.ConditionStatus;
 import com.proyecto.fenixtech.model.enums.ListingType;
 import com.proyecto.fenixtech.model.enums.ProductStatus;

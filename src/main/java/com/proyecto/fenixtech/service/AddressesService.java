@@ -4,7 +4,6 @@ import com.proyecto.fenixtech.repository.AddressesRepository;
 import org.springframework.transaction.annotation.Transactional;
 import com.proyecto.fenixtech.repository.UsersRepository;
 import com.proyecto.fenixtech.model.Addresses;
-import com.proyecto.fenixtech.model.Users;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class AddressesService {
 
     @Transactional(readOnly = true)
     public List<Addresses> findByUserId(Integer id){
-        Users user = usersRepository.findById(id)
+        usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
 
         return  addressesRepository.findByUser_UserId(id);
