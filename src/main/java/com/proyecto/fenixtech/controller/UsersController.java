@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +28,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-
 
 @Tag(name = "Usuers", description = "API para gestión de usuarios")
 @RequestMapping("/users")
@@ -132,7 +133,7 @@ public class UsersController {
     })
     @PostMapping()
     public ResponseEntity<Users> createUser(@Valid @RequestBody Users user) {
-        Users savedUser = usersService.save(user); 
+        Users savedUser = usersService.save(user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
@@ -142,9 +143,27 @@ public class UsersController {
         Users savedAdmin = usersService.createAdmin(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedAdmin);
     }
-    
 
+    @Operation(summary = "Borrar un usuario", description = "Borra un usuario existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Usuario borrado con éxito"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable @Valid Integer id) {
+        usersService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
-
+    @Operation(summary = "Actualizar un usuario", description = "Actualiza un usuario existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario actualizado con éxito"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<Users> updateUser(@PathVariable Integer id, @Valid @RequestBody Users user) {
+        Users updatedUser = usersService.update(id, user);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
+    }
 
 }

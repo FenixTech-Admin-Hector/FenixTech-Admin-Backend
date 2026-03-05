@@ -114,6 +114,28 @@ public class UsersService {
         return usersRepository.save(user);
     }
 
+    @Transactional
+    public Users update(Integer id, Users user) {
+        
+        Users existingUser = usersRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el usuario con ID: " + id));
+        
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setLastName(user.getLastName());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setPasswordHash(user.getPasswordHash());
+
+        return usersRepository.save(existingUser);
+    }
+
+    @Transactional
+    public void delete(Integer id) {
+        usersRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("No se encontró el usuario con ID: " + id));
+        usersRepository.deleteById(id);
+    }
+
+
 
 
 }
