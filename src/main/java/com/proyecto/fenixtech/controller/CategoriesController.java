@@ -101,7 +101,7 @@ public class CategoriesController {
         @ApiResponse(responseCode = "404", description = "Categoría no encontrada")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Categories> update(@Valid @PathVariable Integer id, @RequestBody Categories category) {
+    public ResponseEntity<Categories> update(@PathVariable Integer id, @Valid @RequestBody Categories category) {
         Categories updatedCategory = categoriesService.update(id, category);
         return ResponseEntity.status(HttpStatus.OK).body(updatedCategory);
     }
