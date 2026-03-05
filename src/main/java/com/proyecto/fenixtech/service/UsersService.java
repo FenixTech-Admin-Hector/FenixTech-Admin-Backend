@@ -80,6 +80,40 @@ public class UsersService {
         return usersRepository.count();
     }
 
+    @Transactional
+    public Users save (Users user)
+    {
+        if(usersRepository.findByEmail(user.getEmail()).isPresent()){
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
+
+        user.setFirstName(user.getFirstName().trim());
+        user.setLastName(user.getLastName().trim());
+
+        if (user.getRole() == Rol.ADMIN) {
+            throw new SecurityException("Operación no permitida: No se pueden crear cuentas de Administrador por esta vía.");
+        }
+        if (user.getRole() == null) {
+            user.setRole(Rol.PARTICULAR);
+        }
+
+        return usersRepository.save(user);
+    }
+
+    @Transactional
+    public Users createAdmin(Users user) {
+        if (usersRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
+
+        user.setFirstName(user.getFirstName().trim());
+        user.setLastName(user.getLastName().trim());
+
+        user.setRole(Rol.ADMIN);
+
+        return usersRepository.save(user);
+    }
+
 
 
 }

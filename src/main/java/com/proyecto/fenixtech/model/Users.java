@@ -8,6 +8,7 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proyecto.fenixtech.model.enums.Rol;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,7 +25,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -58,6 +59,10 @@ public class Users implements Serializable {
     @Schema(description = "Contraseña del usuario", example = "password123")
     @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
+    @Pattern(
+        regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!.*]).{8,}$", 
+        message = "La contraseña debe contener al menos un número, una letra minúscula, una letra mayúscula y un carácter especial"
+    )
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
@@ -72,12 +77,12 @@ public class Users implements Serializable {
     private String lastName;
 
     @Schema(description = "Rol del usuario", example = "admin")
-    @NotNull(message = "El rol es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Rol role;
 
     @Schema(description = "Fecha de creación del usuario", example = "")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -113,5 +118,7 @@ public class Users implements Serializable {
     @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("requester")
     private List<Proposals> proposals = new ArrayList<>();
+
+    
 
 }

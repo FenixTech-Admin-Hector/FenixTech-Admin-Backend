@@ -67,7 +67,6 @@ public class GlobalExceptionHandler {
         response.put("timestamp", java.time.LocalDateTime.now());
         response.put("status", 400);
         response.put("error", "MethodArgumentNotValidException: Error de validación en valores de los campos");
-        // response.put("message", ex.getMessage());
         response.put("path", request.getRequestURI());
 
         Map<String, String> errores = new HashMap<>();
