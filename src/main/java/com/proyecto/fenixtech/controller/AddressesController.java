@@ -3,8 +3,12 @@ package com.proyecto.fenixtech.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +23,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @Tag(name = "Addresses", description = "API para gestión de direcciones")
 @RequestMapping("/addresses")
@@ -82,5 +87,39 @@ public class AddressesController {
         response.put("cantidad", count);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @Operation(summary = "Crear una dirección", description = "Crea una nueva dirección")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Dirección creada con éxito"),
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+    })
+    @PostMapping
+    public ResponseEntity<Addresses> save(@Valid@RequestBody Addresses address) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(addressesService.save(address));
+    }
+
+    @Operation(summary = "Eliminar una dirección por ID", description = "Elimina una dirección por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Dirección eliminada con éxito"),
+            @ApiResponse(responseCode = "404", description = "Dirección no encontrada")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
+        addressesService.deleteById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Operation(summary = "Actualizar una dirección por ID", description = "Actualiza una dirección por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Dirección actualizada con éxito"),
+            @ApiResponse(responseCode = "404", description = "Dirección no encontrada")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<Addresses> update(@PathVariable Integer id, @Valid @RequestBody Addresses address) {
+        Addresses updatedAddress = addressesService.update(id, address);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedAddress);
+    }
+
+
 
 }
