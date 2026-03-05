@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -89,5 +92,39 @@ public class OrdersController {
         response.put("cantidad", count);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @Operation(summary = "Crear un pedido a partir del carrito del usuario", description = "Crea un pedido a partir del carrito del usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Pedido creado con éxito"),
+            @ApiResponse(responseCode = "404", description = "No se puede crear el pedido")
+    })
+    @PostMapping("/create/{userId}")
+    public ResponseEntity<Orders> createOrderFromUserCart(@PathVariable Integer userId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(ordersService.createOrderFromUserCart(userId));
+    }
+
+    @Operation(summary = "Eliminar un pedido por su ID", description = "Elimina un pedido por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Pedido eliminado con éxito"),
+            @ApiResponse(responseCode = "404", description = "Pedido no encontrado")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
+        ordersService.deleteById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Operation(summary = "Actualizar el estado de un pedido", description = "Actualiza el estado de un pedido")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Estado del pedido actualizado con éxito"),
+            @ApiResponse(responseCode = "404", description = "Pedido no encontrado")
+    })
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Orders> updateStatus(@PathVariable Integer id, @RequestParam OrderStatus newStatus){
+        return ResponseEntity.status(HttpStatus.OK).body(ordersService.updateStatus(id, newStatus));
+    }
+
+
+    
 
 }

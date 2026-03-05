@@ -24,6 +24,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -59,13 +60,14 @@ public class Orders implements Serializable {
     private Double totalAmount;
 
     @Schema(description = "Estado del pedido", example = "paid")
+    @NotNull(message = "El estado del pedido no puede ser nulo")
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private OrderStatus status = OrderStatus.PENDING_PAYMENT;
+    private OrderStatus status;
 
     @Schema(description = "Necesita envío el pedido", example = "true")
     @Column(name = "requires_shipping")
-    private Boolean requiresShipping = false;
+    private Boolean requiresShipping;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer_user_id", nullable = false)
@@ -79,6 +81,21 @@ public class Orders implements Serializable {
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("order")
     private Shipments shipment;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.status == null) {
+            this.status = OrderStatus.PENDING_PAYMENT;
+        }
+        if (this.totalAmount == null ) {
+            this.totalAmount = 0.00;
+        }
+        if (this.requiresShipping == null) {
+            this.requiresShipping = false;
+        }
+        
+    }
+
 
 
 }

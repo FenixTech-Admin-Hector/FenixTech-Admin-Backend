@@ -86,9 +86,9 @@ public class ProductsService {
             throw new IllegalArgumentException("El stock mínimo no puede ser mayor al stock máximo.");
         }
         
-        String pStatusStr = (pStatus != null) ? pStatus.name().toLowerCase() : null;
-        String lTypeStr = (lType != null) ? lType.name().toLowerCase() : null;
-        String cStatusStr = (cStatus != null) ? cStatus.name().toLowerCase() : null;
+        String pStatusStr = (pStatus != null) ? pStatus.name() : null;
+        String lTypeStr = (lType != null) ? lType.name() : null;
+        String cStatusStr = (cStatus != null) ? cStatus.name() : null;
 
         return productsRepository.findByConditions(
                 pStatusStr, lTypeStr, cStatusStr, minPrice, maxPrice, minStock, maxStock);

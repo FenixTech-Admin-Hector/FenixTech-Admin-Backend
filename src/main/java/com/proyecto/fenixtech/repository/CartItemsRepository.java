@@ -21,6 +21,9 @@ public interface CartItemsRepository extends JpaRepository<CartItems, Integer>{
             @Param("maxQty") Integer maxQty
     );
 
+    @Query(value = "DELETE FROM cart_items WHERE user_id = :userId", nativeQuery = true)
+    void deleteByUser_UserId(@Param("userId") Integer userId);
+
 
     
 
