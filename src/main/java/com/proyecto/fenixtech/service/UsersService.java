@@ -15,25 +15,24 @@ import org.springframework.stereotype.Service;
 
 import com.proyecto.fenixtech.model.enums.Rol;
 
-
 @Service
 public class UsersService {
     @Autowired
     private UsersRepository usersRepository;
 
     @Transactional(readOnly = true)
-    public List<Users> findAllUsers(){
+    public List<Users> findAllUsers() {
         return usersRepository.findAll();
     }
 
     @Transactional(readOnly = true)
-    public Users findByUsersId(Integer id){
+    public Users findByUsersId(Integer id) {
         return usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id:" + id));
     }
 
     @Transactional(readOnly = true)
-    public Users findByEmail(String email){
+    public Users findByEmail(String email) {
         return usersRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User no encontrado con email:" + email));
     }
@@ -54,23 +53,26 @@ public class UsersService {
     }
 
     @Transactional(readOnly = true)
-    //Se usa el mismo metodo para buscar por año y para buscar por rango de fechas
+    // Se usa el mismo metodo para buscar por año y para buscar por rango de fechas
     public List<Users> findByCreatedAt(Integer year) {
-        //Crea un LocalDateTime a partir de un año para revsar desde el 1 de enero a las 00:00:00 de ese año
+        // Crea un LocalDateTime a partir de un año para revsar desde el 1 de enero a
+        // las 00:00:00 de ese año
         LocalDateTime inicioDelAno = LocalDateTime.of(year, 1, 1, 0, 0, 0);
-        //Crea un LocalDateTime a partir de un año para revisar hasta el 31 de diciembre a las 23:59:59 de ese año con los maximos milisegundos
+        // Crea un LocalDateTime a partir de un año para revisar hasta el 31 de
+        // diciembre a las 23:59:59 de ese año con los maximos milisegundos
         LocalDateTime finDelAno = LocalDateTime.of(year, 12, 31, 23, 59, 59, 999999999);
         return usersRepository.findByCreatedAtBetween(inicioDelAno, finDelAno);
     }
 
     @Transactional(readOnly = true)
     public List<Users> findByCreatedAtBetween(LocalDate dateStart, LocalDate dateEnd) {
-        if(dateStart.isAfter(dateEnd)){
+        if (dateStart.isAfter(dateEnd)) {
             throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de fin");
         }
-        //Convierte el LocalDate a LocalDateTime con la fecha con hora 00:00:00
+        // Convierte el LocalDate a LocalDateTime con la fecha con hora 00:00:00
         LocalDateTime startDateTime = dateStart.atStartOfDay();
-        //Convierte el LocalDate en LocalDateTime con la fecha con hora 23:59:59 con los maximos milisegundos
+        // Convierte el LocalDate en LocalDateTime con la fecha con hora 23:59:59 con
+        // los maximos milisegundos
         LocalDateTime endDateTime = dateEnd.atTime(java.time.LocalTime.MAX);
         return usersRepository.findByCreatedAtBetween(startDateTime, endDateTime);
     }
@@ -81,9 +83,8 @@ public class UsersService {
     }
 
     @Transactional
-    public Users save (Users user)
-    {
-        if(usersRepository.findByEmail(user.getEmail()).isPresent()){
+    public Users save(Users user) {
+        if (usersRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new IllegalArgumentException("El email ya está registrado");
         }
 
@@ -91,7 +92,8 @@ public class UsersService {
         user.setLastName(user.getLastName().trim());
 
         if (user.getRole() == Rol.ADMIN) {
-            throw new SecurityException("Operación no permitida: No se pueden crear cuentas de Administrador por esta vía.");
+            throw new SecurityException(
+                    "Operación no permitida: No se pueden crear cuentas de Administrador por esta vía.");
         }
         if (user.getRole() == null) {
             user.setRole(Rol.PARTICULAR);
@@ -116,14 +118,22 @@ public class UsersService {
 
     @Transactional
     public Users update(Integer id, Users user) {
-        
+
         Users existingUser = usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el usuario con ID: " + id));
-        
-        existingUser.setFirstName(user.getFirstName());
-        existingUser.setLastName(user.getLastName());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setPasswordHash(user.getPasswordHash());
+
+        if (user.getFirstName() != null && user.getFirstName().isEmpty()) {
+            existingUser.setFirstName(user.getFirstName());
+        }
+        if (user.getLastName() != null && user.getLastName().isEmpty()) {
+            existingUser.setLastName(user.getLastName());
+        }
+        if(user.getEmail() != null && user.getEmail().isEmpty()){
+            existingUser.setEmail(user.getEmail());
+        }
+        if (user.getPasswordHash() != null && user.getPasswordHash().isEmpty()) {
+            existingUser.setPasswordHash(user.getPasswordHash());
+        }
 
         return usersRepository.save(existingUser);
     }
@@ -131,11 +141,8 @@ public class UsersService {
     @Transactional
     public void delete(Integer id) {
         usersRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("No se encontró el usuario con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el usuario con ID: " + id));
         usersRepository.deleteById(id);
     }
-
-
-
 
 }

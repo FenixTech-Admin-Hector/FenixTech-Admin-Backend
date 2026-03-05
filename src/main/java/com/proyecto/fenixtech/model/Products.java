@@ -22,9 +22,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -60,6 +62,7 @@ public class Products implements Serializable {
     private String description;
 
     @Schema(description = "URL de la imagen del producto", example = "https://example.com/image.jpg")
+    @Pattern(regexp = "^.+\\.(png|jpg|jpeg|PNG|JPG|JPEG)$", message = "La imagen debe ser un archivo .png, .jpg o .jpeg")
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
@@ -76,17 +79,19 @@ public class Products implements Serializable {
     private ListingType listingType;
 
     @Schema(description = "Precio del producto", example = "250.00")
+    @NotNull(message = "El precio no puede ser nulo")
     @Column(name = "price", nullable = false)
     private Double price;
 
     @Schema(description = "Stock disponible", example = "10")
+    @NotNull(message = "El stock no puede ser nulo")
     @Column(name = "stock_quantity", nullable = false)
     private Integer stock;
 
     @Schema(description = "Estatus del producto", example = "active")
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private ProductStatus productStatus = ProductStatus.ACTIVE;
+    private ProductStatus productStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subcategory_id", nullable = false)
@@ -105,6 +110,25 @@ public class Products implements Serializable {
     @OneToMany(mappedBy = "product", orphanRemoval = true)
     @JsonIgnoreProperties({"product", "order"})
     private List<OrderDetails> orderDetails = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        if (this.price == null) {
+            this.price = 0.00;
+        }
+        if (this.stock == null) {
+            this.stock = 1;
+        }
+        if (this.status == null) {
+            this.status = ConditionStatus.NEW;
+        }
+        if (this.listingType == null) {
+            this.listingType = ListingType.DONATION;
+        }
+        if (this.productStatus == null) {
+            this.productStatus = ProductStatus.ACTIVE;
+        }
+    }
 
     
 

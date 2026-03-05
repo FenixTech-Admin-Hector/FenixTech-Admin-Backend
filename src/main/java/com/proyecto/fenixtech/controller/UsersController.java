@@ -131,13 +131,18 @@ public class UsersController {
             @ApiResponse(responseCode = "201", description = "Usuario creado con éxito"),
             @ApiResponse(responseCode = "400", description = "Datos inválidos (ej. contraseña débil) o email ya registrado")
     })
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<Users> createUser(@Valid @RequestBody Users user) {
         Users savedUser = usersService.save(user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
+    @Operation(summary = "Crear un administrador", description = "Crea un nuevo administrador")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Administrador creado con éxito"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos (ej. contraseña débil) o email ya registrado")
+    })
     @PostMapping("/admin")
     public ResponseEntity<Users> createAdmin(@Valid @RequestBody Users user) {
         Users savedAdmin = usersService.createAdmin(user);

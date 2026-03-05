@@ -63,8 +63,7 @@ CREATE TABLE IF NOT EXISTS subcategories (
 CREATE TABLE IF NOT EXISTS products (
     product_id INT PRIMARY KEY AUTO_INCREMENT,
     company_id INT NOT NULL,
-    category_id INT NOT NULL,
-    subcategory_id INT,
+    subcategory_id INT NOT NULL,
     title VARCHAR(200) NOT NULL,
     description TEXT,
     image_url VARCHAR(255),

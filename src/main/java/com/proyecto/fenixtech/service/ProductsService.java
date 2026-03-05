@@ -99,6 +99,43 @@ public class ProductsService {
         return productsRepository.count();
     }
 
+    @Transactional
+    public Products save(Products product) {
+        return productsRepository.save(product);
+    }
+
+    @Transactional 
+    public void deleteById(Integer id) {
+        if (!productsRepository.existsById(id)){
+            throw new IllegalArgumentException("No existe el producto con id: " + id + " para eliminar");
+        }
+        productsRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Products update(Integer id, Products product) {
+        Products existingProduct = productsRepository .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el producto con ID: " + id));
+
+        existingProduct.setProductTitle(product.getProductTitle());
+        existingProduct.setDescription(product.getDescription());
+        existingProduct.setImageUrl(product.getImageUrl());
+        existingProduct.setStatus(product.getStatus());
+        existingProduct.setListingType(product.getListingType());
+        existingProduct.setPrice(product.getPrice());
+        existingProduct.setStock(product.getStock());
+        existingProduct.setProductStatus(product.getProductStatus());
+        existingProduct.setSubcategory(product.getSubcategory());
+        existingProduct.setCompany(product.getCompany());
+
+
+        return productsRepository.save(existingProduct);
+    }
+
+
+
+
+
 
 
 
