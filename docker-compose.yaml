@@ -32,4 +32,5 @@ services:
 # 3. LA RED QUE LOS UNE
 networks:
   fenix_network:
+    name: fenix_shared_network
     driver: bridge
