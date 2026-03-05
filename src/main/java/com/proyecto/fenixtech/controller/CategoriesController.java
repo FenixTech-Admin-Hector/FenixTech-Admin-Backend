@@ -3,8 +3,12 @@ package com.proyecto.fenixtech.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +19,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 import com.proyecto.fenixtech.model.Categories;
 
@@ -68,5 +73,41 @@ public class CategoriesController {
         response.put("cantidad", count);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @Operation(summary = "Crear una nueva categoría", description = "Crea una nueva categoría")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Categoría creada con éxito"),
+        @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+    })
+    @PostMapping
+    public ResponseEntity<Categories> save(@Valid @RequestBody Categories category) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoriesService.save(category));
+    }
+
+    @Operation(summary = "Eliminar una categoría por ID", description = "Elimina una categoría por su ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Categoría eliminada con éxito"),
+        @ApiResponse(responseCode = "404", description = "Categoría no encontrada")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
+        categoriesService.deleteById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Operation(summary = "Actualizar una categoría por ID", description = "Actualiza una categoría por su ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Categoría actualizada con éxito"),
+        @ApiResponse(responseCode = "404", description = "Categoría no encontrada")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<Categories> update(@Valid @PathVariable Integer id, @RequestBody Categories category) {
+        Categories updatedCategory = categoriesService.update(id, category);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedCategory);
+    }
+
+
+
+
 
 }

@@ -38,4 +38,32 @@ public class CategoriesService {
         return categoriesRepository.count();
     }
 
+    @Transactional
+    public Categories save(Categories category) {
+        return categoriesRepository.save(category);
+    }
+
+    @Transactional
+    public void deleteById(Integer id) {
+        if (!categoriesRepository.existsById(id)) {
+            throw new IllegalArgumentException("No existe la categoría con id: " + id + " para eliminar");
+        }
+        categoriesRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Categories update(Integer id, Categories category) {
+        Categories existingCategory = categoriesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró la categoría con ID: " + id));
+
+        existingCategory.setName(category.getName());
+        existingCategory.setDescription(category.getDescription());
+
+        return categoriesRepository.save(existingCategory);
+    }
+
+
+
+
+
 }
