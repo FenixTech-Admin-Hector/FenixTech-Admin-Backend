@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface BadgesRepository extends JpaRepository<Badges, Integer> {
     List<Badges> findByBadgeNameContainingIgnoreCaseAndIsActiveTrue(String name);
     List<Badges> findByIsActiveTrue();
-    Optional<Badges> findByIdAndIsActiveTrue(Integer id);
+    Optional<Badges> findByBadgeIdAndIsActiveTrue(Integer badgeId);
     List<Badges> findByBadgeNameContainingIgnoreCase(String name);
     Long countByIsActiveTrue();
 

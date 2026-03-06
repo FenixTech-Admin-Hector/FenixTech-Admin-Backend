@@ -33,7 +33,7 @@ public class BadgesService {
 
     @Transactional(readOnly = true)
     public Badges findByIdAndIsActiveTrue(Integer id) {
-        return badgesRepository.findByIdAndIsActiveTrue(id)
+        return badgesRepository.findByBadgeIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Insignia no encontrada con id: " + id));
     }
 
