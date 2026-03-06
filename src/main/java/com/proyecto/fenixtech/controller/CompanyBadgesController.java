@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.PostMapping;
+
 
 @Tag(name = "CompanyBadges", description = "API para gestión de insignias de empresas")
 @RequestMapping("/company_badges")
@@ -81,6 +84,30 @@ public class CompanyBadgesController {
         response.put("cantidad", count);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @Operation(summary = "Desasignar una insignia a una empresa", description = "Desasigna una insignia a una empresa a partir del id de la insignia y del id de la empresa")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Insignia revocada con éxito"),
+            @ApiResponse(responseCode = "404", description = "La empresa no tiene esta insignia asignada")
+    })
+    @DeleteMapping("/company/{companyId}/badge/{badgeId}")
+    public ResponseEntity<Void> delete(@PathVariable Integer companyId, @PathVariable Integer badgeId){
+        companyBadgesService.deleteById(companyId, badgeId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Operation(summary = "Asignar una insignia a una empresa", description = "Asigna una insignia a una empresa")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description= "Asignación completada con éxito"),
+        @ApiResponse(responseCode = "400", description = "La empresa ya tiene esta insignia asignada"),
+        @ApiResponse(responseCode = "404", description = "Empresa o insignia no encontrada")
+    })
+    @PostMapping("/company/{companyId}/badge/{badgeId}")
+    public ResponseEntity<CompanyBadges> assignBadgeManual(@PathVariable Integer companyId, @PathVariable Integer badgeId) {
+        CompanyBadges newBadge = companyBadgesService.post(companyId, badgeId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newBadge);
+    }
+    
         
 
 

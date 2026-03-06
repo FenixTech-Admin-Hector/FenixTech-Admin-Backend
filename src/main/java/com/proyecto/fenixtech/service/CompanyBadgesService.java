@@ -4,10 +4,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
+import com.proyecto.fenixtech.model.Badges;
+import com.proyecto.fenixtech.model.Companies;
 import com.proyecto.fenixtech.model.CompanyBadgeId;
 import com.proyecto.fenixtech.model.CompanyBadges;
 import com.proyecto.fenixtech.repository.CompaniesRepository;
 import com.proyecto.fenixtech.repository.CompanyBadgesRepository;
+import com.proyecto.fenixtech.repository.BadgesRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,6 +25,9 @@ public class CompanyBadgesService {
 
     @Autowired
     private CompaniesRepository companiesRepository;
+
+    @Autowired
+    private BadgesRepository badgesRepository;
 
     @Transactional(readOnly = true)
     public List<CompanyBadges> findAll() {
@@ -58,6 +64,40 @@ public class CompanyBadgesService {
     @Transactional(readOnly = true)
     public Long count() {
         return companyBadgesRepository.count();
+    }
+
+    @Transactional
+    public void deleteById(Integer companyId, Integer badgeId){
+        CompanyBadgeId id = new CompanyBadgeId(companyId, badgeId);
+        
+        CompanyBadges companyBadge = companyBadgesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("La empresa no tiene esta insignia asignada."));
+        
+        companyBadgesRepository.delete(companyBadge);
+    }
+
+    @Transactional 
+    public CompanyBadges post(Integer companyId, Integer badgeId){
+        Companies company = companiesRepository.findById(companyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Empresa no encontrada con id: " + companyId));
+        
+        Badges badge = badgesRepository.findById(badgeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Insignia no encontrada con id: " + badgeId));
+
+        CompanyBadgeId id = new CompanyBadgeId(companyId, badgeId);
+
+        if(companyBadgesRepository.existsById(id)){
+            throw new IllegalArgumentException("La empresa ya tiene la insignia asignada");
+        }
+
+        CompanyBadges newCompanyBadge = new CompanyBadges();
+
+        newCompanyBadge.setId(id);
+        newCompanyBadge.setBadge(badge);
+        newCompanyBadge.setCompany(company);
+        newCompanyBadge.setAwardedAt(LocalDateTime.now());
+
+        return companyBadgesRepository.save(newCompanyBadge);
     }
 
 
