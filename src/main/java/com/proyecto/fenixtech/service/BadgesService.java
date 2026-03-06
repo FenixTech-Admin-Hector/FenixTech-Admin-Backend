@@ -38,12 +38,15 @@ public class BadgesService {
 
     @Transactional
     public void deleteById(Integer id) {
-        if (!badgesRepository.existsById(id)) {
-            throw new IllegalArgumentException("No existe la insignia con id: " + id + " para eliminar");
+        Badges badge = badgesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Insignia no encontrada"));
+                
+        if (badge.getCompanyBadges() == null || badge.getCompanyBadges().isEmpty()) {
+            badgesRepository.delete(badge);
+        } else {
+            badge.setIsActive(false);
+            badgesRepository.save(badge);
         }
-        badgesRepository.deleteById(id);
     }
-
-    
 
 }
