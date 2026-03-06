@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +26,7 @@ public class ReviewsController {
 
     @Operation(summary = "Obtener todas las reviews", description = "Devuelve una lista de todas las reviews")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Reviews obtenidas con éxito")
+            @ApiResponse(responseCode = "200", description = "Reviews obtenidas con éxito")
     })
     @GetMapping
     public ResponseEntity<List<Reviews>> findAllReviews() {
@@ -75,4 +77,37 @@ public class ReviewsController {
         response.put("count", count);
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "Crear una review", description = "Crea una nueva review")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Review creada con éxito"),
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+    })
+    @PostMapping
+    public ResponseEntity<Reviews> save(@RequestBody Reviews review) {
+        return ResponseEntity.ok(reviewsService.save(review));
+    }
+
+    @Operation(summary = "Eliminar una review", description = "Elimina una review por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Review eliminada con éxito"),
+            @ApiResponse(responseCode = "404", description = "Review no encontrada")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
+        reviewsService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Actualizar una review", description = "Actualiza una review por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Review actualizada con éxito"),
+            @ApiResponse(responseCode = "404", description = "Review no encontrada")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<Reviews> update(@PathVariable Integer id, @Valid @RequestBody Reviews review) {
+        Reviews updatedReview = reviewsService.update(id, review);
+        return ResponseEntity.ok(updatedReview);
+    }
+
 }

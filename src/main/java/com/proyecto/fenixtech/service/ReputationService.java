@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.fenixtech.repository.CompaniesRepository;
+import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Companies;
 import com.proyecto.fenixtech.model.Products;
 import com.proyecto.fenixtech.model.enums.ListingType;
@@ -20,6 +21,18 @@ public class ReputationService {
     @Autowired
     private ReputationCalculator reputationCalculator;
 
+    private Integer calculatePointsForRating(Integer rating) {
+        return switch (rating) {
+            case 5 -> 15;
+            case 4 -> 8;
+            case 3 -> 3;
+            case 2 -> -8;
+            case 1 -> -15;
+            case 0 -> -20;
+            default -> 0;
+        };
+    }
+
     @Transactional
     public void proccessTransaction(Integer companyId, Products product, Integer quantity) {
         Companies company = companiesRepository.findById(companyId)
@@ -34,8 +47,8 @@ public class ReputationService {
 
         String categoryName = product.getSubcategory().getCategory().getName();
         String subcategoryName = product.getSubcategory().getName();
-        
-        String condition = product.getStatus().name(); 
+
+        String condition = product.getStatus().name();
 
         ReputationCalculator.ItemMetrics itemMetrics = reputationCalculator.calculateMetrics(categoryName,
                 subcategoryName, condition);
@@ -74,20 +87,39 @@ public class ReputationService {
 
         Integer points = 0;
 
-        points += switch (reviewScore) {
-            case 5 -> 15;
-            case 4 -> 8;
-            case 3 -> 3;
-            case 2 -> -8;
-            case 1 -> -15;
-            case 0 -> -20;
-            default -> 0;
-        };
+        points += calculatePointsForRating(reviewScore);
 
         Integer currentScore = company.getReputationScore() == null ? 0 : company.getReputationScore();
         Integer finalScore = currentScore + points;
         company.setReputationScore(finalScore < 0 ? 0 : finalScore);
 
+        companiesRepository.save(company);
+    }
+
+    @Transactional
+    public void updateReviewScore(Integer companyId, Integer oldReviewScore, Integer newReviewScore){
+        Companies company = companiesRepository.findById(companyId)
+            .orElseThrow(() -> new IllegalArgumentException("Empresa con id: " + companyId + " no encontrada"));
+
+        Integer oldPoints = calculatePointsForRating(oldReviewScore);
+        Integer newPoints = calculatePointsForRating(newReviewScore);
+
+        Integer currentScore = company.getReputationScore() == null ? 0 : company.getReputationScore();
+        Integer finalScore = currentScore - oldPoints + newPoints;
+        company.setReputationScore(finalScore < 0 ? 0 : finalScore);
+
+        companiesRepository.save(company);
+    }
+
+    @Transactional
+    public void deleteReviewScore(Integer companyId, Integer oldReviewScore){
+        Companies company = companiesRepository.findById(companyId)
+            .orElseThrow(() -> new ResourceNotFoundException("No existe una empresa con id" + companyId));
+
+        Integer oldPoints = calculatePointsForRating(oldReviewScore);
+        Integer currentScore = company.getReputationScore() == null ? 0 : company.getReputationScore();
+        Integer finalScore = currentScore - oldPoints;
+        company.setReputationScore(finalScore < 0 ? 0 : finalScore);
         companiesRepository.save(company);
     }
 }
