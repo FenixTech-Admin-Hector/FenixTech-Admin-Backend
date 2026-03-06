@@ -15,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -72,5 +73,13 @@ public class Shipments implements Serializable {
     @JoinColumn(name = "order_id", referencedColumnName = "order_id", unique = true, nullable = false)
     @JsonIgnoreProperties({"shipment", "orderDetails", "buyer"} )
     private Orders order;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.status == null) {
+            this.status = ShipmentStatus.PREPARING;
+        }
+    }
+
 
 }
