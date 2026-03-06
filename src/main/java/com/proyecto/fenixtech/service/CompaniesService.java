@@ -7,8 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Companies;
-
-
+import com.proyecto.fenixtech.model.json.EnvironmentalMetrics;
+import com.proyecto.fenixtech.model.json.ImpactMetrics;
+import com.proyecto.fenixtech.model.json.SocialMetrics;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class CompaniesService {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id:" + id));
 
         return companiesRepository.findByUser_UserId(id)
-                .orElseThrow(() -> new ResourceNotFoundException("El usuario" + id+ "no está asociado a ninguna empresa"));
+                .orElseThrow(() -> new ResourceNotFoundException("El usuario" + id + "no está asociado a ninguna empresa"));
     }
 
     @Transactional(readOnly = true)
@@ -75,11 +76,47 @@ public class CompaniesService {
         return companiesRepository.findTop3ByOrderByReputationScoreDesc();
     }
 
-
-
     @Transactional(readOnly = true)
     public Long count(){
         return companiesRepository.count();
+    }
+
+    @Transactional
+    public Companies save(Companies company){
+        if(company.getUser() == null || company.getUser().getUserId() == null){
+            throw new IllegalArgumentException("La empresa debe estar asociada a un usuario válido con ID.");
+        }
+
+        usersRepository.findById(company.getUser().getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "El usuario con ID " + company.getUser().getUserId() + " no existe"));
+        
+        company.setReputationScore(0);
+        company.setImpactMetrics(new ImpactMetrics(
+            new EnvironmentalMetrics(),
+            new SocialMetrics()
+        ));
+
+        return companiesRepository.save(company);
+    }
+
+    @Transactional 
+    public void deleteById(Integer id){
+        if(!companiesRepository.existsById(id)){
+            throw new IllegalArgumentException("No existe la empresa con id: " + id + " para eliminar");
+        }
+        companiesRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Companies update(Integer id, Companies company){
+        Companies companyUpdate = companiesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró la empresa con ID: " + id));
+
+        companyUpdate.setCompanyName(company.getCompanyName());
+        companyUpdate.setCif(company.getCif());
+
+        return companiesRepository.save(companyUpdate);
     }
 
 

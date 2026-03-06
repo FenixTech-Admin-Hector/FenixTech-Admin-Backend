@@ -22,6 +22,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -50,8 +51,9 @@ public class Companies implements Serializable {
     @Column(name = "company_name", nullable = false)
     private String companyName;
 
-    @Schema(description = "CIF de la empresa", example = "123456789")
+    @Schema(description = "CIF de la empresa", example = "B81948077")
     @NotBlank(message = "El CIF es obligatorio")
+    @Pattern(regexp = "^[ABCDEFGHJNPQRSUVW][0-9]{7}[0-9A-J]$", message = "El CIF está en un formato incorrecto")
     @Column(name = "cif", nullable = false, unique = true)
     private String cif;
 

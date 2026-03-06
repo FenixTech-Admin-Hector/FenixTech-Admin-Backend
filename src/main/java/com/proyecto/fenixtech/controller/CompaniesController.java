@@ -1,6 +1,10 @@
 package com.proyecto.fenixtech.controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +24,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 
 
@@ -94,6 +99,44 @@ public class CompaniesController {
         response.put("cantidad", count);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @Operation(summary = "Añadir una empresa", description = "Añade una empresa")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Empresa añadida con éxito"),
+        @ApiResponse(responseCode = "404", description = "Empresa no encontrado")
+    })
+    @PostMapping
+    public ResponseEntity<Companies> save(@Valid @RequestBody Companies company){
+        return ResponseEntity.status(HttpStatus.CREATED).body(companiesService.save(company));
+    }
+
+    @Operation(summary = "Eliminar una empresa por ID", description = "Elimina una empresa por su ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Empresa eliminada con éxito"),
+        @ApiResponse(responseCode = "404", description = "Empresa no encontrada")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id){
+        companiesService.deleteById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Operation(summary = "Actualizar una empresa por ID", description = "Actualiza una empresa por su ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Empresa actualizada con éxito"),
+        @ApiResponse(responseCode = "404", description = "Empresa no encontrada")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<Companies> update(@PathVariable Integer id, @Valid @RequestBody Companies company){
+        Companies updatedCompany = companiesService.update(id, company);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedCompany);
+    }
+
+
+
+
+
+    
 
 
 
