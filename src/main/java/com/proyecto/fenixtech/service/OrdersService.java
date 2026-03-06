@@ -38,6 +38,9 @@ public class OrdersService {
     @Autowired
     private CartItemsRepository cartItemsRepository;
 
+    @Autowired
+    private ReputationService reputationService;
+
     @Transactional(readOnly = true)
     public List<Orders> findAllOrders() {
         return ordersRepository.findAll();
@@ -131,6 +134,11 @@ public class OrdersService {
             detailsList.add(detail);
 
             totalCalculado += (precioActual * item.getQuantity());
+
+            // Lógica para actualizar métricas de impacto 
+            if(product.getCompany() != null){
+                reputationService.proccessTransaction(product.getCompany().getCompanyId(), product, item.getQuantity());
+            }
         }
 
         newOrder.setOrderDetails(detailsList);
