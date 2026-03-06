@@ -57,10 +57,10 @@ public class ReputationCalculator {
         }
 
        
-        Double multiplicador = switch(conditionStatus.toLowerCase()) {
-            case "new" -> 2.0;
-            case "used_good" -> 1.5;
-            case "used_fair" -> 1.0;
+        Double multiplicador = switch(conditionStatus) {
+            case "NEW" -> 2.0;
+            case "USED_GOOD" -> 1.5;
+            case "USED_FAIR" -> 1.0;
             default -> 1.0;
         };
 

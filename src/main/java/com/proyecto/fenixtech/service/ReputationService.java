@@ -47,7 +47,6 @@ public class ReputationService {
 
         String categoryName = product.getSubcategory().getCategory().getName();
         String subcategoryName = product.getSubcategory().getName();
-
         String condition = product.getStatus().name();
 
         ReputationCalculator.ItemMetrics itemMetrics = reputationCalculator.calculateMetrics(categoryName,
