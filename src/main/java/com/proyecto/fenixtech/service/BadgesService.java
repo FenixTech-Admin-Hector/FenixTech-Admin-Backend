@@ -21,9 +21,25 @@ public class BadgesService {
     }
 
     @Transactional(readOnly = true)
+    public List<Badges> findByIsActiveTrue() {
+        return badgesRepository.findByIsActiveTrue();
+    }
+
+    @Transactional(readOnly = true)
     public Badges findById(Integer id) {
         return badgesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Insignia no encontrada con id: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    public Badges findByIdAndIsActiveTrue(Integer id) {
+        return badgesRepository.findByIdAndIsActiveTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Insignia no encontrada con id: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Badges> findByBadgeNameTrue(String name){
+        return badgesRepository.findByBadgeNameContainingIgnoreCaseAndIsActiveTrue(name);
     }
 
     @Transactional(readOnly = true)
@@ -36,17 +52,43 @@ public class BadgesService {
         return badgesRepository.count();
     }
 
+    @Transactional(readOnly = true)
+    public Long countActive() {
+        return badgesRepository.countByIsActiveTrue();
+    }
+
     @Transactional
     public void deleteById(Integer id) {
         Badges badge = badgesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Insignia no encontrada"));
-                
+
         if (badge.getCompanyBadges() == null || badge.getCompanyBadges().isEmpty()) {
             badgesRepository.delete(badge);
         } else {
             badge.setIsActive(false);
             badgesRepository.save(badge);
         }
+    }
+
+    @Transactional
+    public Badges save(Badges badge) {
+        badge.setIsActive(true);
+        return badgesRepository.save(badge);
+    }
+
+    @Transactional
+    public Badges update(Integer id, Badges badge) {
+        Badges badgesUpdate = badgesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró la insignia con ID: " + id));
+
+        badgesUpdate.setBadgeName(badge.getBadgeName());
+        badgesUpdate.setIconUrl(badge.getIconUrl());
+
+        if (badge.getIsActive() != null) {
+            badgesUpdate.setIsActive(badge.getIsActive());
+        }
+
+        return badgesRepository.save(badgesUpdate);
     }
 
 }
