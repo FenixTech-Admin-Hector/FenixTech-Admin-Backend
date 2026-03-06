@@ -36,4 +36,14 @@ public class BadgesService {
         return badgesRepository.count();
     }
 
+    @Transactional
+    public void deleteById(Integer id) {
+        if (!badgesRepository.existsById(id)) {
+            throw new IllegalArgumentException("No existe la insignia con id: " + id + " para eliminar");
+        }
+        badgesRepository.deleteById(id);
+    }
+
+    
+
 }

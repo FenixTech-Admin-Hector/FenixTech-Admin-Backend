@@ -79,11 +79,11 @@ INSERT INTO subcategories (category_id, name, description) VALUES
 (5, 'Cartuchos', 'Tinta y tóner');
 
 -- Badges (4 records)
-INSERT INTO badges (name, icon_url) VALUES
-('Eco-Friendly', '/icons/eco.png'),
-('Top Seller', '/icons/top.png'),
-('Fast Shipper', '/icons/fast.png'),
-('Community Star', '/icons/star.png');
+INSERT INTO badges (name, icon_url, is_active) VALUES
+('Eco-Friendly', '/icons/eco.png', TRUE),
+('Top Seller', '/icons/top.png', TRUE),
+('Fast Shipper', '/icons/fast.png', TRUE),
+('Community Star', '/icons/star.png', FALSE);
 
 -- Products (15 records)
 INSERT INTO products (company_id, subcategory_id, title, description, image_url, condition_status, listing_type, price, stock_quantity, status) VALUES

@@ -14,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -48,11 +49,19 @@ public class Badges implements Serializable {
     @Column(name = "icon_url", nullable = false)
     private String iconUrl;
 
-    @OneToMany(mappedBy = "badge", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"badge", "company"})
+    @Schema(description = "Estado de la insignia (activo o inactivo)", example = "true")
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
+    @OneToMany(mappedBy = "badge",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonIgnoreProperties({ "badge", "company" })
     private List<CompanyBadges> companyBadges = new ArrayList<>();
 
-    
-
+    @PrePersist
+    public void prePersist() {
+        if (this.isActive == null) {
+            this.isActive = true;
+        }
+    }
 
 }
