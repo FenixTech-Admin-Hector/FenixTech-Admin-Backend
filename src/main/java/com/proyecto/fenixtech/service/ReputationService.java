@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.fenixtech.repository.CompaniesRepository;
+import com.proyecto.fenixtech.engine.ReputationCalculator;
+import com.proyecto.fenixtech.engine.BadgeRules;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Companies;
 import com.proyecto.fenixtech.model.Products;
@@ -20,6 +22,9 @@ public class ReputationService {
 
     @Autowired
     private ReputationCalculator reputationCalculator;
+
+    @Autowired
+    private BadgeRules badgeRules;
 
     private Integer calculatePointsForRating(Integer rating) {
         return switch (rating) {
@@ -77,6 +82,8 @@ public class ReputationService {
         company.setReputationScore(currentScore + pointsToAdd.intValue());
 
         companiesRepository.save(company);
+
+        badgeRules.processBadges(company);
     }
 
     @Transactional
@@ -93,6 +100,8 @@ public class ReputationService {
         company.setReputationScore(finalScore < 0 ? 0 : finalScore);
 
         companiesRepository.save(company);
+
+        badgeRules.processBadges(company);
     }
 
     @Transactional
@@ -108,6 +117,8 @@ public class ReputationService {
         company.setReputationScore(finalScore < 0 ? 0 : finalScore);
 
         companiesRepository.save(company);
+
+        badgeRules.processBadges(company);
     }
 
     @Transactional
