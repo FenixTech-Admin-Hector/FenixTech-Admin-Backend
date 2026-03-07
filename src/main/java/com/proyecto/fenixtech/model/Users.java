@@ -36,9 +36,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@ToString(exclude = { "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments" })
+@ToString(exclude = { "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments", "following", "followers"})
 @EqualsAndHashCode(exclude = { "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts",
-        "comments" })
+        "comments", "following", "followers"})
 
 @Schema(description = "Modelo de Usuario", name = "Users")
 @Entity
@@ -59,10 +59,7 @@ public class Users implements Serializable {
     @Schema(description = "Contraseña del usuario", example = "password123")
     @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
-    @Pattern(
-        regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!.*]).{8,}$", 
-        message = "La contraseña debe contener al menos un número, una letra minúscula, una letra mayúscula y un carácter especial"
-    )
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!.*]).{8,}$", message = "La contraseña debe contener al menos un número, una letra minúscula, una letra mayúscula y un carácter especial")
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
@@ -97,7 +94,7 @@ public class Users implements Serializable {
     private Companies company;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({ "user"})
+    @JsonIgnoreProperties({ "user" })
     private List<Addresses> addresses = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -105,7 +102,7 @@ public class Users implements Serializable {
     private List<CartItems> cartItems = new ArrayList<>();
 
     @OneToMany(mappedBy = "buyer")
-    @JsonIgnoreProperties({"user", "orderDetails", "shipment"})
+    @JsonIgnoreProperties({ "user", "orderDetails", "shipment" })
     private List<Orders> orders = new ArrayList<>();
 
     @OneToMany(mappedBy = "reviewer", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -113,7 +110,7 @@ public class Users implements Serializable {
     private List<Reviews> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties({"author", "comments"})
+    @JsonIgnoreProperties({ "author", "comments" })
     private List<Posts> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -124,6 +121,12 @@ public class Users implements Serializable {
     @JsonIgnoreProperties("requester")
     private List<Proposals> proposals = new ArrayList<>();
 
-    
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("follower")
+    private List<Follow> following; 
+
+    @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("following")
+    private List<Follow> followers;
 
 }

@@ -19,6 +19,17 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Tabla para gestionar seguidores y seguidos
+CREATE TABLE IF NOT EXISTS follows (
+    follower_id INT NOT NULL,
+    following_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (follower_id, following_id),
+    CONSTRAINT fk_follower FOREIGN KEY (follower_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_following FOREIGN KEY (following_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    CONSTRAINT chk_not_self_follow CHECK (follower_id <> following_id)
+);
+
 CREATE TABLE IF NOT EXISTS companies (
     company_id INT PRIMARY KEY AUTO_INCREMENT,
     -- UNIQUE en user_id garantiza la relación 1 a 1

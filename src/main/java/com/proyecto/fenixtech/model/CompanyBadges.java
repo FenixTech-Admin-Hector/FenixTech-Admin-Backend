@@ -39,7 +39,7 @@ public class CompanyBadges implements Serializable {
     @Schema(description = "Fecha de asignación de la insignia a la empresa", example = "2026-01-01")
     @CreationTimestamp
     @Column(name = "awarded_at", updatable = false)
-    private LocalDateTime awardedAt = LocalDateTime.now();
+    private LocalDateTime awardedAt;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("companyId")
