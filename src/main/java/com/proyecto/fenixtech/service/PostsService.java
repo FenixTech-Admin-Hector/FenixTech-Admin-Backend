@@ -52,8 +52,8 @@ public class PostsService {
 
     @Transactional
     public Posts save(Posts post){
-        if(post.getPostsImg() != null && !post.getPostsImg().isEmpty()){
-            post.getPostsImg().forEach(img -> {
+        if(post.getPostImages() != null && !post.getPostImages().isEmpty()){
+            post.getPostImages().forEach(img -> {
                 img.setPost(post);
             });
         }
@@ -74,7 +74,7 @@ public class PostsService {
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el post con ID: " + id));
 
         postUpdate.setTitle(post.getTitle());
-        postUpdate.setContent(post.getContent());
+        postUpdate.setBody(post.getBody());
         postUpdate.setAuthor(post.getAuthor());
 
         return postsRepository.save(postUpdate);
