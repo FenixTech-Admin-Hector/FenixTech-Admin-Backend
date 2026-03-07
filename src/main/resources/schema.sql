@@ -149,6 +149,16 @@ CREATE TABLE IF NOT EXISTS posts (
     FOREIGN KEY (author_user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS posts_img (
+
+    image_id INT PRIMARY KEY AUTO_INCREMENT,
+    post_id INT NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
+    FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE
+
+);
+
+
 CREATE TABLE IF NOT EXISTS comments (
     comment_id INT PRIMARY KEY AUTO_INCREMENT,
     post_id INT NOT NULL,
