@@ -111,10 +111,12 @@ public class ProductsService {
 
     @Transactional 
     public void deleteById(Integer id) {
-        if (!productsRepository.existsById(id)){
-            throw new IllegalArgumentException("No existe el producto con id: " + id + " para eliminar");
-        }
-        productsRepository.deleteById(id);
+        Products product = productsRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No existe el producto con id: " + id + " para eliminar"));
+        
+        // Soft Delete: Cambiamos el estado a HIDDEN (o el estado que prefieras para borrados)
+        product.setProductStatus(ProductStatus.HIDDEN);
+        productsRepository.save(product);
     }
 
     @Transactional
