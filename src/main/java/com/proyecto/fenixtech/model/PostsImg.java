@@ -40,7 +40,7 @@ public class PostsImg implements Serializable {
 
     @Schema(description = "URL de la imagen", example = "https://example.com/image.jpg")
     @NotBlank(message = "La URL de la imagen es obligatoria")
-    @Pattern(regexp = "^.+\.(png|jpg|jpeg|PNG|JPG|JPEG)$", message = "La imagen debe ser un archivo .png, .jpg o .jpeg")
+    @Pattern(regexp = "^.+\\.(png|jpg|jpeg|PNG|JPG|JPEG)$", message = "La imagen debe ser un archivo .png, .jpg o .jpeg")
     @Column(name = "image_url", nullable = false, columnDefinition = "TEXT")
     private String imageUrl;
 
