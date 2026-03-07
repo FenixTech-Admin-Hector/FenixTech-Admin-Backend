@@ -49,4 +49,36 @@ public class PostsService {
     public Long count(){
         return postsRepository.count();
     }
+
+    @Transactional
+    public Posts save(Posts post){
+        if(post.getPostsImg() != null && !post.getPostsImg().isEmpty()){
+            post.getPostsImg().forEach(img -> {
+                img.setPost(post);
+            });
+        }
+        return postsRepository.save(post);
+    }
+
+    @Transactional
+    public void deleteById(Integer id){
+        if(!postsRepository.existsById(id)){
+            throw new IllegalArgumentException("No existe el post con id: " + id + " para eliminar");
+        }
+        postsRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Posts update(Integer id, Posts post){
+        Posts postUpdate = postsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el post con ID: " + id));
+
+        postUpdate.setTitle(post.getTitle());
+        postUpdate.setContent(post.getContent());
+        postUpdate.setAuthor(post.getAuthor());
+
+        return postsRepository.save(postUpdate);
+    }
+
+
 }

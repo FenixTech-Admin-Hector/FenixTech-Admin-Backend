@@ -68,4 +68,8 @@ public class Posts implements Serializable {
     @JsonIgnoreProperties({ "post", "author" })
     private List<Comments> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("post")
+    private List<PostsImg> postImages = new ArrayList<>();
+
 }

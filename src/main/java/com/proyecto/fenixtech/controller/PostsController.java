@@ -90,4 +90,39 @@ public class PostsController {
         return ResponseEntity.ok(response);
     }
 
+
+    @Operation(summary = "Eliminar post por ID", description = "Elimina un post por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Post eliminado con éxito"),
+            @ApiResponse(responseCode = "404", description = "Post no encontrado")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
+        postsService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Actualizar un post", description = "Actualiza un post existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Post actualizado con éxito"),
+            @ApiResponse(responseCode = "404", description = "Post no encontrado")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<Posts> updatePost(@PathVariable Integer id, @RequestBody Posts post) {
+        Posts updatedPost = postsService.update(id, post);
+        return ResponseEntity.ok(updatedPost);
+    }
+
+    @Operation(summary = "Crear un post", description = "Crea un nuevo post")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Post creado con éxito"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+    })
+    @PostMapping
+    public ResponseEntity<Posts> createPost(@RequestBody Posts post) {
+        Posts savedPost = postsService.save(post);
+        return ResponseEntity.status(201).body(savedPost);
+    }
+
+
 }

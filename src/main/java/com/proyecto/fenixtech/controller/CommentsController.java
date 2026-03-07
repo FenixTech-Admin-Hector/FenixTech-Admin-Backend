@@ -59,4 +59,35 @@ public class CommentsController {
         response.put("count", count);
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "Crear un nuevo comentario", description = "Crea un nuevo comentario y lo devuelve")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Comentario creado con éxito"),
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+    })
+    @PostMapping
+    public ResponseEntity<Comments> save(@RequestBody Comments comment) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentsService.save(comment));
+    }
+
+    @Operation(summary = "Actualizar un comentario", description = "Actualiza un comentario existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Comentario actualizado con éxito"),
+            @ApiResponse(responseCode = "404", description = "Comentario no encontrado")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<Comments> update(@PathVariable Integer id, @RequestBody Comments comment) {
+        return ResponseEntity.ok(commentsService.update(id, comment));
+    }
+
+    @Operation(summary = "Eliminar un comentario", description = "Elimina un comentario por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Comentario eliminado con éxito"),
+            @ApiResponse(responseCode = "404", description = "Comentario no encontrado")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
+        commentsService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

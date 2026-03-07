@@ -42,6 +42,33 @@ public class ProposalsService {
     public Long count() {
         return proposalsRepository.count();
     }
+
+    @Transactional
+    public Proposals save(Proposals proposal) {
+        usersRepository.findById(proposal.getRequester().getUserId())
+            .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + proposal.getRequester().getUserId()));
+        return proposalsRepository.save(proposal);
+    }
+
+    @Transactional
+    public void deleteById(Integer id) {
+        if (!proposalsRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Propuesta no encontrada con id: " + id);
+        }
+        proposalsRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Proposals update(Integer id, Proposals proposal) {
+        Proposals existingProposal = proposalsRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Propuesta no encontrada con id: " + id));
+        
+        existingProposal.setTitle(proposal.getTitle());
+        existingProposal.setDescription(proposal.getDescription());
+        existingProposal.setStatus(proposal.getStatus());
+
+        return proposalsRepository.save(existingProposal);
+    }
 }
 
 

@@ -46,7 +46,7 @@ public class ProposalsController {
             @ApiResponse(responseCode = "404", description = "Propuesta no encontrada")
     })
     @GetMapping("/{id}")
-    public Proposals findProposalById(@RequestParam Integer id) {
+    public Proposals findProposalById(@PathVariable Integer id) {
         return proposalsService.findById(id);
     }
     
@@ -57,7 +57,7 @@ public class ProposalsController {
             @ApiResponse(responseCode = "404", description = "No se encontraron propuestas para el usuario")
     })
     @GetMapping("/user/{id}")
-    public List<Proposals> findProposalsByUserId(@RequestParam Integer id) {
+    public List<Proposals> findProposalsByUserId(@PathVariable Integer id) {
         return proposalsService.findByUserId(id);
     }
 
@@ -73,6 +73,37 @@ public class ProposalsController {
         Map<String, Long> response = new HashMap<>();
         response.put("count", count);
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Operation(summary = "Crear una nueva propuesta", description = "Crea una nueva propuesta y la devuelve")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Propuesta creada con éxito"),
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+    })
+    @PostMapping
+    public ResponseEntity<Proposals> save(@RequestBody Proposals proposal) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(proposalsService.save(proposal));
+    }
+
+    @Operation(summary = "Actualizar una propuesta", description = "Actualiza una propuesta existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Propuesta actualizada con éxito"),
+            @ApiResponse(responseCode = "404", description = "Propuesta no encontrada")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<Proposals> update(@PathVariable Integer id, @RequestBody Proposals proposal) {
+        return ResponseEntity.ok(proposalsService.update(id, proposal));
+    }
+
+    @Operation(summary = "Eliminar una propuesta", description = "Elimina una propuesta por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Propuesta eliminada con éxito"),
+            @ApiResponse(responseCode = "404", description = "Propuesta no encontrada")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
+        proposalsService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

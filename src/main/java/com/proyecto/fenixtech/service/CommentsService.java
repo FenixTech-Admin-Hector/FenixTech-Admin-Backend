@@ -43,4 +43,31 @@ public class CommentsService {
     public Long countAllComments() {
         return commentsRepository.count();
     }
+
+    @Transactional
+    public Comments save(Comments comment) {
+        usersRepository.findById(comment.getAuthor().getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + comment.getAuthor().getUserId()));
+        postsRepository.findById(comment.getPost().getPostId())
+                .orElseThrow(() -> new ResourceNotFoundException("Post no encontrado con id: " + comment.getPost().getPostId()));
+        return commentsRepository.save(comment);
+    }
+
+    @Transactional
+    public void deleteById(Integer id) {
+        if (!commentsRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Comentario no encontrado con id: " + id);
+        }
+        commentsRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Comments update(Integer id, Comments comment) {
+        Comments existingComment = commentsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Comentario no encontrado con id: " + id));
+        
+        existingComment.setBody(comment.getBody());
+
+        return commentsRepository.save(existingComment);
+    }
 }
