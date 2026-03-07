@@ -85,23 +85,29 @@ INSERT INTO badges (name, icon_url, is_active) VALUES
 ('Fast Shipper', '/icons/fast.png', TRUE),
 ('Community Star', '/icons/star.png', FALSE);
 
--- Products (15 records)
-INSERT INTO products (company_id, subcategory_id, title, description, image_url, condition_status, listing_type, price, stock_quantity, status) VALUES
-(1, 1, 'Laptop Dell Latitude', 'Buen estado, i5 8th gen', 'url1', 'USED_GOOD', 'SALE', 250.00, 5, 'ACTIVE'),
-(2, 2, 'PC Gaming Entry', 'GTX 1050, i3', 'url2', 'USED_FAIR', 'SALE', 300.00, 2, 'ACTIVE'),
-(3, 3, 'Nvidia GTX 1080', 'Usada para diseño', 'url3', 'USED_GOOD', 'SALE', 150.00, 10, 'ACTIVE'),
-(4, 4, 'Intel i7 7700K', 'Sin caja original', 'url4', 'USED_GOOD', 'SALE', 120.00, 8, 'ACTIVE'),
-(5, 5, 'Teclado Mecánico Logitech', 'Switch Blue', 'url5', 'NEW', 'SALE', 80.00, 20, 'ACTIVE'),
-(6, 6, 'Raton Razer', 'Modelo antiguo', 'url6', 'USED_FAIR', 'DONATION', 0.00, 5, 'ACTIVE'),
-(7, 7, 'Router Asus', 'WiFi 6', 'url7', 'NEW', 'SALE', 100.00, 15, 'ACTIVE'),
-(8, 8, 'Switch Cisco 24p', 'Reacondicionado', 'url8', 'USED_GOOD', 'SALE', 50.00, 3, 'ACTIVE'),
-(9, 9, 'Ender 3 Pro', 'Con mejoras', 'url9', 'USED_GOOD', 'SALE', 110.00, 1, 'ACTIVE'),
-(10, 10, 'Toner HP 85A', 'Compatible nuevo', 'url10', 'NEW', 'SALE', 15.00, 50, 'ACTIVE'),
-(11, 1, 'MacBook Air 2015', 'Bateria nueva', 'url11', 'USED_FAIR', 'SALE', 350.00, 4, 'ACTIVE'),
-(12, 2, 'HP EliteDesk', 'Mini PC oficina', 'url12', 'USED_GOOD', 'DONATION', 0.00, 10, 'ACTIVE'),
-(13, 3, 'AMD RX 580', '8GB VRAM', 'url13', 'USED_GOOD', 'SALE', 90.00, 6, 'ACTIVE'),
-(14, 4, 'Ryzen 5 3600', 'Con disipador', 'url14', 'USED_GOOD', 'SALE', 85.00, 7, 'ACTIVE'),
-(15, 5, 'Teclado Membrana HP', 'Basico', 'url15', 'NEW', 'DONATION', 0.00, 100, 'ACTIVE');
+-- Products (15 records) - ¡CORREGIDO! Sin la columna image_url
+INSERT INTO products (company_id, subcategory_id, title, description, condition_status, listing_type, price, stock_quantity, status) VALUES
+(1, 1, 'Laptop Dell Latitude', 'Buen estado, i5 8th gen', 'USED_GOOD', 'SALE', 250.00, 5, 'ACTIVE'),
+(2, 2, 'PC Gaming Entry', 'GTX 1050, i3', 'USED_FAIR', 'SALE', 300.00, 2, 'ACTIVE'),
+(3, 3, 'Nvidia GTX 1080', 'Usada para diseño', 'USED_GOOD', 'SALE', 150.00, 10, 'ACTIVE'),
+(4, 4, 'Intel i7 7700K', 'Sin caja original', 'USED_GOOD', 'SALE', 120.00, 8, 'ACTIVE'),
+(5, 5, 'Teclado Mecánico Logitech', 'Switch Blue', 'NEW', 'SALE', 80.00, 20, 'ACTIVE'),
+(6, 6, 'Raton Razer', 'Modelo antiguo', 'USED_FAIR', 'DONATION', 0.00, 5, 'ACTIVE'),
+(7, 7, 'Router Asus', 'WiFi 6', 'NEW', 'SALE', 100.00, 15, 'ACTIVE'),
+(8, 8, 'Switch Cisco 24p', 'Reacondicionado', 'USED_GOOD', 'SALE', 50.00, 3, 'ACTIVE'),
+(9, 9, 'Ender 3 Pro', 'Con mejoras', 'USED_GOOD', 'SALE', 110.00, 1, 'ACTIVE'),
+(10, 10, 'Toner HP 85A', 'Compatible nuevo', 'NEW', 'SALE', 15.00, 50, 'ACTIVE'),
+(11, 1, 'MacBook Air 2015', 'Bateria nueva', 'USED_FAIR', 'SALE', 350.00, 4, 'ACTIVE'),
+(12, 2, 'HP EliteDesk', 'Mini PC oficina', 'USED_GOOD', 'DONATION', 0.00, 10, 'ACTIVE'),
+(13, 3, 'AMD RX 580', '8GB VRAM', 'USED_GOOD', 'SALE', 90.00, 6, 'ACTIVE'),
+(14, 4, 'Ryzen 5 3600', 'Con disipador', 'USED_GOOD', 'SALE', 85.00, 7, 'ACTIVE'),
+(15, 5, 'Teclado Membrana HP', 'Basico', 'NEW', 'DONATION', 0.00, 100, 'ACTIVE');
+
+-- Products Images (15 records) - ¡AÑADIDO! Relacionando cada producto con su imagen
+INSERT INTO products_img (product_id, image_url) VALUES
+(1, 'url1'), (2, 'url2'), (3, 'url3'), (4, 'url4'), (5, 'url5'), 
+(6, 'url6'), (7, 'url7'), (8, 'url8'), (9, 'url9'), (10, 'url10'), 
+(11, 'url11'), (12, 'url12'), (13, 'url13'), (14, 'url14'), (15, 'url15');
 
 -- Cart Items (15 records)
 INSERT INTO cart_items (user_id, product_id, quantity) VALUES
