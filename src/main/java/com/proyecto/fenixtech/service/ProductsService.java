@@ -101,6 +101,11 @@ public class ProductsService {
 
     @Transactional
     public Products save(Products product) {
+        if(product.getProductsImg() != null && !product.getProductsImg().isEmpty()){
+            product.getProductsImg().forEach(img -> {
+                img.setProduct(product);
+            });
+        }
         return productsRepository.save(product);
     }
 
@@ -114,22 +119,20 @@ public class ProductsService {
 
     @Transactional
     public Products update(Integer id, Products product) {
-        Products existingProduct = productsRepository .findById(id)
+        Products productUpdate = productsRepository .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el producto con ID: " + id));
 
-        existingProduct.setProductTitle(product.getProductTitle());
-        existingProduct.setDescription(product.getDescription());
-        existingProduct.setImageUrl(product.getImageUrl());
-        existingProduct.setStatus(product.getStatus());
-        existingProduct.setListingType(product.getListingType());
-        existingProduct.setPrice(product.getPrice());
-        existingProduct.setStock(product.getStock());
-        existingProduct.setProductStatus(product.getProductStatus());
-        existingProduct.setSubcategory(product.getSubcategory());
-        existingProduct.setCompany(product.getCompany());
+        productUpdate.setProductTitle(product.getProductTitle());
+        productUpdate.setDescription(product.getDescription());
+        productUpdate.setStatus(product.getStatus());
+        productUpdate.setListingType(product.getListingType());
+        productUpdate.setPrice(product.getPrice());
+        productUpdate.setStock(product.getStock());
+        productUpdate.setProductStatus(product.getProductStatus());
+        productUpdate.setSubcategory(product.getSubcategory());
+        productUpdate.setCompany(product.getCompany());
 
-
-        return productsRepository.save(existingProduct);
+        return productsRepository.save(productUpdate);
     }
 
 

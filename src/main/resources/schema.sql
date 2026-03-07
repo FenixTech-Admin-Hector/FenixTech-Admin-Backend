@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
     last_name VARCHAR(100) NOT NULL,
     -- ENUM: Evita crear tabla extra para roles, optimizando rendimiento
     role ENUM('PARTICULAR', 'EMPRESA', 'ADMIN') DEFAULT 'PARTICULAR',
+    user_img VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -28,6 +29,7 @@ CREATE TABLE IF NOT EXISTS companies (
     reputation_score INT DEFAULT 0, 
     -- JSON: Flexibilidad absoluta para métricas (CO2, e-waste, agua...) sin alterar tablas
     impact_metrics JSON, 
+    company_img VARCHAR(255) DEFAULT null,
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
@@ -66,7 +68,6 @@ CREATE TABLE IF NOT EXISTS products (
     subcategory_id INT NOT NULL,
     title VARCHAR(200) NOT NULL,
     description TEXT,
-    image_url VARCHAR(255),
     condition_status ENUM('NEW', 'USED_GOOD', 'USED_FAIR') NOT NULL,
     listing_type ENUM('SALE', 'DONATION') NOT NULL,
     price DECIMAL(10, 2) DEFAULT 0.00,
@@ -74,6 +75,13 @@ CREATE TABLE IF NOT EXISTS products (
     status ENUM('ACTIVE', 'SOLD_OUT', 'HIDDEN') DEFAULT 'ACTIVE',
     FOREIGN KEY (company_id) REFERENCES Companies(company_id) ON DELETE CASCADE,
     FOREIGN KEY (subcategory_id) REFERENCES Subcategories(subcategory_id)
+);
+
+CREATE TABLE IF NOT EXISTS products_img(
+    image_id INT PRIMARY KEY AUTO_INCREMENT,
+    product_id INT NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
 );
 
 -- ------------------------------------------------------------------------------

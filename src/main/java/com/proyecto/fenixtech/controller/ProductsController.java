@@ -130,7 +130,7 @@ public class ProductsController {
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Products> updateProduct(@Valid @PathVariable Integer id, @RequestBody Products product) {
+    public ResponseEntity<Products> updateProduct(@PathVariable Integer id, @Valid @RequestBody Products product) {
         Products updatedProduct = productsService.update(id, product);
         return ResponseEntity.status(HttpStatus.OK).body(updatedProduct);
     }

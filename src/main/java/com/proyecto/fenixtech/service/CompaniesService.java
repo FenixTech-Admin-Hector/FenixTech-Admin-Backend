@@ -115,6 +115,8 @@ public class CompaniesService {
 
         companyUpdate.setCompanyName(company.getCompanyName());
         companyUpdate.setCif(company.getCif());
+        companyUpdate.setCompanyImg(company.getCompanyImg());
+
 
         return companiesRepository.save(companyUpdate);
     }

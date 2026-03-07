@@ -81,6 +81,11 @@ public class Users implements Serializable {
     @Column(name = "role", nullable = false)
     private Rol role;
 
+    @Schema(description = "Imagen de perfil del usuario", example = "https://example.com/image.jpg")
+    @Pattern(regexp = "^.+\\.(png|jpg|jpeg|PNG|JPG|JPEG)$", message = "La imagen debe ser un archivo .png, .jpg o .jpeg")
+    @Column(name = "user_img", columnDefinition = "TEXT")
+    private String userImg;
+
     @Schema(description = "Fecha de creación del usuario", example = "")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @CreationTimestamp

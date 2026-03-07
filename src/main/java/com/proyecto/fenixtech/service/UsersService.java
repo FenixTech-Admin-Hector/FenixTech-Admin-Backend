@@ -122,16 +122,13 @@ public class UsersService {
         Users existingUser = usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el usuario con ID: " + id));
 
-        if (user.getFirstName() != null && user.getFirstName().isEmpty()) {
-            existingUser.setFirstName(user.getFirstName());
-        }
-        if (user.getLastName() != null && user.getLastName().isEmpty()) {
-            existingUser.setLastName(user.getLastName());
-        }
-        if(user.getEmail() != null && user.getEmail().isEmpty()){
-            existingUser.setEmail(user.getEmail());
-        }
-        if (user.getPasswordHash() != null && user.getPasswordHash().isEmpty()) {
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setLastName(user.getLastName());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setUserImg(user.getUserImg());
+
+        if (user.getPasswordHash() != null && !user.getPasswordHash().isBlank()) {
+             // En el futuro, se hará distinto al usar BYCrypt
             existingUser.setPasswordHash(user.getPasswordHash());
         }
 

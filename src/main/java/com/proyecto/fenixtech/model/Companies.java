@@ -65,6 +65,11 @@ public class Companies implements Serializable {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "impact_metrics", columnDefinition = "json")
     private ImpactMetrics impactMetrics;
+
+    @Schema(description = "URL de la imagen de la empresa", example = "https://example.com/image.jpg")
+    @Pattern(regexp = "^.+\\.(png|jpg|jpeg|PNG|JPG|JPEG)$", message = "La imagen debe ser un archivo .png, .jpg o .jpeg")
+    @Column(name = "company_img", columnDefinition = "TEXT")
+    private String companyImg;
     
     @OneToOne
     @JoinColumn(name = "user_id", unique = true, nullable = false)

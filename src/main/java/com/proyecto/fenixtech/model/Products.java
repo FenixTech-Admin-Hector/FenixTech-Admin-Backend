@@ -37,8 +37,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ToString(exclude = {"subcategory", "company", "cartItems", "orderDetails"})
-@EqualsAndHashCode(exclude = {"subcategory", "company", "cartItems", "orderDetails"})
+@ToString(exclude = {"subcategory", "company", "cartItems", "orderDetails", "productsImg"})
+@EqualsAndHashCode(exclude = {"subcategory", "company", "cartItems", "orderDetails", "productsImg"})
 
 
 @Schema(description = "Modelo de Productos", name = "Products")
@@ -60,11 +60,6 @@ public class Products implements Serializable {
     @Size(max=200, message= "La descripcion no puede superar los 200 caracteres")
     @Column(name = "description")
     private String description;
-
-    @Schema(description = "URL de la imagen del producto", example = "https://example.com/image.jpg")
-    @Pattern(regexp = "^.+\\.(png|jpg|jpeg|PNG|JPG|JPEG)$", message = "La imagen debe ser un archivo .png, .jpg o .jpeg")
-    @Column(name = "image_url", nullable = false)
-    private String imageUrl;
 
     @Schema(description = "Estado del producto", example = "new")
     @NotNull(message = "El estado del producto es obligatorio")
@@ -110,6 +105,11 @@ public class Products implements Serializable {
     @OneToMany(mappedBy = "product", orphanRemoval = true)
     @JsonIgnoreProperties({"product", "order"})
     private List<OrderDetails> orderDetails = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("product")
+    private List<ProductsImg> productsImg = new ArrayList<>();
+
 
     @PrePersist
     public void prePersist() {
