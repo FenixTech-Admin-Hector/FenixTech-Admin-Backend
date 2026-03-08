@@ -26,9 +26,20 @@ public class UsersService {
     }
 
     @Transactional(readOnly = true)
+    public List<Users> findByIsActiveTrue() {
+        return usersRepository.findByIsActiveTrueAndRoleNot(Rol.ADMIN);
+    }
+
+    @Transactional(readOnly = true)
     public Users findByUsersId(Integer id) {
         return usersRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id:" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    public Users findByUserIdAndIsActiveTrue(Integer id) {
+        return usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(id, Rol.ADMIN)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado o es privado"));
     }
 
     @Transactional(readOnly = true)
@@ -38,8 +49,22 @@ public class UsersService {
     }
 
     @Transactional(readOnly = true)
+    public Users findByEmailAndIsActiveTrue(String email) {
+        return usersRepository.findByEmailAndIsActiveTrueAndRoleNot(email, Rol.ADMIN)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado o es privado"));
+    }
+
+    @Transactional(readOnly = true)
     public List<Users> findByRole(Rol rol) {
         return usersRepository.findByRole(rol);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Users> findByRoleAndIsActiveTrue(Rol rol) {
+        if (rol == Rol.ADMIN) {
+            throw new SecurityException("Operación no permitida: No se pueden buscar administradores por esta vía pública.");
+        }
+        return usersRepository.findByRoleAndIsActiveTrue(rol);
     }
 
     @Transactional(readOnly = true)
@@ -48,8 +73,18 @@ public class UsersService {
     }
 
     @Transactional(readOnly = true)
+    public List<Users> findByCreatedAtAndIsActiveTrueOrderByDesc() {
+        return usersRepository.findByIsActiveTrueAndRoleNotOrderByCreatedAtDesc(Rol.ADMIN);
+    }
+
+    @Transactional(readOnly = true)
     public List<Users> findByCreatedAtOrderByAsc() {
         return usersRepository.findAllByOrderByCreatedAtAsc();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Users> findByCreatedAtAndIsActiveTrueOrderByAsc(){
+        return usersRepository.findByIsActiveTrueAndRoleNotOrderByCreatedAtAsc(Rol.ADMIN);
     }
 
     @Transactional(readOnly = true)
@@ -62,6 +97,13 @@ public class UsersService {
         // diciembre a las 23:59:59 de ese año con los maximos milisegundos
         LocalDateTime finDelAno = LocalDateTime.of(year, 12, 31, 23, 59, 59, 999999999);
         return usersRepository.findByCreatedAtBetween(inicioDelAno, finDelAno);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Users> findByCreatedAtAndIsActiveTrue(Integer year) {
+        LocalDateTime inicioDelAno = LocalDateTime.of(year, 1, 1, 0, 0, 0);
+        LocalDateTime finDelAno = LocalDateTime.of(year, 12, 31, 23, 59, 59, 999999999);
+        return usersRepository.findByIsActiveTrueAndRoleNotAndCreatedAtBetween(Rol.ADMIN, inicioDelAno, finDelAno);
     }
 
     @Transactional(readOnly = true)
@@ -78,9 +120,20 @@ public class UsersService {
     }
 
     @Transactional(readOnly = true)
+    public List<Users> findByCreatedAtBetweenAndIsActiveTrue(LocalDate dateStart, LocalDate dateEnd) {
+        if (dateStart.isAfter(dateEnd)) {
+            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de fin");
+        }
+        LocalDateTime startDateTime = dateStart.atStartOfDay();
+        LocalDateTime endDateTime = dateEnd.atTime(java.time.LocalTime.MAX);
+        return usersRepository.findByIsActiveTrueAndRoleNotAndCreatedAtBetween(Rol.ADMIN, startDateTime, endDateTime);
+    }
+
+    @Transactional(readOnly = true)
     public Long count() {
         return usersRepository.count();
     }
+
 
     @Transactional
     public Users save(Users user) {
@@ -90,6 +143,7 @@ public class UsersService {
 
         user.setFirstName(user.getFirstName().trim());
         user.setLastName(user.getLastName().trim());
+        user.setIsActive(true);
 
         if (user.getRole() == Rol.ADMIN) {
             throw new SecurityException(
@@ -110,7 +164,7 @@ public class UsersService {
 
         user.setFirstName(user.getFirstName().trim());
         user.setLastName(user.getLastName().trim());
-
+        user.setIsActive(true);
         user.setRole(Rol.ADMIN);
 
         return usersRepository.save(user);
@@ -124,11 +178,17 @@ public class UsersService {
 
         existingUser.setFirstName(user.getFirstName());
         existingUser.setLastName(user.getLastName());
-        existingUser.setEmail(user.getEmail());
         existingUser.setUserImg(user.getUserImg());
+        existingUser.setIsActive(true);
+
+        if (!existingUser.getEmail().equals(user.getEmail()) &&
+                usersRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("El email ya está registrado por otro usuario");
+        }
+        existingUser.setEmail(user.getEmail());
 
         if (user.getPasswordHash() != null && !user.getPasswordHash().isBlank()) {
-             // En el futuro, se hará distinto al usar BYCrypt
+            // En el futuro, se hará distinto al usar BYCrypt
             existingUser.setPasswordHash(user.getPasswordHash());
         }
 
@@ -137,9 +197,22 @@ public class UsersService {
 
     @Transactional
     public void delete(Integer id) {
-        usersRepository.findById(id)
+        Users user = usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el usuario con ID: " + id));
-        usersRepository.deleteById(id);
+        user.setIsActive(false);
+    }
+
+    @Transactional
+    public void restore(Integer id) {
+        Users user = usersRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el usuario con ID: " + id));
+
+        if (user.getIsActive()) {
+            throw new IllegalArgumentException("El usuario ya está activo.");
+        }
+
+        user.setIsActive(true);
+        usersRepository.save(user);
     }
 
 }

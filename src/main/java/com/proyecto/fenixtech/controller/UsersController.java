@@ -40,9 +40,18 @@ public class UsersController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito")
     })
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Users>> findAllUsers() {
-        return ResponseEntity.status(HttpStatus.OK).body(usersService.findAllUsers());
+        return ResponseEntity.ok(usersService.findAllUsers());
+    }
+
+    @Operation(summary = "Obtener solo los usuarios activos", description = "Devuelve una lista de todos los usuarios que no han sido borrados (is_active = true)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuarios activos obtenidos con éxito")
+    })
+    @GetMapping
+    public ResponseEntity<List<Users>> findByIsActiveTrue() {
+        return ResponseEntity.ok(usersService.findByIsActiveTrue());
     }
 
     @Operation(summary = "Obtener usuario por ID", description = "Devuelve un usuario por su ID")
@@ -50,9 +59,19 @@ public class UsersController {
             @ApiResponse(responseCode = "200", description = "Usuario obtenido con éxito"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
-    @GetMapping("/{id}")
+    @GetMapping("/all/{id}")
     public ResponseEntity<Users> findByUsersId(@PathVariable Integer id) {
-        return ResponseEntity.status(HttpStatus.OK).body(usersService.findByUsersId(id));
+        return ResponseEntity.ok(usersService.findByUsersId(id));
+    }
+
+    @Operation(summary = "Obtener un usuario activo por ID", description = "Devuelve un usuario por su ID solo si está activo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario activo obtenido con éxito"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado o está inactivo")
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<Users> findByUserIdAndIsActiveTrue(@PathVariable Integer id) {
+        return ResponseEntity.ok(usersService.findByUserIdAndIsActiveTrue(id));
     }
 
     @Operation(summary = "Obtener usuario por email", description = "Devuelve un usuario por su email")
@@ -60,9 +79,19 @@ public class UsersController {
             @ApiResponse(responseCode = "200", description = "Usuario obtenido con éxito"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
-    @GetMapping("/email")
+    @GetMapping("/all/email")
     public ResponseEntity<Users> findByEmail(@RequestParam String email) {
-        return ResponseEntity.status(HttpStatus.OK).body(usersService.findByEmail(email));
+        return ResponseEntity.ok(usersService.findByEmail(email));
+    }
+
+    @Operation(summary = "Obtener un usuario activo por email", description = "Devuelve un usuario por su email solo si está activo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario activo obtenido con éxito"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado o está inactivo")
+    })
+    @GetMapping("/email")
+    public ResponseEntity<Users> findByEmailAndIsActiveTrue(@RequestParam String email) {
+        return ResponseEntity.ok(usersService.findByEmailAndIsActiveTrue(email));
     }
 
     @Operation(summary = "Obtener usuarios por rol", description = "Devuelve una lista de usuarios por su rol")
@@ -70,27 +99,54 @@ public class UsersController {
             @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito"),
             @ApiResponse(responseCode = "404", description = "El rol introducido no existe")
     })
-    @GetMapping("/role")
+    @GetMapping("/all/role")
     public ResponseEntity<List<Users>> findByRole(@RequestParam Rol rol) {
-        return ResponseEntity.status(HttpStatus.OK).body(usersService.findByRole(rol));
+        return ResponseEntity.ok(usersService.findByRole(rol));
+    }
+
+    @Operation(summary = "Obtener usuarios activos por rol", description = "Devuelve una lista de usuarios activos por su rol")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuarios activos obtenidos con éxito")
+    })
+    @GetMapping("/role")
+    public ResponseEntity<List<Users>> findByRoleAndIsActiveTrue(@RequestParam Rol rol) {
+        return ResponseEntity.ok(usersService.findByRoleAndIsActiveTrue(rol));
     }
 
     @Operation(summary = "Obtener usuarios por fecha de creación descendente", description = "Devuelve una lista de usuarios por su fecha de creación ordenados de manera descendente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito")
     })
-    @GetMapping("/created_at/desc")
+    @GetMapping("/all/created_at/desc")
     public ResponseEntity<List<Users>> findByCreatedAtOrderByDesc() {
-        return ResponseEntity.status(HttpStatus.OK).body(usersService.findByCreatedAtOrderByDesc());
+        return ResponseEntity.ok(usersService.findByCreatedAtOrderByDesc());
+    }
+
+    @Operation(summary = "Obtener usuarios activos por fecha de creción descendente", description = "Devuelve una lista de usuarios activos ordenados por fecha de creación descendente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito")
+    })
+    @GetMapping("/created_at/desc")
+    public ResponseEntity<List<Users>> findByCreatedAtAndIsActiveTrueOrderByDesc() {
+        return ResponseEntity.ok(usersService.findByCreatedAtAndIsActiveTrueOrderByDesc());
     }
 
     @Operation(summary = "Obtener usuarios por fecha de creación ascendente", description = "Devuelve una lista de usuarios por su fecha de creación ordenados de manera ascendente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito")
     })
-    @GetMapping("/created_at/asc")
+    @GetMapping("/all/created_at/asc")
     public ResponseEntity<List<Users>> findByCreatedAtOrderByAsc() {
-        return ResponseEntity.status(HttpStatus.OK).body(usersService.findByCreatedAtOrderByAsc());
+        return ResponseEntity.ok(usersService.findByCreatedAtOrderByAsc());
+    }
+
+    @Operation(summary = "Obtener usuarios activos por fecha ascendente", description = "Devuelve una lista de usuarios activos ordenados por fecha de creación ascendente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito")
+    })
+    @GetMapping("/created_at/asc")
+    public ResponseEntity<List<Users>> findByCreatedAtAndIsActiveTrueOrderByAsc() {
+        return ResponseEntity.ok(usersService.findByCreatedAtAndIsActiveTrueOrderByAsc());
     }
 
     @Operation(summary = "Obtener usuarios registrados entre dos fechas", description = "Devuelve una lista de usuarios registrados entre dos fechas")
@@ -98,32 +154,53 @@ public class UsersController {
             @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito"),
             @ApiResponse(responseCode = "400", description = "Fechas introducidas en formato incorrecto")
     })
-    @GetMapping("/created_at/between")
+    @GetMapping("/all/created_at/between")
     public ResponseEntity<List<Users>> findByCreatedAtBetween(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return ResponseEntity.status(HttpStatus.OK).body(usersService.findByCreatedAtBetween(startDate, endDate));
+        return ResponseEntity.ok(usersService.findByCreatedAtBetween(startDate, endDate));
+    }
+
+    @Operation(summary = "Obtener usuarios activos entre dos fechas", description = "Devuelve una lista de usuarios activos registrados entre dos fechas")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito"),
+            @ApiResponse(responseCode = "400", description = "Fechas introducidas en formato incorrecto")
+    })
+    @GetMapping("/created_at/between")
+    public ResponseEntity<List<Users>> findByCreatedAtBetweenAndIsActiveTrue(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        return ResponseEntity.ok(usersService.findByCreatedAtBetweenAndIsActiveTrue(startDate, endDate));
     }
 
     @Operation(summary = "Obtener usuarios por año de creación", description = "Devuelve una lista de usuarios por su año de creación")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito")
     })
-    @GetMapping("/created_at/year")
+    @GetMapping("/all/created_at/year")
     public ResponseEntity<List<Users>> findByCreatedAt(@RequestParam Integer year) {
-        return ResponseEntity.status(HttpStatus.OK).body(usersService.findByCreatedAt(year));
+        return ResponseEntity.ok(usersService.findByCreatedAt(year));
+    }
+
+    @Operation(summary = "Obtener usuarios activos por año de crecaión", description = "Devuelve una lista de usuarios activos registrados por su año de creación")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito")
+    })
+    @GetMapping("/created_at/year")
+    public ResponseEntity<List<Users>> findByCreatedAtAndIsActiveTrue(@RequestParam Integer year) {
+        return ResponseEntity.ok(usersService.findByCreatedAtAndIsActiveTrue(year));
     }
 
     @Operation(summary = "Obtener el numero de usuarios", description = "Devuelve el numero de usuarios")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Numero de usuarios obtenido con éxito")
     })
-    @GetMapping("/count")
+    @GetMapping("/all/count")
     public ResponseEntity<Map<String, Object>> count() {
         Long count = usersService.count();
         Map<String, Object> response = new HashMap<>();
         response.put("cantidad", count);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Crear un usuario", description = "Crea un nuevo usuario")
@@ -157,7 +234,7 @@ public class UsersController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable @Valid Integer id) {
         usersService.delete(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Actualizar un usuario", description = "Actualiza un usuario existente")
@@ -168,7 +245,22 @@ public class UsersController {
     @PutMapping("/{id}")
     public ResponseEntity<Users> updateUser(@PathVariable Integer id, @Valid @RequestBody Users user) {
         Users updatedUser = usersService.update(id, user);
-        return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    //Para que un administrador pueda reactivar una cuenta
+    @Operation(summary = "Restaurar un usuario borrado", description = "Vuelve a activar la cuenta de un usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario restaurado con éxito"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+            @ApiResponse(responseCode = "400", description = "El usuario ya estaba activo")
+    })
+    @PutMapping("/{id}/restore")
+    public ResponseEntity<Map<String, String>> restoreUser(@PathVariable Integer id) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Usuario restaurado con éxito");
+        usersService.restore(id);
+        return ResponseEntity.ok(response);
     }
 
 }
