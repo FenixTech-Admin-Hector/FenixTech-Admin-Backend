@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS users (
     -- ENUM: Evita crear tabla extra para roles, optimizando rendimiento
     role ENUM('PARTICULAR', 'EMPRESA', 'ADMIN') DEFAULT 'PARTICULAR',
     user_img VARCHAR(255) DEFAULT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_active BOOLEAN DEFAULT TRUE
 );
 
 -- Tabla para gestionar seguidores y seguidos

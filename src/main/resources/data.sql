@@ -1,25 +1,25 @@
 -- Users (20 records to support companies and buyers)
-INSERT INTO users (email, password_hash, first_name, last_name, role, created_at) VALUES
-('comp1@fenix.com', 'hash1', 'Juan', 'Perez', 'EMPRESA', '2023-01-10 10:00:00'),
-('comp2@fenix.com', 'hash2', 'Maria', 'Gomez', 'EMPRESA', '2023-01-15 11:00:00'),
-('comp3@fenix.com', 'hash3', 'Carlos', 'Ruiz', 'EMPRESA', '2023-02-01 09:30:00'),
-('comp4@fenix.com', 'hash4', 'Ana', 'Lopez', 'EMPRESA', '2023-02-20 14:00:00'),
-('comp5@fenix.com', 'hash5', 'Luis', 'Torres', 'EMPRESA', '2023-03-05 16:20:00'),
-('comp6@fenix.com', 'hash6', 'Elena', 'Diaz', 'EMPRESA', '2023-03-15 08:45:00'),
-('comp7@fenix.com', 'hash7', 'Pedro', 'Sanchez', 'EMPRESA', '2023-04-01 12:00:00'),
-('comp8@fenix.com', 'hash8', 'Sofia', 'Martin', 'EMPRESA', '2023-04-10 10:15:00'),
-('comp9@fenix.com', 'hash9', 'Miguel', 'Hernandez', 'EMPRESA', '2023-05-05 11:30:00'),
-('comp10@fenix.com', 'hash10', 'Lucia', 'Jimenez', 'EMPRESA', '2023-05-20 15:45:00'),
-('comp11@fenix.com', 'hash11', 'David', 'Alvarez', 'EMPRESA', '2023-06-01 09:00:00'),
-('comp12@fenix.com', 'hash12', 'Carmen', 'Moreno', 'EMPRESA', '2023-06-15 13:20:00'),
-('comp13@fenix.com', 'hash13', 'Jorge', 'Munoz', 'EMPRESA', '2023-07-01 17:00:00'),
-('comp14@fenix.com', 'hash14', 'Raquel', 'Romero', 'EMPRESA', '2023-07-20 10:30:00'),
-('comp15@fenix.com', 'hash15', 'Alberto', 'Navarro', 'EMPRESA', '2023-08-05 14:15:00'),
-('user1@fenix.com', 'hash16', 'Laura', 'Gil', 'PARTICULAR', '2023-08-15 16:00:00'),
-('user2@fenix.com', 'hash17', 'Roberto', 'Serrano', 'PARTICULAR', '2023-09-01 09:45:00'),
-('user3@fenix.com', 'hash18', 'Isabel', 'Blanco', 'PARTICULAR', '2023-09-20 11:15:00'),
-('user4@fenix.com', 'hash19', 'Fernando', 'Molina', 'PARTICULAR', '2023-10-05 13:30:00'),
-('admin@fenix.com', 'hash20', 'Admin', 'System', 'ADMIN', '2023-01-01 00:00:00');
+INSERT INTO users (email, password_hash, first_name, last_name, role, created_at, is_active) VALUES
+('comp1@fenix.com', 'hash1', 'Juan', 'Perez', 'EMPRESA', '2023-01-10 10:00:00', TRUE),
+('comp2@fenix.com', 'hash2', 'Maria', 'Gomez', 'EMPRESA', '2023-01-15 11:00:00', TRUE),
+('comp3@fenix.com', 'hash3', 'Carlos', 'Ruiz', 'EMPRESA', '2023-02-01 09:30:00', TRUE),
+('comp4@fenix.com', 'hash4', 'Ana', 'Lopez', 'EMPRESA', '2023-02-20 14:00:00', TRUE),
+('comp5@fenix.com', 'hash5', 'Luis', 'Torres', 'EMPRESA', '2023-03-05 16:20:00', TRUE),
+('comp6@fenix.com', 'hash6', 'Elena', 'Diaz', 'EMPRESA', '2023-03-15 08:45:00', FALSE),
+('comp7@fenix.com', 'hash7', 'Pedro', 'Sanchez', 'EMPRESA', '2023-04-01 12:00:00', TRUE),
+('comp8@fenix.com', 'hash8', 'Sofia', 'Martin', 'EMPRESA', '2023-04-10 10:15:00', TRUE),
+('comp9@fenix.com', 'hash9', 'Miguel', 'Hernandez', 'EMPRESA', '2023-05-05 11:30:00', FALSE),
+('comp10@fenix.com', 'hash10', 'Lucia', 'Jimenez', 'EMPRESA', '2023-05-20 15:45:00', FALSE),
+('comp11@fenix.com', 'hash11', 'David', 'Alvarez', 'EMPRESA', '2023-06-01 09:00:00', TRUE),
+('comp12@fenix.com', 'hash12', 'Carmen', 'Moreno', 'EMPRESA', '2023-06-15 13:20:00', TRUE),
+('comp13@fenix.com', 'hash13', 'Jorge', 'Munoz', 'EMPRESA', '2023-07-01 17:00:00', TRUE),
+('comp14@fenix.com', 'hash14', 'Raquel', 'Romero', 'EMPRESA', '2023-07-20 10:30:00', FALSE),
+('comp15@fenix.com', 'hash15', 'Alberto', 'Navarro', 'EMPRESA', '2023-08-05 14:15:00', TRUE),
+('user1@fenix.com', 'hash16', 'Laura', 'Gil', 'PARTICULAR', '2023-08-15 16:00:00', FALSE),
+('user2@fenix.com', 'hash17', 'Roberto', 'Serrano', 'PARTICULAR', '2023-09-01 09:45:00', FALSE),
+('user3@fenix.com', 'hash18', 'Isabel', 'Blanco', 'PARTICULAR', '2023-09-20 11:15:00', TRUE),
+('user4@fenix.com', 'hash19', 'Fernando', 'Molina', 'PARTICULAR', '2023-10-05 13:30:00', FALSE),
+('admin@fenix.com', 'hash20', 'Admin', 'System', 'ADMIN', '2023-01-01 00:00:00', TRUE);
 
 -- Companies (15 records)
 INSERT INTO companies (user_id, company_name, cif, reputation_score, impact_metrics) VALUES

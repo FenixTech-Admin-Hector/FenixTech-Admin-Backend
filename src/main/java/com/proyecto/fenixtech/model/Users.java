@@ -22,6 +22,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -89,6 +90,10 @@ public class Users implements Serializable {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Schema(description = "Estado del usuario", example = "true")
+    @Column(name = "is_active")
+    private Boolean isActive;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnoreProperties({ "user", "companyBadges", "products", "reviews" })
     private Companies company;
@@ -128,5 +133,13 @@ public class Users implements Serializable {
     @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("following")
     private List<Follow> followers;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.isActive == null) {
+            this.isActive = true;
+        }
+    }
+
 
 }
