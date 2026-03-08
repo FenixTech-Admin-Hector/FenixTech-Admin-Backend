@@ -35,7 +35,7 @@ public class ProductsImg implements Serializable{
     @Schema(description = "Identificador único de la imagen", example = "1")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "img_id", nullable = false, unique = true)
+    @Column(name = "image_id", nullable = false, unique = true)
     private Integer imgId;
 
     @Schema(description = "URL de la imagen", example = "https://example.com/image.jpg")

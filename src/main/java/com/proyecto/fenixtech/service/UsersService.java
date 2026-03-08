@@ -179,7 +179,6 @@ public class UsersService {
         existingUser.setFirstName(user.getFirstName());
         existingUser.setLastName(user.getLastName());
         existingUser.setUserImg(user.getUserImg());
-        existingUser.setIsActive(true);
 
         if (!existingUser.getEmail().equals(user.getEmail()) &&
                 usersRepository.findByEmail(user.getEmail()).isPresent()) {
@@ -200,6 +199,7 @@ public class UsersService {
         Users user = usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el usuario con ID: " + id));
         user.setIsActive(false);
+        usersRepository.save(user);
     }
 
     @Transactional
