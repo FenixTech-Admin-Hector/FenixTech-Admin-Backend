@@ -106,6 +106,7 @@ public class ProductsService {
                 img.setProduct(product);
             });
         }
+        
         return productsRepository.save(product);
     }
 

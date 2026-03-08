@@ -62,7 +62,8 @@ public class UsersService {
     @Transactional(readOnly = true)
     public List<Users> findByRoleAndIsActiveTrue(Rol rol) {
         if (rol == Rol.ADMIN) {
-            throw new SecurityException("Operación no permitida: No se pueden buscar administradores por esta vía pública.");
+            throw new SecurityException(
+                    "Operación no permitida: No se pueden buscar administradores por esta vía pública.");
         }
         return usersRepository.findByRoleAndIsActiveTrue(rol);
     }
@@ -83,7 +84,7 @@ public class UsersService {
     }
 
     @Transactional(readOnly = true)
-    public List<Users> findByCreatedAtAndIsActiveTrueOrderByAsc(){
+    public List<Users> findByCreatedAtAndIsActiveTrueOrderByAsc() {
         return usersRepository.findByIsActiveTrueAndRoleNotOrderByCreatedAtAsc(Rol.ADMIN);
     }
 
@@ -134,7 +135,6 @@ public class UsersService {
         return usersRepository.count();
     }
 
-
     @Transactional
     public Users save(Users user) {
         if (usersRepository.findByEmail(user.getEmail()).isPresent()) {
@@ -151,6 +151,16 @@ public class UsersService {
         }
         if (user.getRole() == null) {
             user.setRole(Rol.PARTICULAR);
+        }
+
+        if (user.getCompany() != null) {
+            user.getCompany().setUser(user);
+        }
+
+        if (user.getAddresses() != null) {
+            for (int i = 0; i < user.getAddresses().size(); i++) {
+                user.getAddresses().get(i).setUser(user);
+            }
         }
 
         return usersRepository.save(user);

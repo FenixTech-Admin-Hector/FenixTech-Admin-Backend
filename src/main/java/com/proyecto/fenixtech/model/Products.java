@@ -34,6 +34,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -130,9 +133,26 @@ public class Products implements Serializable {
         }
     }
 
-    
+   
+   @JsonProperty("companyId")
+    public void setCompanyId(Integer companyId) {
+        this.company = new Companies();
+        this.company.setCompanyId(companyId);
+    }
 
+    @JsonProperty("subcategoryId")
+    public void setSubcategoryId(Integer subcategoryId) {
+        this.subcategory = new Subcategories();
+        this.subcategory.setSubcategoryId(subcategoryId);
+    }
 
-
+    public void setProductsImg(List<ProductsImg> productsImg) {
+        this.productsImg = productsImg;
+        if (productsImg != null) {
+            for (ProductsImg img : productsImg) {
+                img.setProduct(this);
+            }
+        }
+    }
 
 }
