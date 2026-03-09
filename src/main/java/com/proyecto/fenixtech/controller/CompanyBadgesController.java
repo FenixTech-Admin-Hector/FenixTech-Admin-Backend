@@ -71,8 +71,6 @@ public class CompanyBadgesController {
         return ResponseEntity.status(HttpStatus.OK).body(companyBadgesService.findByAwardedAtBetween(startDate, endDate));
     }
 
-
-
     @Operation(summary = "Obtener el número total de insignias de empresas", description = "Devuelve el número total de insignias de empresas")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Número de insignias de empresas obtenido con éxito")

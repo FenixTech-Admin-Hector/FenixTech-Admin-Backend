@@ -94,6 +94,10 @@ public class Users implements Serializable {
     @Column(name = "is_active")
     private Boolean isActive;
 
+    @Schema(description = "Fecha de borrado del usuario", example = "2023-10-27T10:00:00")
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnoreProperties({ "user", "companyBadges", "products", "reviews" })
     private Companies company;

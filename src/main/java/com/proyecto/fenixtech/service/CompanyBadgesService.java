@@ -81,8 +81,8 @@ public class CompanyBadgesService {
         Companies company = companiesRepository.findById(companyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa no encontrada con id: " + companyId));
         
-        Badges badge = badgesRepository.findById(badgeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Insignia no encontrada con id: " + badgeId));
+        Badges badge = badgesRepository.findByBadgeIdAndIsActiveTrue(badgeId)
+            .orElseThrow(() -> new ResourceNotFoundException("La insignia con id: " + badgeId + " no existe o no está activa"));
 
         CompanyBadgeId id = new CompanyBadgeId(companyId, badgeId);
 

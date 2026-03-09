@@ -208,6 +208,8 @@ public class UsersService {
     public void delete(Integer id) {
         Users user = usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el usuario con ID: " + id));
+        
+        user.setDeletedAt(LocalDateTime.now());
         user.setIsActive(false);
         usersRepository.save(user);
     }
@@ -222,6 +224,7 @@ public class UsersService {
         }
 
         user.setIsActive(true);
+        user.setDeletedAt(null);
         usersRepository.save(user);
     }
 

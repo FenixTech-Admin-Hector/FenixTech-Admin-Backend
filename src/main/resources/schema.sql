@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
     role ENUM('PARTICULAR', 'EMPRESA', 'ADMIN') DEFAULT 'PARTICULAR',
     user_img VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP DEFAULT NULL,
     is_active BOOLEAN DEFAULT TRUE
 );
 
@@ -55,6 +56,8 @@ CREATE TABLE IF NOT EXISTS addresses (
     country VARCHAR(100) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
+
+CREATE INDEX idx_users_active ON users(is_active);
 
 -- ------------------------------------------------------------------------------
 -- MÓDULO 2: CATÁLOGO Y PRODUCTOS

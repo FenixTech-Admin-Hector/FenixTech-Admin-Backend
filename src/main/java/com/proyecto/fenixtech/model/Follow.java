@@ -38,10 +38,10 @@ public class Follow implements Serializable {
     @EmbeddedId
     private FollowsId id;
 
+    @Schema(description = "Fecha de creación del seguidor", example = "2023-10-27T10:00:00")
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-    
+    private LocalDateTime createdAt = null;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("followerId")
