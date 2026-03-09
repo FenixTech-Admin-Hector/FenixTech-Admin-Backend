@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.proyecto.fenixtech.service.OrdersService;
@@ -98,9 +99,11 @@ public class OrdersController {
             @ApiResponse(responseCode = "201", description = "Pedido creado con éxito"),
             @ApiResponse(responseCode = "404", description = "No se puede crear el pedido")
     })
-    @PostMapping("/create/{userId}")
-    public ResponseEntity<Orders> createOrderFromUserCart(@PathVariable Integer userId) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ordersService.createOrderFromUserCart(userId));
+    @PostMapping("/create")
+    public ResponseEntity<Orders> createOrderFromUserCart(@RequestBody Orders orderData) {
+        Integer userId = orderData.getBuyer().getUserId();
+        Boolean requiresShipping = orderData.getRequiresShipping();
+        return ResponseEntity.status(HttpStatus.CREATED).body(ordersService.createOrderFromUserCart(userId, requiresShipping));
     }
 
     @Operation(summary = "Eliminar un pedido por su ID", description = "Elimina un pedido por su ID")
