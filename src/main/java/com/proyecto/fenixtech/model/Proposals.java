@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proyecto.fenixtech.model.enums.ProposalStatus;
@@ -70,10 +71,12 @@ public class Proposals implements Serializable {
     @JsonIgnoreProperties({"proposals", "company", "addresses", "reviews", "orders", "cartItems", "posts", "comments"})
     private Users requester;
 
-    @JsonProperty
-    public void setRequesterId(Integer requesterId) {
-        this.requester = new Users();
-        this.requester.setUserId(requesterId);
+    @JsonProperty("userId")
+    public void setUserId(Integer userId) {
+        if (userId != null) {
+            this.requester = new Users(); 
+            this.requester.setUserId(userId);
+        }
     }
 
 }
