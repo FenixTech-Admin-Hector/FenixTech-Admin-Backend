@@ -3,6 +3,7 @@ package com.proyecto.fenixtech.model;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -58,5 +59,11 @@ public class OrderDetails implements Serializable {
     @JoinColumn(name = "product_id", nullable = false)
     @JsonIgnoreProperties({"subcategory", "company", "cartItems", "orderDetails"})
     private Products product;
+
+    @JsonProperty("productId")
+    public void setProductId(Integer productId) {
+        this.product = new Products();
+        this.product.setProductId(productId);
+    }
 
 }

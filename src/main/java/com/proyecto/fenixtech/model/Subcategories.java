@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
@@ -58,5 +59,11 @@ public class Subcategories implements Serializable {
     @OneToMany(mappedBy = "subcategory", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({"subcategory", "company"}) 
     private List<Products> products = new ArrayList<>();
+
+    @JsonProperty("categoryId")
+    public void setCategoryId(Integer categoryId) {
+        this.category = new Categories();
+        this.category.setCategoryId(categoryId);
+    }
 
 }

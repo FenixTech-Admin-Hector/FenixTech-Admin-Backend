@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -68,5 +69,18 @@ public class Reviews implements Serializable{
     @JoinColumn(name = "target_company_id", nullable = false)
     @JsonIgnoreProperties({"reviews", "companyBadges", "products", "user"})
     private Companies targetCompany;
+
+    @JsonProperty("userId")
+    public void setUserId(Integer userId) {
+        this.reviewer = new Users();
+        this.reviewer.setUserId(userId);
+    }
+
+    @JsonProperty("companyId")
+    public void setCompanyId(Integer companyId) {
+        this.targetCompany = new Companies();
+        this.targetCompany.setCompanyId(companyId);
+    }
+
 
 }

@@ -3,6 +3,7 @@ package com.proyecto.fenixtech.model;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proyecto.fenixtech.model.enums.ShipmentStatus;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -70,7 +71,7 @@ public class Shipments implements Serializable {
     private ShipmentStatus status = ShipmentStatus.PREPARING;
 
     @OneToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "order_id", unique = true, nullable = false)
+    @JoinColumn(name = "order_id", unique = true, nullable = false)
     @JsonIgnoreProperties({"shipment", "orderDetails", "buyer"} )
     private Orders order;
 
@@ -79,6 +80,12 @@ public class Shipments implements Serializable {
         if (this.status == null) {
             this.status = ShipmentStatus.PREPARING;
         }
+    }
+
+    @JsonProperty("orderId")
+    public void setOrderId(Integer orderId) {
+        this.order = new Orders();
+        this.order.setOrderId(orderId);
     }
 
 

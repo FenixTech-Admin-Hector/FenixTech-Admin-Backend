@@ -3,6 +3,7 @@ package com.proyecto.fenixtech.model;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -59,7 +60,19 @@ public class CartItems implements Serializable {
         if (this.quantity == null) {
             this.quantity = 1;
         }
-
     }
+
+    @JsonProperty("productId")
+    public void setProductId(Integer productId) {
+        this.product = new Products();
+        this.product.setProductId(productId);
+    }
+
+    @JsonProperty("userId")
+    public void setUserId(Integer userId) {
+        this.user = new Users();
+        this.user.setUserId(userId);
+    }
+
 
 }

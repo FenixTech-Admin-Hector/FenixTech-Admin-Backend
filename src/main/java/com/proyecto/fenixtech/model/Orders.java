@@ -8,6 +8,7 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proyecto.fenixtech.model.enums.OrderStatus;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -75,7 +76,7 @@ public class Orders implements Serializable {
     private Users buyer;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"order", "product"})
+    @JsonIgnoreProperties({"order"}) //Se quita products para que desde el front se puedan ver los productos asociados 
     private List<OrderDetails> orderDetails = new ArrayList<>();
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
@@ -93,9 +94,21 @@ public class Orders implements Serializable {
         if (this.requiresShipping == null) {
             this.requiresShipping = false;
         }
-        
     }
 
+    @JsonProperty("userId")
+    public void setUserId(Integer userId) {
+        this.buyer = new Users();
+        this.buyer.setUserId(userId);
+    }
 
+    public void setOrderDetails(List<OrderDetails> orderDetails) {
+        this.orderDetails = orderDetails;
+        if (orderDetails != null) {
+            for (OrderDetails detail : orderDetails) {
+                detail.setOrder(this);
+            }
+        }
+    }
 
 }

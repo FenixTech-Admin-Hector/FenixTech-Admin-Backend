@@ -134,7 +134,7 @@ public class Products implements Serializable {
     }
 
    
-   @JsonProperty("companyId")
+    @JsonProperty("companyId")
     public void setCompanyId(Integer companyId) {
         this.company = new Companies();
         this.company.setCompanyId(companyId);

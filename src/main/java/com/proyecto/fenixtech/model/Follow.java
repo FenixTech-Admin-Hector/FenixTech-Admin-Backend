@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -53,6 +54,28 @@ public class Follow implements Serializable {
     @JoinColumn(name = "following_id", nullable = false)
     @JsonIgnoreProperties({ "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments", "following", "followers"})
     private Users following;
+
+    @JsonProperty("followerId")
+    public void setFollowerId(Integer followerId) {
+        this.follower = new Users();
+        this.follower.setUserId(followerId);
+
+        if (this.id == null) {
+            this.id = new FollowsId();
+        }
+        this.id.setFollowerId(followerId);
+    }
+
+    @JsonProperty("followingId")
+    public void setFollowingId(Integer followingId) {
+        this.following = new Users();
+        this.following.setUserId(followingId);
+
+        if (this.id == null) {
+            this.id = new FollowsId();
+        }
+        this.id.setFollowingId(followingId);
+    }
     
 
 }

@@ -3,6 +3,7 @@ package com.proyecto.fenixtech.model;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -48,5 +49,13 @@ public class PostsImg implements Serializable {
     @JoinColumn(name = "post_id", nullable = false)
     @JsonIgnoreProperties({"author", "comments"})
     private Posts post;
+
+    @JsonProperty("postId")
+    public void setPostId(Integer postId) {
+        this.post = new Posts();
+        this.post.setPostId(postId);
+    }
+
+    //)
 
 }
