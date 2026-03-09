@@ -90,7 +90,7 @@ public class OrdersService {
     }
 
     @Transactional
-    public Orders createOrderFromUserCart(Integer userId) {
+    public Orders createOrderFromUserCart(Integer userId, Boolean requiresShipping) {
         Users buyer = usersRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No se puede crear el pedido: El usuario con ID " + userId + " no existe"));
@@ -103,6 +103,7 @@ public class OrdersService {
 
         Orders newOrder = new Orders();
         newOrder.setBuyer(buyer);
+        newOrder.setRequiresShipping(requiresShipping);
         List<OrderDetails> detailsList = new ArrayList<>();
         Double totalCalculado = 0.0;
 
