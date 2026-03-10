@@ -10,6 +10,7 @@ import com.proyecto.fenixtech.repository.CategoriesRepository;
 import com.proyecto.fenixtech.repository.ProposalsRepository;
 import com.proyecto.fenixtech.repository.UsersRepository;
 import com.proyecto.fenixtech.dto.ProposalDTO;
+import com.proyecto.fenixtech.dto.ProposalUpdateDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Categories;
 import com.proyecto.fenixtech.model.Proposals;
@@ -25,7 +26,6 @@ public class ProposalsService {
     private UsersRepository usersRepository;
     @Autowired
     private CategoriesRepository categoriesRepository;
-
 
     @Transactional(readOnly = true)
     public List<Proposals> findAllProposals() {
@@ -61,7 +61,7 @@ public class ProposalsService {
         Proposals proposal = new Proposals();
         proposal.setTitle(dto.getTitle());
         proposal.setDescription(dto.getDescription());
-        proposal.setRequester(user); 
+        proposal.setRequester(user);
         proposal.setCategory(category);
         proposal.setStatus(ProposalStatus.OPEN);
 
@@ -77,14 +77,16 @@ public class ProposalsService {
     }
 
     @Transactional
-    public Proposals update(Integer id, Proposals proposal) {
-        Proposals existingProposal = proposalsRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Propuesta no encontrada con id: " + id));
+    public Proposals update(Integer id, ProposalUpdateDTO dto) {
+        Proposals existing = proposalsRepository.findById(id).orElseThrow();
 
-        existingProposal.setTitle(proposal.getTitle());
-        existingProposal.setDescription(proposal.getDescription());
-        existingProposal.setStatus(proposal.getStatus());
+        if (dto.getTitle() != null)
+            existing.setTitle(dto.getTitle());
+        if (dto.getDescription() != null)
+            existing.setDescription(dto.getDescription());
+        if (dto.getStatus() != null)
+            existing.setStatus(dto.getStatus());
 
-        return proposalsRepository.save(existingProposal);
+        return proposalsRepository.save(existing);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.fenixtech.dto.ProposalDTO;
+import com.proyecto.fenixtech.dto.ProposalUpdateDTO;
 import com.proyecto.fenixtech.model.Proposals;
 import com.proyecto.fenixtech.service.ProposalsService;
 
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
 
 @Tag(name = "Proposals", description = "API para gestión de propuestas")
 @RequestMapping("/proposals")
@@ -47,7 +47,6 @@ public class ProposalsController {
         return proposalsService.findAllProposals();
     }
 
-
     @Operation(summary = "Obtener propuesta por ID", description = "Devuelve una propuesta por su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Propuesta obtenida con éxito"),
@@ -57,7 +56,6 @@ public class ProposalsController {
     public Proposals findProposalById(@PathVariable Integer id) {
         return proposalsService.findById(id);
     }
-    
 
     @Operation(summary = "Obtener propuestas por ID de usuario", description = "Devuelve una lista de propuestas asociadas a un ID de usuario")
     @ApiResponses(value = {
@@ -69,13 +67,12 @@ public class ProposalsController {
         return proposalsService.findByUserId(id);
     }
 
-
     @Operation(summary = "Obtener el numero depropuestas", description = "Devuelve el número total de propuestas")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Número de propuestas obtenido con éxito")
     })
     @GetMapping("/count")
-    
+
     public ResponseEntity<Map<String, Long>> count() {
         Long count = proposalsService.count();
         Map<String, Long> response = new HashMap<>();
@@ -93,14 +90,15 @@ public class ProposalsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(proposalsService.save(dto));
     }
 
-    @Operation(summary = "Actualizar una propuesta", description = "Actualiza una propuesta existente")
+    @Operation(summary = "Actualizar propuesta (Uso ADMIN)", description = "Permite al administrador modificar el estado, título, descripción o categoría")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Propuesta actualizada con éxito"),
             @ApiResponse(responseCode = "404", description = "Propuesta no encontrada")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Proposals> update(@PathVariable Integer id, @RequestBody Proposals proposal) {
-        return ResponseEntity.ok(proposalsService.update(id, proposal));
+    public ResponseEntity<Proposals> update(@PathVariable Integer id, @RequestBody ProposalUpdateDTO dto) {
+        Proposals updatedProposal = proposalsService.update(id, dto);
+        return ResponseEntity.ok(updatedProposal);
     }
 
     @Operation(summary = "Eliminar una propuesta", description = "Elimina una propuesta por su ID")
