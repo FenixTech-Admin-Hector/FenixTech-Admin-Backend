@@ -25,13 +25,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@ToString(exclude = { "subcategories"})
-@EqualsAndHashCode(exclude = { "subcategories"})
+@ToString(exclude = { "subcategories" })
+@EqualsAndHashCode(exclude = { "subcategories" })
 
 @Schema(description = "Modelo de Categorías", name = "Categories")
 @Entity
 @Table(name = "categories")
-public class Categories implements Serializable{
+public class Categories implements Serializable {
     @Schema(description = "Identificador único de la categoría", example = "1")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,10 +48,11 @@ public class Categories implements Serializable{
     private String description;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"category"})
+    @JsonIgnoreProperties({ "category" })
     private List<Subcategories> subcategories = new ArrayList<>();
 
-
-
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("category")
+    private List<Proposals> proposals = new ArrayList<>();
 
 }

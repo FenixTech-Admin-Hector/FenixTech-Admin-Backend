@@ -35,7 +35,6 @@ import lombok.ToString;
 @ToString(exclude = "requester")
 @EqualsAndHashCode(exclude = "requester")
 
-
 @Schema(description = "Modelo de Propuesta", name = "Proposals")
 @Entity
 @Table(name = "proposals")
@@ -68,15 +67,13 @@ public class Proposals implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requester_user_id", nullable = false)
-    @JsonIgnoreProperties({"proposals", "company", "addresses", "reviews", "orders", "cartItems", "posts", "comments"})
+    @JsonIgnoreProperties({ "proposals", "company", "addresses", "reviews", "orders", "cartItems", "posts",
+            "comments" })
     private Users requester;
 
-    @JsonProperty("userId")
-    public void setUserId(Integer userId) {
-        if (userId != null) {
-            this.requester = new Users(); 
-            this.requester.setUserId(userId);
-        }
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    @JsonIgnoreProperties({ "subcategories", "products" })
+    private Categories category;
 
 }

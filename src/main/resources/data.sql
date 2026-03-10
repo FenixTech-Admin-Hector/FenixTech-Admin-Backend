@@ -191,22 +191,22 @@ INSERT INTO comments (post_id, author_user_id, body, created_at) VALUES
 (8, 20, 'Increible', '2023-12-05 09:00:00');
 
 -- Proposals (15 records)
-INSERT INTO proposals (requester_user_id, title, description, status, created_at) VALUES
-(16, 'Solicitud PC Escuela', 'Necesitamos 5 PCs', 'OPEN', '2024-01-01 10:00:00'),
-(17, 'Donacion ONG', 'Portatiles para trabajo', 'OPEN', '2024-01-02 11:00:00'),
-(18, 'Hardware para taller', 'Componentes varios', 'FULFILLED', '2024-01-03 12:00:00'),
-(19, 'Pantallas Centro Social', 'Monitores usados', 'OPEN', '2024-01-04 13:00:00'),
-(20, 'Teclados Biblioteca', 'Perifericos entrada', 'FULFILLED', '2024-01-05 14:00:00'),
-(16, 'Ratones Aula', 'Ratones USB', 'OPEN', '2024-01-06 15:00:00'),
-(17, 'Impresora Asociacion', 'Impresora laser', 'OPEN', '2024-01-07 16:00:00'),
-(18, 'Cables Red', 'Cableado estructurado', 'FULFILLED', '2024-01-08 17:00:00'),
-(19, 'Servidor Web', 'Servidor rack', 'OPEN', '2024-01-09 18:00:00'),
-(20, 'Tablets Educacion', 'Tablets android', 'OPEN', '2024-01-10 19:00:00'),
-(16, 'Proyector Sala', 'Proyector HDMI', 'FULFILLED', '2024-01-11 20:00:00'),
-(17, 'Altavoces Eventos', 'Equipo sonido', 'OPEN', '2024-01-12 21:00:00'),
-(18, 'Webcams Cursos', 'Camaras USB', 'OPEN', '2024-01-13 09:00:00'),
-(19, 'Discos Duros Backup', 'HDD Externos', 'FULFILLED', '2024-01-14 10:00:00'),
-(20, 'Memorias USB', 'Pendrives 16GB', 'OPEN', '2024-01-15 11:00:00');
+INSERT INTO proposals (requester_user_id, category_id, title, description, status, created_at) VALUES
+(16, 1, 'Solicitud PC Escuela', 'Necesitamos 5 PCs para el aula de informática', 'OPEN', '2024-01-01 10:00:00'),
+(17, 1, 'Donacion ONG', 'Portátiles para trabajo social en campo', 'OPEN', '2024-01-02 11:00:00'),
+(18, 4, 'Hardware para taller', 'Componentes varios para montaje de equipos', 'FULFILLED', '2024-01-03 12:00:00'),
+(19, 3, 'Pantallas Centro Social', 'Monitores usados en buen estado', 'OPEN', '2024-01-04 13:00:00'),
+(20, 3, 'Teclados Biblioteca', 'Periféricos de entrada para terminales públicos', 'FULFILLED', '2024-01-05 14:00:00'),
+(16, 3, 'Ratones Aula', 'Ratones USB para sustitución de material dañado', 'OPEN', '2024-01-06 15:00:00'),
+(17, 3, 'Impresora Asociacion', 'Impresora láser para tareas administrativas', 'OPEN', '2024-01-07 16:00:00'),
+(18, 4, 'Cables Red', 'Cableado estructurado para nueva sede', 'FULFILLED', '2024-01-08 17:00:00'),
+(19, 5, 'Servidor Web', 'Servidor rack para alojamiento de proyectos locales', 'OPEN', '2024-01-09 18:00:00'),
+(20, 2, 'Tablets Educacion', 'Tablets android para alumnos con pocos recursos', 'OPEN', '2024-01-10 19:00:00'),
+(16, 3, 'Proyector Sala', 'Proyector HDMI para conferencias', 'FULFILLED', '2024-01-11 20:00:00'),
+(17, 3, 'Altavoces Eventos', 'Equipo de sonido básico para actos comunitarios', 'OPEN', '2024-01-12 21:00:00'),
+(18, 3, 'Webcams Cursos', 'Cámaras USB para formación online', 'OPEN', '2024-01-13 09:00:00'),
+(19, 4, 'Discos Duros Backup', 'HDD Externos para copia de seguridad de datos', 'FULFILLED', '2024-01-14 10:00:00'),
+(20, 3, 'Memorias USB', 'Pendrives 16GB para entrega de material didáctico', 'OPEN', '2024-01-15 11:00:00');
 
 -- Reviews (15 records)
 INSERT INTO reviews (reviewer_user_id, target_company_id, rating, review_comment, created_at) VALUES

@@ -191,11 +191,13 @@ CREATE TABLE IF NOT EXISTS comments (
 CREATE TABLE IF NOT EXISTS proposals (
     proposal_id INT PRIMARY KEY AUTO_INCREMENT,
     requester_user_id INT NOT NULL,
+    category_id INT NOT NULL,
     title VARCHAR(200) NOT NULL,
     description TEXT NOT NULL,
     status ENUM('OPEN', 'FULFILLED') DEFAULT 'OPEN',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (requester_user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+    FOREIGN KEY (requester_user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES Categories(category_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS reviews (

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.proyecto.fenixtech.dto.ProposalDTO;
 import com.proyecto.fenixtech.model.Proposals;
 import com.proyecto.fenixtech.service.ProposalsService;
 
@@ -18,6 +19,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -87,8 +89,8 @@ public class ProposalsController {
             @ApiResponse(responseCode = "400", description = "Solicitud inválida")
     })
     @PostMapping
-    public ResponseEntity<Proposals> save(@RequestBody Proposals proposal) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(proposalsService.save(proposal));
+    public ResponseEntity<Proposals> create(@Valid @RequestBody ProposalDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(proposalsService.save(dto));
     }
 
     @Operation(summary = "Actualizar una propuesta", description = "Actualiza una propuesta existente")

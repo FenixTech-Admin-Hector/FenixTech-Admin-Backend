@@ -6,11 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.proyecto.fenixtech.repository.CategoriesRepository;
 import com.proyecto.fenixtech.repository.ProposalsRepository;
 import com.proyecto.fenixtech.repository.UsersRepository;
+import com.proyecto.fenixtech.dto.ProposalDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
+import com.proyecto.fenixtech.model.Categories;
 import com.proyecto.fenixtech.model.Proposals;
 import com.proyecto.fenixtech.model.Users;
+import com.proyecto.fenixtech.model.enums.ProposalStatus;
+import com.proyecto.fenixtech.model.enums.Rol;
 
 @Service
 public class ProposalsService {
@@ -18,6 +23,9 @@ public class ProposalsService {
     private ProposalsRepository proposalsRepository;
     @Autowired
     private UsersRepository usersRepository;
+    @Autowired
+    private CategoriesRepository categoriesRepository;
+
 
     @Transactional(readOnly = true)
     public List<Proposals> findAllProposals() {
@@ -43,19 +51,19 @@ public class ProposalsService {
     }
 
     @Transactional
-    public Proposals save(Proposals proposal) {
-        System.out.println("DEBUG: Proposal recibida -> " + proposal);
-        System.out.println("DEBUG: Requester -> " + proposal.getRequester());
-        
-        if (proposal.getRequester() == null || proposal.getRequester().getUserId() == null) {
-            throw new IllegalArgumentException("El ID del solicitante (userId) es obligatorio");
-        }
+    public Proposals save(ProposalDTO dto) {
+        Users user = usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(dto.getUserId(), Rol.ADMIN)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        Integer userId = proposal.getRequester().getUserId();
-        Users user = usersRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + userId));
+        Categories category = categoriesRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
 
-        proposal.setRequester(user);
+        Proposals proposal = new Proposals();
+        proposal.setTitle(dto.getTitle());
+        proposal.setDescription(dto.getDescription());
+        proposal.setRequester(user); 
+        proposal.setCategory(category);
+        proposal.setStatus(ProposalStatus.OPEN);
 
         return proposalsRepository.save(proposal);
     }
