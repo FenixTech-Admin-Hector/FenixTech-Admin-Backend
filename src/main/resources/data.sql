@@ -88,7 +88,7 @@ INSERT INTO badges (name, icon_url, is_active) VALUES
 -- Products (15 records)
 INSERT INTO products (company_id, subcategory_id, title, description, condition_status, listing_type, price, stock_quantity, status, pickup_type, location) VALUES
 (1, 1, 'Laptop Dell Latitude', 'Buen estado, i5 8th gen', 'USED_GOOD', 'SALE', 250.00, 5, 'ACTIVE', 'ENVIO_DOMICILIO', 'Valencia, España'),
-(2, 2, 'PC Gaming Entry', 'GTX 1050, i3', 'USED_FAIR', 'SALE', 300.00, 2, 'ACTIVE', , 'RECOGIDA_LOCAL', 'Bilbao, España'),
+(2, 2, 'PC Gaming Entry', 'GTX 1050, i3', 'USED_FAIR', 'SALE', 300.00, 2, 'ACTIVE', 'RECOGIDA_LOCAL', 'Bilbao, España'),
 (3, 3, 'Nvidia GTX 1080', 'Usada para diseño', 'USED_GOOD', 'SALE', 150.00, 10, 'ACTIVE', 'ENVIO_DOMICILIO', 'Zaragoza, España'),
 (4, 4, 'Intel i7 7700K', 'Sin caja original', 'USED_GOOD', 'SALE', 120.00, 8, 'ACTIVE', 'RECOGIDA_LOCAL', 'Valencia, España'),
 (5, 5, 'Teclado Mecánico Logitech', 'Switch Blue', 'NEW', 'SALE', 80.00, 20, 'ACTIVE', 'ENVIO_DOMICILIO', 'Murcia, España'),
