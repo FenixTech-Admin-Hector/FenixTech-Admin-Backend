@@ -1,6 +1,7 @@
 package com.proyecto.fenixtech.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,7 +25,7 @@ public interface CartItemsRepository extends JpaRepository<CartItems, Integer>{
     @Query(value = "DELETE FROM cart_items WHERE user_id = :userId", nativeQuery = true)
     void deleteByUser_UserId(@Param("userId") Integer userId);
 
-
+    Optional<CartItems> findByUser_UserIdAndProduct_ProductId(Integer userId, Integer productId);
     
 
 

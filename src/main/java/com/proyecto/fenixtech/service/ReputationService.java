@@ -89,7 +89,7 @@ public class ReputationService {
     @Transactional
     public void processReviewScore(Integer companyId, Integer reviewScore) {
         Companies company = companiesRepository.findById(companyId)
-                .orElseThrow(() -> new IllegalArgumentException("Empresa con id: " + companyId + " no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Empresa con id: " + companyId + " no encontrada"));
 
         Integer points = 0;
 

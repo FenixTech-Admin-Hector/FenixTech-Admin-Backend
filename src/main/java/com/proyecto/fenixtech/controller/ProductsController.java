@@ -23,7 +23,6 @@ import jakarta.validation.Valid;
 import com.proyecto.fenixtech.model.Products;
 import com.proyecto.fenixtech.model.enums.ConditionStatus;
 import com.proyecto.fenixtech.model.enums.ListingType;
-import com.proyecto.fenixtech.model.enums.ProductStatus;
 
 import java.util.HashMap;
 import java.util.List;
@@ -61,7 +60,6 @@ public class ProductsController {
     })
     @GetMapping("/conditions")
     public ResponseEntity<List<Products>> findByUltimateFilter(
-            @RequestParam(required = false, defaultValue = "ACTIVE") ProductStatus pStatus,
             @RequestParam(required = false) ListingType lType,
             @RequestParam(required = false) ConditionStatus cStatus,
             @RequestParam(required = false, defaultValue = "0.0") Double minPrice,
@@ -69,7 +67,7 @@ public class ProductsController {
             @RequestParam(required = false, defaultValue = "0") Integer minStock,
             @RequestParam(required = false) Integer maxStock) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                productsService.findByConditions(pStatus, lType, cStatus, minPrice, maxPrice, minStock, maxStock));
+                productsService.findByConditions(lType, cStatus, minPrice, maxPrice, minStock, maxStock));
     }
 
     @Operation(summary = "Obtener productos por nombre", description = "Devuelve una lista de productos que contengan una cadena de texto en su nombre")

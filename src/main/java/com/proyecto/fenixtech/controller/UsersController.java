@@ -248,19 +248,6 @@ public class UsersController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    //Para que un administrador pueda reactivar una cuenta
-    @Operation(summary = "Restaurar un usuario borrado", description = "Vuelve a activar la cuenta de un usuario")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario restaurado con éxito"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
-            @ApiResponse(responseCode = "400", description = "El usuario ya estaba activo")
-    })
-    @PutMapping("/{id}/restore")
-    public ResponseEntity<Map<String, String>> restoreUser(@PathVariable Integer id) {
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Usuario restaurado con éxito");
-        usersService.restore(id);
-        return ResponseEntity.ok(response);
-    }
+    
 
 }

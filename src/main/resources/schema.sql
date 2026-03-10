@@ -99,6 +99,8 @@ CREATE TABLE IF NOT EXISTS products_img(
     FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
 );
 
+CREATE INDEX idx_products_status ON products(status);
+
 -- ------------------------------------------------------------------------------
 -- MÓDULO 3: TRANSACCIONES (CARRITO, PEDIDOS Y ENVÍOS)
 -- ------------------------------------------------------------------------------

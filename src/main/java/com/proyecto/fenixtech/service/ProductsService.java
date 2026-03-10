@@ -1,4 +1,5 @@
 package com.proyecto.fenixtech.service;
+
 import com.proyecto.fenixtech.repository.CompaniesRepository;
 import com.proyecto.fenixtech.repository.ProductsRepository;
 import com.proyecto.fenixtech.repository.SubcategoriesRepository;
@@ -27,45 +28,43 @@ public class ProductsService {
     @Autowired
     private CompaniesRepository companiesRepository;
 
-
-
     @Transactional(readOnly = true)
-    public List<Products> findAllProducts(){
+    public List<Products> findAllProducts() {
         return productsRepository.findAll();
     }
 
     @Transactional(readOnly = true)
-    public Products findById(Integer id){
-        return productsRepository.findById(id)
+    public Products findById(Integer id) {
+        return productsRepository.findByProductIdAndProductStatusActive(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + id));
     }
 
     @Transactional(readOnly = true)
-    public List<Products> findBySubcategoryId(Integer id){
+    public List<Products> findBySubcategoryId(Integer id) {
         subcategoriesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Subcategoría no encontrada con id: " + id));
 
-        return productsRepository.findBySubcategory_SubcategoryId(id);    
+        return productsRepository.findByProductStatusActiveAndSubcategory_SubcategoryId(id);
     }
 
     @Transactional(readOnly = true)
-    public List<Products> findByCompanyId(Integer id){
+    public List<Products> findByCompanyId(Integer id) {
         companiesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa no encontrada con id: " + id));
 
-        return productsRepository.findByCompany_CompanyId(id);
+        return productsRepository.findByProductStatusActiveAndCompany_CompanyId(id);
     }
 
     @Transactional(readOnly = true)
-    public List<Products> findByProductTitle(String title){
-        return productsRepository.findByProductTitleContainingIgnoreCase(title);
+    public List<Products> findByProductTitle(String title) {
+        return productsRepository.findByProductStatusActiveAndProductTitleContainingIgnoreCase(title);
     }
 
     @Transactional(readOnly = true)
     public List<Products> findByConditions(
-            ProductStatus pStatus, ListingType lType, ConditionStatus cStatus,
+            ListingType lType, ConditionStatus cStatus,
             Double minPrice, Double maxPrice, Integer minStock, Integer maxStock) {
-        
+
         if (minPrice != null && minPrice < 0) {
             throw new IllegalArgumentException("El precio mínimo no puede ser negativo.");
         }
@@ -85,44 +84,46 @@ public class ProductsService {
         if (minStock != null && maxStock != null && minStock > maxStock) {
             throw new IllegalArgumentException("El stock mínimo no puede ser mayor al stock máximo.");
         }
-        
-        String pStatusStr = (pStatus != null) ? pStatus.name() : null;
+
         String lTypeStr = (lType != null) ? lType.name() : null;
         String cStatusStr = (cStatus != null) ? cStatus.name() : null;
 
         return productsRepository.findByConditions(
-                pStatusStr, lTypeStr, cStatusStr, minPrice, maxPrice, minStock, maxStock);
+                lTypeStr, cStatusStr, minPrice, maxPrice, minStock, maxStock);
     }
 
     @Transactional(readOnly = true)
-    public Long count(){
+    public Long count() {
         return productsRepository.count();
     }
 
     @Transactional
     public Products save(Products product) {
-        if(product.getProductsImg() != null && !product.getProductsImg().isEmpty()){
+        if (product.getProductsImg() != null && !product.getProductsImg().isEmpty()) {
             product.getProductsImg().forEach(img -> {
                 img.setProduct(product);
             });
         }
-        
+
         return productsRepository.save(product);
     }
 
-    @Transactional 
+    @Transactional
     public void deleteById(Integer id) {
         Products product = productsRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("No existe el producto con id: " + id + " para eliminar"));
-        
-        // Soft Delete: Cambiamos el estado a HIDDEN (o el estado que prefieras para borrados)
+                .orElseThrow(
+                        () -> new IllegalArgumentException("No existe el producto con id: " + id + " para eliminar"));
+        //Se limpian los carritos que tienen ese producto en especifico
+                      
+        productsRepository.deleteCartItemsByProductId(id);        
+        // Soft Delete: Cambiamos el estado a HIDDEN
         product.setProductStatus(ProductStatus.HIDDEN);
         productsRepository.save(product);
     }
 
     @Transactional
     public Products update(Integer id, Products product) {
-        Products productUpdate = productsRepository .findById(id)
+        Products productUpdate = productsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el producto con ID: " + id));
 
         productUpdate.setProductTitle(product.getProductTitle());
@@ -131,20 +132,15 @@ public class ProductsService {
         productUpdate.setListingType(product.getListingType());
         productUpdate.setPrice(product.getPrice());
         productUpdate.setStock(product.getStock());
-        productUpdate.setProductStatus(product.getProductStatus());
+        if (product.getCompany() != null) {
+            productUpdate.setProductStatus(product.getProductStatus());
+        } else {
+            productUpdate.setProductStatus(ProductStatus.ACTIVE);
+        }
         productUpdate.setSubcategory(product.getSubcategory());
         productUpdate.setCompany(product.getCompany());
 
         return productsRepository.save(productUpdate);
     }
-
-
-
-
-
-
-
-
-
 
 }

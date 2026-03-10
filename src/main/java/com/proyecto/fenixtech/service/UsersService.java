@@ -1,9 +1,20 @@
 package com.proyecto.fenixtech.service;
 
+import com.proyecto.fenixtech.repository.CommentsRepository;
+import com.proyecto.fenixtech.repository.CompaniesRepository;
+import com.proyecto.fenixtech.repository.FollowRepository;
+import com.proyecto.fenixtech.repository.OrderDetailsRepository;
+import com.proyecto.fenixtech.repository.OrdersRepository;
+import com.proyecto.fenixtech.repository.PostsRepository;
+import com.proyecto.fenixtech.repository.ProductsRepository;
+import com.proyecto.fenixtech.repository.ProposalsRepository;
+import com.proyecto.fenixtech.repository.ReviewsRepository;
 import com.proyecto.fenixtech.repository.UsersRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
+import com.proyecto.fenixtech.model.Companies;
+import com.proyecto.fenixtech.model.Products;
 import com.proyecto.fenixtech.model.Users;
 
 import java.time.LocalDate;
@@ -13,12 +24,31 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.proyecto.fenixtech.model.enums.ProductStatus;
 import com.proyecto.fenixtech.model.enums.Rol;
 
 @Service
 public class UsersService {
     @Autowired
     private UsersRepository usersRepository;
+
+    @Autowired
+    private ProductsRepository productsRepository;
+
+    @Autowired
+    private ReviewsRepository reviewsRepository;
+
+    @Autowired
+    private PostsRepository postsRepository;
+
+    @Autowired
+    private ProposalsRepository proposalsRepository;
+
+    @Autowired
+    private FollowRepository followRepository;
+
+    @Autowired
+    private CommentsRepository commentsRepository;
 
     @Transactional(readOnly = true)
     public List<Users> findAllUsers() {
@@ -207,25 +237,43 @@ public class UsersService {
     @Transactional
     public void delete(Integer id) {
         Users user = usersRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el usuario con ID: " + id));
-        
-        user.setDeletedAt(LocalDateTime.now());
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+
+        // 1. Soft Delete del Usuario
         user.setIsActive(false);
+        user.setDeletedAt(LocalDateTime.now());
         usersRepository.save(user);
-    }
 
-    @Transactional
-    public void restore(Integer id) {
-        Users user = usersRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el usuario con ID: " + id));
+        if (user.getRole() == Rol.EMPRESA && user.getCompany() != null) {
+            Integer companyId = user.getCompany().getCompanyId();
 
-        if (user.getIsActive()) {
-            throw new IllegalArgumentException("El usuario ya está activo.");
+            //Limpieza de reseñas asociadas a la empresa
+            reviewsRepository.deleteAll(user.getCompany().getReviews());
+
+            productsRepository.deleteCartItemsByCompanyId(companyId);
+            
+            //Ocultar todos los productos de golpe
+            productsRepository.hideAllByCompanyId(companyId);
         }
 
-        user.setIsActive(true);
-        user.setDeletedAt(null);
-        usersRepository.save(user);
+        // Limpieza de interacciones
+        cleanUserInteractions(user);
     }
 
+    private void cleanUserInteractions(Users user) {
+
+        if (user.getReviews() != null)
+            reviewsRepository.deleteAll(user.getReviews());
+        if (user.getPosts() != null)
+            postsRepository.deleteAll(user.getPosts());
+        if (user.getComments() != null)
+            commentsRepository.deleteAll(user.getComments());
+        if (user.getFollowers() != null)
+            followRepository.deleteAll(user.getFollowers());
+        if (user.getFollowing() != null)
+            followRepository.deleteAll(user.getFollowing());
+
+        if (user.getProposals() != null)
+            proposalsRepository.deleteAll(user.getProposals());
+    }
 }

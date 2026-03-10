@@ -109,9 +109,11 @@ public class OrdersService {
 
         for (CartItems item : userCart) {
             Products product = item.getProduct();
-            OrderDetails detail = new OrderDetails();
 
-            detail.setProduct(product);
+            if (product.getProductStatus() != ProductStatus.ACTIVE) {
+                throw new IllegalArgumentException("El producto '" + product.getProductTitle() +
+                        "' ya no está disponible. Por favor, elimínalo de tu carrito.");
+            }
 
             if (product.getStock() < item.getQuantity()) {
                 throw new IllegalArgumentException("Stock insuficiente para el producto: " + product.getProductTitle());
@@ -125,19 +127,16 @@ public class OrdersService {
 
             productsRepository.save(product);
 
+            OrderDetails detail = new OrderDetails();
+            detail.setProduct(product);
             detail.setQuantity(item.getQuantity());
-
-            Double precioActual = product.getPrice();
-            detail.setUnitPrice(precioActual);
-
+            detail.setUnitPrice(product.getPrice());
             detail.setOrder(newOrder);
-
             detailsList.add(detail);
 
-            totalCalculado += (precioActual * item.getQuantity());
+            totalCalculado += (product.getPrice() * item.getQuantity());
 
-            // Lógica para actualizar métricas de impacto 
-            if(product.getCompany() != null){
+            if (product.getCompany() != null) {
                 reputationService.proccessTransaction(product.getCompany().getCompanyId(), product, item.getQuantity());
             }
         }
@@ -147,7 +146,6 @@ public class OrdersService {
 
         Orders savedOrder = ordersRepository.save(newOrder);
 
-        // se limpia el carrito del usuario tras la compra
         cartItemsRepository.deleteByUser_UserId(userId);
 
         return savedOrder;

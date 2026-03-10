@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.CartItems;
 import com.proyecto.fenixtech.model.Products;
+import com.proyecto.fenixtech.model.enums.ProductStatus;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,31 +81,31 @@ public class CartItemsService {
         Integer userId = cartItem.getUser().getUserId();
         Integer productId = cartItem.getProduct().getProductId();
 
-        Products product = productsRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("El producto con ID " + productId + " no existe"));
+        Products product = productsRepository.findByProductIdAndProductStatusActive(productId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "El producto con ID " + productId + " no está disponible o ha sido retirado"));
 
         usersRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "El usuario con ID " + cartItem.getUser().getUserId() + " no existe"));
 
-        List<CartItems> existingItems = cartItemsRepository.findByUser_UserId(userId);
-        for (CartItems existing : existingItems) {
-            if (existing.getProduct().getProductId().equals(productId)) {
-                Integer newQuantity = existing.getQuantity() + cartItem.getQuantity();
-                if (newQuantity > existing.getProduct().getStock()) {
-                    throw new IllegalArgumentException("No hay suficiente stock para el producto");
+    return cartItemsRepository.findByUser_UserIdAndProduct_ProductId(userId, productId)
+            .map(existing -> {
+                int newQuantity = existing.getQuantity() + cartItem.getQuantity();
+                if (newQuantity > product.getStock()) {
+                    throw new IllegalArgumentException("No hay suficiente stock disponible");
                 }
-
+                
                 existing.setQuantity(newQuantity);
                 return cartItemsRepository.save(existing);
-            }
-        }
-
-        if (product.getStock() < cartItem.getQuantity()) {
-            throw new IllegalArgumentException("Stock insuficiente para añadir este producto.");
-        }
-
-        return cartItemsRepository.save(cartItem);
+            })
+            .orElseGet(() -> {
+                if (product.getStock() < cartItem.getQuantity()) {
+                    throw new IllegalArgumentException("Stock insuficiente para añadir este producto.");
+                }
+                cartItem.setProduct(product);
+                return cartItemsRepository.save(cartItem);
+            });    
 
     }
 
@@ -127,6 +128,10 @@ public class CartItemsService {
 
         if (cartUpdate.getProduct().getStock() < newQuantity) {
             throw new IllegalArgumentException("La cantidad solicitada no puede ser mayor al stock disponible");
+        }
+
+        if (cartUpdate.getProduct().getProductStatus() != ProductStatus.ACTIVE) {
+            throw new IllegalArgumentException("Este producto ya no está disponible para la venta.");
         }
 
         cartUpdate.setQuantity(newQuantity);
