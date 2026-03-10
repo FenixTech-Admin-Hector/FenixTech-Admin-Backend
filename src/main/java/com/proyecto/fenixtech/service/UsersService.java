@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.proyecto.fenixtech.dto.CompanyRegistrationDTO;
 import com.proyecto.fenixtech.dto.ParticularRegistrationDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
+import com.proyecto.fenixtech.model.Addresses;
 import com.proyecto.fenixtech.model.Companies;
 import com.proyecto.fenixtech.model.Products;
 import com.proyecto.fenixtech.model.Users;
@@ -283,8 +284,9 @@ public class UsersService {
             user.getProposals().clear();
         }
     }
+
     @Transactional
-    public Users registerParticularUsers(ParticularRegistrationDTO dto){
+    public Users registerParticular(ParticularRegistrationDTO dto) {
         Users user = new Users();
         user.setEmail(dto.getEmail());
         user.setPasswordHash(dto.getPassword());
@@ -296,6 +298,7 @@ public class UsersService {
 
         return usersRepository.save(user);
     }
+
     @Transactional
     public Users registerCompany(CompanyRegistrationDTO dto) {
         Users user = new Users();
@@ -314,7 +317,7 @@ public class UsersService {
         company.setCompanyImg(dto.getCompanyImg());
         company.setReputationScore(0);
 
-        // Inicializacion de JSON 
+        // Inicializacion de JSON
         SocialMetrics socialMetrics = new SocialMetrics();
         socialMetrics.setItemsDonated(0);
         socialMetrics.setItemsSoldDiscounted(0);
@@ -325,6 +328,18 @@ public class UsersService {
         impactMetrics.setEnvironmental(environmentalMetrics);
         impactMetrics.setSocial(socialMetrics);
         company.setImpactMetrics(impactMetrics);
+
+        // Vincular la dirección
+        Addresses fiscalAddress = new Addresses();
+        fiscalAddress.setStreet(dto.getStreet());
+        fiscalAddress.setCity(dto.getCity());
+        fiscalAddress.setZipCode(dto.getZipCode());
+        fiscalAddress.setRegion(dto.getRegion());
+        fiscalAddress.setCountry(dto.getCountry());
+        fiscalAddress.setUser(user); 
+
+        // 3. Añadir la dirección a la lista del usuario
+        user.getAddresses().add(fiscalAddress);
 
         // 3. Vinculación bidireccional CRÍTICA
         user.setCompany(company);

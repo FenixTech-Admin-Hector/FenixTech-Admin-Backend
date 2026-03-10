@@ -36,4 +36,19 @@ public class CompanyRegistrationDTO {
 
     @Pattern(regexp = "^.+\\.(png|jpg|jpeg|PNG|JPG|JPEG)$", message = "La imagen debe ser un archivo .png, .jpg o .jpeg")
     private String companyImg;
+
+    @NotBlank(message = "La dirección es obligatoria")
+    private String street;
+
+    @NotBlank(message = "La ciudad es obligatoria")
+    private String city;
+
+    @NotBlank(message = "El código postal es obligatorio")
+    private String zipCode; 
+
+    @NotBlank(message = "La provincia es obligatoria")
+    private String region;
+     
+    @NotBlank(message = "El país es obligatorio")
+    private String country;
 }

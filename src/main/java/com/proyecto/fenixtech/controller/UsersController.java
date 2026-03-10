@@ -212,9 +212,9 @@ public class UsersController {
     })
     @PostMapping("register/particular")
     public ResponseEntity<Users> registerParticular(@Valid @RequestBody ParticularRegistrationDTO dto) {
-        Users newUser = usersService.registerParticularUsers(dto);
+        Users newUser = usersService.registerParticular(dto);
 
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
     @Operation(summary = "Crear un administrador", description = "Crea un nuevo administrador")
@@ -236,7 +236,7 @@ public class UsersController {
     @PostMapping("/register/company")
     public ResponseEntity<Users> registerCompany(@Valid @RequestBody CompanyRegistrationDTO dto) {
         Users newUser = usersService.registerCompany(dto);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
     @Operation(summary = "Borrar un usuario", description = "Borra un usuario existente")
