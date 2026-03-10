@@ -49,13 +49,17 @@ public interface ProductsRepository extends JpaRepository<Products, Integer> {
                         "AND (:minPrice IS NULL OR p.price >= :minPrice) " +
                         "AND (:maxPrice IS NULL OR p.price <= :maxPrice) " +
                         "AND (:minStock IS NULL OR p.stock_quantity >= :minStock) " +
-                        "AND (:maxStock IS NULL OR p.stock_quantity <= :maxStock)", nativeQuery = true)
+                        "AND (:maxStock IS NULL OR p.stock_quantity <= :maxStock)" + 
+                        "AND (:location IS NULL OR p.location LIKE CONCAT('%', :location, '%')) " +
+                        "AND (:pType IS NULL OR p.pickup_type = :pType)", nativeQuery = true)
         List<Products> findByConditions(
                         @Param("lType") String lType,
                         @Param("cStatus") String cStatus,
                         @Param("minPrice") Double minPrice,
                         @Param("maxPrice") Double maxPrice,
                         @Param("minStock") Integer minStock,
-                        @Param("maxStock") Integer maxStock);
+                        @Param("maxStock") Integer maxStock,
+                        @Param("location") String location,
+                        @Param("pType") String pType);
 
 }

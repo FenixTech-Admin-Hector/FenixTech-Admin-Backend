@@ -10,6 +10,7 @@ import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Products;
 import com.proyecto.fenixtech.model.enums.ConditionStatus;
 import com.proyecto.fenixtech.model.enums.ListingType;
+import com.proyecto.fenixtech.model.enums.PickupType;
 import com.proyecto.fenixtech.model.enums.ProductStatus;
 
 import java.util.List;
@@ -63,7 +64,7 @@ public class ProductsService {
     @Transactional(readOnly = true)
     public List<Products> findByConditions(
             ListingType lType, ConditionStatus cStatus,
-            Double minPrice, Double maxPrice, Integer minStock, Integer maxStock) {
+            Double minPrice, Double maxPrice, Integer minStock, Integer maxStock, String location, PickupType pType) {
 
         if (minPrice != null && minPrice < 0) {
             throw new IllegalArgumentException("El precio mínimo no puede ser negativo.");
@@ -87,9 +88,11 @@ public class ProductsService {
 
         String lTypeStr = (lType != null) ? lType.name() : null;
         String cStatusStr = (cStatus != null) ? cStatus.name() : null;
+        String pTypeStr = (pType != null) ? pType.name() : null;
+
 
         return productsRepository.findByConditions(
-                lTypeStr, cStatusStr, minPrice, maxPrice, minStock, maxStock);
+                lTypeStr, cStatusStr, minPrice, maxPrice, minStock, maxStock, location, pTypeStr);
     }
 
     @Transactional(readOnly = true)
@@ -137,6 +140,8 @@ public class ProductsService {
         } else {
             productUpdate.setProductStatus(ProductStatus.ACTIVE);
         }
+        productUpdate.setPickupType(product.getPickupType());
+        productUpdate.setLocation(product.getLocation());
         productUpdate.setSubcategory(product.getSubcategory());
         productUpdate.setCompany(product.getCompany());
 

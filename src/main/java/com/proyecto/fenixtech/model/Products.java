@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.proyecto.fenixtech.model.enums.ConditionStatus;
 import com.proyecto.fenixtech.model.enums.ListingType;
+import com.proyecto.fenixtech.model.enums.PickupType;
 import com.proyecto.fenixtech.model.enums.ProductStatus;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -90,6 +91,15 @@ public class Products implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ProductStatus productStatus;
+
+    @Schema(description = "Tipo de recogida del productO", example = "RECOGIDA_LOCAL")
+    @Column(name = "pickup_type")
+    private PickupType pickupType;
+
+    @Schema(description = "Ubicación del producto", example = "Madrid, España")
+    @NotNull(message = "La ubicación es obligatoria")
+    @Column(name = "location")
+    private String location;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subcategory_id", nullable = false)

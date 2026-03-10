@@ -23,6 +23,7 @@ import jakarta.validation.Valid;
 import com.proyecto.fenixtech.model.Products;
 import com.proyecto.fenixtech.model.enums.ConditionStatus;
 import com.proyecto.fenixtech.model.enums.ListingType;
+import com.proyecto.fenixtech.model.enums.PickupType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -65,9 +66,11 @@ public class ProductsController {
             @RequestParam(required = false, defaultValue = "0.0") Double minPrice,
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false, defaultValue = "0") Integer minStock,
-            @RequestParam(required = false) Integer maxStock) {
+            @RequestParam(required = false) Integer maxStock,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) PickupType pType){
         return ResponseEntity.status(HttpStatus.OK).body(
-                productsService.findByConditions(lType, cStatus, minPrice, maxPrice, minStock, maxStock));
+                productsService.findByConditions(lType, cStatus, minPrice, maxPrice, minStock, maxStock, location, pType));
     }
 
     @Operation(summary = "Obtener productos por nombre", description = "Devuelve una lista de productos que contengan una cadena de texto en su nombre")
