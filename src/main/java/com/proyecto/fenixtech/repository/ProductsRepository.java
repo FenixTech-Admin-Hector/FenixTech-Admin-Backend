@@ -13,15 +13,21 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ProductsRepository extends JpaRepository<Products, Integer> {
-        Optional<Products> findByProductIdAndProductStatusActive(Integer productId);
 
-        List<Products> findByProductStatusActiveAndProductTitleContainingIgnoreCase(String title);
+        @Query(value = "SELECT * FROM products WHERE product_id = :productId AND status = 'ACTIVE'", nativeQuery = true)
+        Optional<Products> findByProductIdAndProductStatusActive(@Param("productId") Integer productId);
 
-        List<Products> findByProductStatusActiveAndSubcategory_SubcategoryId(Integer id);
+        @Query(value = "SELECT * FROM products WHERE status = 'ACTIVE' AND title LIKE CONCAT('%', :title, '%')", nativeQuery = true)
+        List<Products> findByProductStatusActiveAndProductTitleContainingIgnoreCase(@Param("title") String title);
 
-        List<Products> findByProductStatusActiveAndCompany_CompanyId(Integer id);
+        @Query(value = "SELECT * FROM products WHERE status = 'ACTIVE' AND subcategory_id = :subcategoryId", nativeQuery = true)
+        List<Products> findByProductStatusActiveAndSubcategory_SubcategoryId(
+                        @Param("subcategoryId") Integer subcategoryId);
 
-        List<Products> findByCompany_CompanyId(Integer id);
+        @Query(value = "SELECT * FROM products WHERE status = 'ACTIVE' AND company_id = :companyId", nativeQuery = true)
+        List<Products> findByProductStatusActiveAndCompany_CompanyId(@Param("companyId") Integer companyId);
+        @Query(value = "SELECT * FROM products WHERE company_id = :companyId", nativeQuery = true)
+        List<Products> findByCompany_CompanyId(@Param("companyId") Integer companyId);
 
         @Modifying
         @Query("UPDATE Products p SET p.productStatus = 'HIDDEN' WHERE p.company.companyId = :companyId")
@@ -49,7 +55,7 @@ public interface ProductsRepository extends JpaRepository<Products, Integer> {
                         "AND (:minPrice IS NULL OR p.price >= :minPrice) " +
                         "AND (:maxPrice IS NULL OR p.price <= :maxPrice) " +
                         "AND (:minStock IS NULL OR p.stock_quantity >= :minStock) " +
-                        "AND (:maxStock IS NULL OR p.stock_quantity <= :maxStock)" + 
+                        "AND (:maxStock IS NULL OR p.stock_quantity <= :maxStock)" +
                         "AND (:location IS NULL OR p.location LIKE CONCAT('%', :location, '%')) " +
                         "AND (:pType IS NULL OR p.pickup_type = :pType)", nativeQuery = true)
         List<Products> findByConditions(
