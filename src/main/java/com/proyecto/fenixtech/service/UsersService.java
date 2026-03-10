@@ -13,6 +13,7 @@ import com.proyecto.fenixtech.repository.UsersRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.fenixtech.dto.CompanyRegistrationDTO;
+import com.proyecto.fenixtech.dto.ParticularRegistrationDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Companies;
 import com.proyecto.fenixtech.model.Products;
@@ -282,7 +283,19 @@ public class UsersService {
             user.getProposals().clear();
         }
     }
+    @Transactional
+    public Users registerParticularUsers(ParticularRegistrationDTO dto){
+        Users user = new Users();
+        user.setEmail(dto.getEmail());
+        user.setPasswordHash(dto.getPassword());
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setUserImg(dto.getUserImg());
+        user.setRole(Rol.EMPRESA);
+        user.setIsActive(true);
 
+        return usersRepository.save(user);
+    }
     @Transactional
     public Users registerCompany(CompanyRegistrationDTO dto) {
         Users user = new Users();
@@ -300,7 +313,7 @@ public class UsersService {
         company.setCif(dto.getCif());
         company.setCompanyImg(dto.getCompanyImg());
         company.setReputationScore(0);
-        
+
         // Inicializacion de JSON 
         SocialMetrics socialMetrics = new SocialMetrics();
         socialMetrics.setItemsDonated(0);

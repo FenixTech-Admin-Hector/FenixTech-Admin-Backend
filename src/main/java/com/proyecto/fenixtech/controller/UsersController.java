@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.proyecto.fenixtech.service.UsersService;
 import com.proyecto.fenixtech.dto.CompanyRegistrationDTO;
+import com.proyecto.fenixtech.dto.ParticularRegistrationDTO;
 import com.proyecto.fenixtech.model.Users;
 import com.proyecto.fenixtech.model.enums.Rol;
 
@@ -204,16 +205,16 @@ public class UsersController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Crear un usuario", description = "Crea un nuevo usuario")
+    @Operation(summary = "Crear un usuario particular", description = "Crea un nuevo particular")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuario creado con éxito"),
             @ApiResponse(responseCode = "400", description = "Datos inválidos (ej. contraseña débil) o email ya registrado")
     })
-    @PostMapping
-    public ResponseEntity<Users> createUser(@Valid @RequestBody Users user) {
-        Users savedUser = usersService.save(user);
+    @PostMapping("register/particular")
+    public ResponseEntity<Users> registerParticular(@Valid @RequestBody ParticularRegistrationDTO dto) {
+        Users newUser = usersService.registerParticularUsers(dto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Crear un administrador", description = "Crea un nuevo administrador")
