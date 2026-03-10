@@ -81,25 +81,6 @@ public class CompaniesService {
         return companiesRepository.count();
     }
 
-    @Transactional
-    public Companies save(Companies company){
-        if(company.getUser() == null || company.getUser().getUserId() == null){
-            throw new IllegalArgumentException("La empresa debe estar asociada a un usuario válido con ID.");
-        }
-
-        usersRepository.findById(company.getUser().getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "El usuario con ID " + company.getUser().getUserId() + " no existe"));
-        
-        company.setReputationScore(0);
-        company.setImpactMetrics(new ImpactMetrics(
-            new EnvironmentalMetrics(),
-            new SocialMetrics()
-        ));
-
-        return companiesRepository.save(company);
-    }
-
     @Transactional 
     public void deleteById(Integer id){
         if(!companiesRepository.existsById(id)){

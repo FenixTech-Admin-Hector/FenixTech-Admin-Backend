@@ -100,15 +100,6 @@ public class CompaniesController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @Operation(summary = "Añadir una empresa", description = "Añade una empresa")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Empresa añadida con éxito"),
-        @ApiResponse(responseCode = "404", description = "Empresa no encontrado")
-    })
-    @PostMapping
-    public ResponseEntity<Companies> save(@Valid @RequestBody Companies company){
-        return ResponseEntity.status(HttpStatus.CREATED).body(companiesService.save(company));
-    }
 
     @Operation(summary = "Eliminar una empresa por ID", description = "Elimina una empresa por su ID")
     @ApiResponses(value = {

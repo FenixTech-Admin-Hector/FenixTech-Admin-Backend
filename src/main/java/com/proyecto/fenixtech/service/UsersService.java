@@ -12,6 +12,7 @@ import com.proyecto.fenixtech.repository.ReviewsRepository;
 import com.proyecto.fenixtech.repository.UsersRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.proyecto.fenixtech.dto.CompanyRegistrationDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Companies;
 import com.proyecto.fenixtech.model.Products;
@@ -26,6 +27,9 @@ import org.springframework.stereotype.Service;
 
 import com.proyecto.fenixtech.model.enums.ProductStatus;
 import com.proyecto.fenixtech.model.enums.Rol;
+import com.proyecto.fenixtech.model.json.EnvironmentalMetrics;
+import com.proyecto.fenixtech.model.json.ImpactMetrics;
+import com.proyecto.fenixtech.model.json.SocialMetrics;
 
 @Service
 public class UsersService {
@@ -277,5 +281,43 @@ public class UsersService {
             proposalsRepository.deleteAll(user.getProposals());
             user.getProposals().clear();
         }
+    }
+
+    @Transactional
+    public Users registerCompany(CompanyRegistrationDTO dto) {
+        Users user = new Users();
+        user.setEmail(dto.getEmail());
+        user.setPasswordHash(dto.getPassword());
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setUserImg(dto.getUserImg());
+        user.setRole(Rol.EMPRESA);
+        user.setIsActive(true);
+
+        // 2. Creamos la Empresa vinculada
+        Companies company = new Companies();
+        company.setCompanyName(dto.getCompanyName());
+        company.setCif(dto.getCif());
+        company.setCompanyImg(dto.getCompanyImg());
+        company.setReputationScore(0);
+        
+        // Inicializacion de JSON 
+        SocialMetrics socialMetrics = new SocialMetrics();
+        socialMetrics.setItemsDonated(0);
+        socialMetrics.setItemsSoldDiscounted(0);
+        EnvironmentalMetrics environmentalMetrics = new EnvironmentalMetrics();
+        environmentalMetrics.setTotalCo2SavedKg(0.00);
+        environmentalMetrics.setTotalEwasteSavedKg(0.00);
+        ImpactMetrics impactMetrics = new ImpactMetrics();
+        impactMetrics.setEnvironmental(environmentalMetrics);
+        impactMetrics.setSocial(socialMetrics);
+        company.setImpactMetrics(impactMetrics);
+
+        // 3. Vinculación bidireccional CRÍTICA
+        user.setCompany(company);
+        company.setUser(user);
+
+        // 4. Guardar
+        return usersRepository.save(user);
     }
 }

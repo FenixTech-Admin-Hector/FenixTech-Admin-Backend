@@ -143,6 +143,7 @@ public class Users implements Serializable {
         if (this.isActive == null) {
             this.isActive = true;
         }
+        
     }
 
 

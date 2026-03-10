@@ -1,0 +1,39 @@
+package com.proyecto.fenixtech.dto;
+
+import jakarta.validation.constraints.*;
+import lombok.Data;
+
+@Data
+public class CompanyRegistrationDTO {
+
+    @NotBlank(message = "El email es obligatorio")
+    @Email(regexp = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$", message = "El email está en un formato incorrecto")
+    private String email;
+
+    @NotBlank(message = "La contraseña es obligatoria")
+    @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
+    @Pattern(
+        regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!.*]).{8,}$", 
+        message = "La contraseña debe contener al menos un número, una letra minúscula, una letra mayúscula y un carácter especial"
+    )
+    private String password;
+
+    @NotBlank(message = "El nombre es obligatorio")
+    private String firstName;
+
+    @NotBlank(message = "El apellido es obligatorio")
+    private String lastName;
+
+    @Pattern(regexp = "^.+\\.(png|jpg|jpeg|PNG|JPG|JPEG)$", message = "La imagen debe ser un archivo .png, .jpg o .jpeg")
+    private String userImg;
+
+    @NotBlank(message = "El nombre de la empresa es obligatorio")
+    private String companyName;
+
+    @NotBlank(message = "El CIF es obligatorio")
+    @Pattern(regexp = "^[ABCDEFGHJNPQRSUVW][0-9]{7}[0-9A-J]$", message = "El CIF está en un formato incorrecto")
+    private String cif;
+
+    @Pattern(regexp = "^.+\\.(png|jpg|jpeg|PNG|JPG|JPEG)$", message = "La imagen debe ser un archivo .png, .jpg o .jpeg")
+    private String companyImg;
+}
