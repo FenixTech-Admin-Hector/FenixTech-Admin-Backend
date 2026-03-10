@@ -50,6 +50,9 @@ public class UsersService {
     @Autowired
     private CommentsRepository commentsRepository;
 
+    @Autowired
+    private CompaniesRepository companiesRepository;
+
     @Transactional(readOnly = true)
     public List<Users> findAllUsers() {
         return usersRepository.findAll();
@@ -236,44 +239,43 @@ public class UsersService {
 
     @Transactional
     public void delete(Integer id) {
-        Users user = usersRepository.findById(id)
+        Users user = usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(id, Rol.ADMIN)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
-
-        // 1. Soft Delete del Usuario
-        user.setIsActive(false);
-        user.setDeletedAt(LocalDateTime.now());
-        usersRepository.save(user);
 
         if (user.getRole() == Rol.EMPRESA && user.getCompany() != null) {
             Integer companyId = user.getCompany().getCompanyId();
 
-            //Limpieza de reseñas asociadas a la empresa
-            reviewsRepository.deleteAll(user.getCompany().getReviews());
-
+            // Limpiezas manuales necesarias
             productsRepository.deleteCartItemsByCompanyId(companyId);
-            
-            //Ocultar todos los productos de golpe
+            reviewsRepository.deleteAll(user.getCompany().getReviews());
             productsRepository.hideAllByCompanyId(companyId);
+
+            // Al ponerlo a null, orphanRemoval = true se encarga de borrar la empresa
+            // físicamente
+            user.setCompany(null);
         }
 
-        // Limpieza de interacciones
         cleanUserInteractions(user);
+        user.setIsActive(false);
+        user.setDeletedAt(LocalDateTime.now());
+
+        usersRepository.save(user); // Aquí se procesa el borrado de la empresa y el update del usuario
     }
 
     private void cleanUserInteractions(Users user) {
-
-        if (user.getReviews() != null)
-            reviewsRepository.deleteAll(user.getReviews());
-        if (user.getPosts() != null)
+        if (user.getPosts() != null && !user.getPosts().isEmpty()) {
             postsRepository.deleteAll(user.getPosts());
-        if (user.getComments() != null)
-            commentsRepository.deleteAll(user.getComments());
-        if (user.getFollowers() != null)
-            followRepository.deleteAll(user.getFollowers());
-        if (user.getFollowing() != null)
-            followRepository.deleteAll(user.getFollowing());
+            user.getPosts().clear();
+        }
 
-        if (user.getProposals() != null)
+        if (user.getComments() != null && !user.getComments().isEmpty()) {
+            commentsRepository.deleteAll(user.getComments());
+            user.getComments().clear();
+        }
+
+        if (user.getProposals() != null && !user.getProposals().isEmpty()) {
             proposalsRepository.deleteAll(user.getProposals());
+            user.getProposals().clear();
+        }
     }
 }

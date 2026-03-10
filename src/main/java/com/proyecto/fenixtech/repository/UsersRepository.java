@@ -24,16 +24,28 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
      * exist(User)
      * existById(id)
      */
+
     List<Users> findByRole(Rol role);
+
     Optional<Users> findByEmail(String email);
+
     List<Users> findAllByOrderByCreatedAtDesc();
+
     List<Users> findAllByOrderByCreatedAtAsc();
+
     List<Users> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
-   List<Users> findByIsActiveTrueAndRoleNot(Rol role);
+
+    List<Users> findByIsActiveTrueAndRoleNot(Rol role);
+
     Optional<Users> findByUserIdAndIsActiveTrueAndRoleNot(Integer id, Rol role);
+
     Optional<Users> findByEmailAndIsActiveTrueAndRoleNot(String email, Rol role);
+
     List<Users> findByIsActiveTrueAndRoleNotOrderByCreatedAtDesc(Rol role);
+
     List<Users> findByIsActiveTrueAndRoleNotOrderByCreatedAtAsc(Rol role);
+
     List<Users> findByIsActiveTrueAndRoleNotAndCreatedAtBetween(Rol role, LocalDateTime start, LocalDateTime end);
+
     List<Users> findByRoleAndIsActiveTrue(Rol role);
 }

@@ -98,7 +98,7 @@ public class Users implements Serializable {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true )
     @JsonIgnoreProperties({ "user", "companyBadges", "products", "reviews" })
     private Companies company;
 
