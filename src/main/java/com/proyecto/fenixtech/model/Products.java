@@ -94,6 +94,7 @@ public class Products implements Serializable {
 
     @Schema(description = "Tipo de recogida del productO", example = "RECOGIDA_LOCAL")
     @Column(name = "pickup_type")
+    @Enumerated(EnumType.STRING)
     private PickupType pickupType;
 
     @Schema(description = "Ubicación del producto", example = "Madrid, España")
