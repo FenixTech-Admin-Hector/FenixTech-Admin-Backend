@@ -5,9 +5,9 @@ import com.proyecto.fenixtech.repository.PostsRepository;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.PostsImg;
 
-
 import java.util.List;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,43 +39,16 @@ public class PostsImgService {
         return postsImgRepository.findByPost_PostId(postId);
     }
 
-    @Transactional(readOnly = true)
-    public Long count() {
-        return postsImgRepository.count();
-    }
-
     @Transactional
-    public PostsImg save(PostsImg postsImg) {
-        if (postsImg.getPost() == null || postsImg.getPost().getPostId() == null) {
-            throw new IllegalArgumentException("La imagen debe estar asociada a un post válido con ID.");
+    public void deleteFromPost(Integer postId, Integer imageId) {
+        PostsImg img = postsImgRepository.findById(imageId)
+                .orElseThrow(() -> new ResourceNotFoundException("Imagen no encontrada"));
+
+        if (!img.getPost().getPostId().equals(postId)) {
+            throw new IllegalArgumentException("La imagen no pertenece al post indicado");
         }
 
-        postsRepository.findById(postsImg.getPost().getPostId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "El post con ID " + postsImg.getPost().getPostId() + " no existe"));
-
-        return postsImgRepository.save(postsImg);
+        postsImgRepository.delete(img);
     }
 
-    @Transactional
-    public void deleteById(Integer id) {
-        if (!postsImgRepository.existsById(id)) {
-            throw new IllegalArgumentException("No existe la imagen con id: " + id + " para eliminar");
-        }
-        postsImgRepository.deleteById(id);
-    }
-
-    @Transactional
-    public PostsImg update(Integer id, PostsImg postsImg) {
-        if (postsImg.getPost() == null || postsImg.getPost().getPostId() == null) {
-            throw new IllegalArgumentException("La imagen debe estar asociada a un post válido con ID.");
-        }
-
-        PostsImg existingImg = postsImgRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró la imagen con ID: " + id));
-
-        existingImg.setImageUrl(postsImg.getImageUrl());
-
-        return postsImgRepository.save(existingImg);
-    }
 }

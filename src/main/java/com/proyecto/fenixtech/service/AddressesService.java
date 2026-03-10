@@ -5,9 +5,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.proyecto.fenixtech.repository.UsersRepository;
 import com.proyecto.fenixtech.model.Addresses;
 import com.proyecto.fenixtech.model.Users;
+import com.proyecto.fenixtech.model.enums.Rol;
+import com.proyecto.fenixtech.dto.AddressDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 
 import java.util.List;
+
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,18 +53,31 @@ public class AddressesService {
     }
 
     @Transactional
-    public Addresses save(Addresses address) {
-        if (address.getUser() == null || address.getUser().getUserId() == null) {
-            throw new IllegalArgumentException("La dirección debe estar asociada a un usuario válido con ID.");
+    public Addresses save(AddressDTO dto) {
+        List<Addresses> existingAddresses = addressesRepository.findByConditions(
+                dto.getStreet(),
+                dto.getCity(),
+                dto.getRegion(),
+                dto.getCountry(),
+                dto.getZipCode());
+
+        boolean alreadyHasIt = existingAddresses.stream()
+                .anyMatch(a -> a.getUser().getUserId().equals(dto.getUserId()));
+
+        if (alreadyHasIt) {
+            throw new IllegalArgumentException("Ya tienes esta dirección registrada en tu perfil.");
         }
 
-        Users user = usersRepository.findById(address.getUser().getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "El usuario con ID " + address.getUser().getUserId() + " no existe"));
+        Users user = usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(dto.getUserId(), Rol.ADMIN)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
-        // if (user.getRole() != Rol.PARTICULAR) {
-        //     throw new IllegalArgumentException("EL rol del usuario tiene que ser: " + Rol.PARTICULAR.name());
-        // }
+        Addresses address = new Addresses();
+        address.setUser(user);
+        address.setStreet(dto.getStreet());
+        address.setCity(dto.getCity());
+        address.setRegion(dto.getRegion());
+        address.setCountry(dto.getCountry());
+        address.setZipCode(dto.getZipCode());
 
         return addressesRepository.save(address);
     }
@@ -74,24 +91,30 @@ public class AddressesService {
     }
 
     @Transactional
-    public Addresses update(Integer id, Addresses address) {
+    public Addresses update(Integer id, AddressDTO dto) {
         Addresses addressUpdate = addressesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró la dirección con ID: " + id));
 
-        if (address.getUser() == null || address.getUser().getUserId() == null) {
-            throw new IllegalArgumentException("La dirección debe incluir un usuario con ID.");
+        Users user = usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(dto.getUserId(), Rol.ADMIN)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado o no autorizado"));
+
+        List<Addresses> duplicates = addressesRepository.findByConditions(
+                dto.getStreet(), dto.getCity(), dto.getRegion(),
+                dto.getCountry(), dto.getZipCode());
+
+        boolean isDuplicate = duplicates.stream()
+                .anyMatch(a -> a.getUser().getUserId().equals(dto.getUserId()) && !a.getAddressId().equals(id));
+
+        if (isDuplicate) {
+            throw new IllegalArgumentException("Ya tienes otra dirección registrada con estos mismos datos.");
         }
 
-        usersRepository.findById(address.getUser().getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "No existe un usuario con id: " + address.getUser().getUserId()));
-
-        addressUpdate.setStreet(address.getStreet());
-        addressUpdate.setCity(address.getCity());
-        addressUpdate.setRegion(address.getRegion());
-        addressUpdate.setCountry(address.getCountry());
-        addressUpdate.setZipCode(address.getZipCode());
-
+        addressUpdate.setStreet(dto.getStreet());
+        addressUpdate.setCity(dto.getCity());
+        addressUpdate.setRegion(dto.getRegion());
+        addressUpdate.setCountry(dto.getCountry());
+        addressUpdate.setZipCode(dto.getZipCode());
+        addressUpdate.setUser(user);
         return addressesRepository.save(addressUpdate);
     }
 

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -46,6 +47,7 @@ public class Addresses implements Serializable {
 
     @Schema(description = "Código postal de la dirección", example = "28001")
     @NotBlank(message = "El código postal es obligatorio")
+    @Size(min = 5, max = 5, message = "El código postal debe tener 5 dígitos")
     @Column(name = "zip_code", nullable = false)
     private String zipCode;
 
