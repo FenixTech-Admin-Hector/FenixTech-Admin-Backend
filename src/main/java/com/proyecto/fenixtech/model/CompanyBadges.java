@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -53,27 +52,5 @@ public class CompanyBadges implements Serializable {
     @JoinColumn(name = "badge_id")
     @JsonIgnoreProperties("companyBadge")
     private Badges badge;
-
-    @JsonProperty("companyId")
-    public void setCompanyId(Integer companyId) {
-        this.company = new Companies();
-        this.company.setCompanyId(companyId);
-        
-        if (this.id == null) {
-            this.id = new CompanyBadgeId();
-        }
-        this.id.setCompanyId(companyId);
-    }
-
-    @JsonProperty("badgeId")
-    public void setBadgeId(Integer badgeId) {
-        this.badge = new Badges();
-        this.badge.setBadgeId(badgeId);
-        
-        if (this.id == null) {
-            this.id = new CompanyBadgeId();
-        }
-        this.id.setBadgeId(badgeId);
-    }
 
 }

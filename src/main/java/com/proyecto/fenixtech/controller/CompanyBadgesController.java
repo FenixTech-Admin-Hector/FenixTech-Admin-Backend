@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.proyecto.fenixtech.dto.CompanyBadgesRequestDTO;
 import com.proyecto.fenixtech.model.CompanyBadges;
 import com.proyecto.fenixtech.service.CompanyBadgesService;
 
@@ -23,7 +24,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 @Tag(name = "CompanyBadges", description = "API para gestión de insignias de empresas")
@@ -100,9 +104,9 @@ public class CompanyBadgesController {
         @ApiResponse(responseCode = "400", description = "La empresa ya tiene esta insignia asignada"),
         @ApiResponse(responseCode = "404", description = "Empresa o insignia no encontrada")
     })
-    @PostMapping("/company/{companyId}/badge/{badgeId}")
-    public ResponseEntity<CompanyBadges> assignBadgeManual(@PathVariable Integer companyId, @PathVariable Integer badgeId) {
-        CompanyBadges newBadge = companyBadgesService.post(companyId, badgeId);
+    @PostMapping
+    public ResponseEntity<CompanyBadges> assignBadgeManual(@Valid @RequestBody CompanyBadgesRequestDTO dto) {
+        CompanyBadges newBadge = companyBadgesService.post(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newBadge);
     }
     

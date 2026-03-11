@@ -3,6 +3,7 @@ package com.proyecto.fenixtech.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.proyecto.fenixtech.dto.CompanyBadgesRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Badges;
 import com.proyecto.fenixtech.model.Companies;
@@ -77,11 +78,14 @@ public class CompanyBadgesService {
     }
 
     @Transactional 
-    public CompanyBadges post(Integer companyId, Integer badgeId){
+    public CompanyBadges post(CompanyBadgesRequestDTO dto){
+        Integer companyId = dto.getCompanyId();
+        Integer badgeId = dto.getBadgeId();
+
         Companies company = companiesRepository.findById(companyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa no encontrada con id: " + companyId));
         
-        Badges badge = badgesRepository.findByBadgeIdAndIsActiveTrue(badgeId)
+        Badges badge = badgesRepository.findByBadgeIdAndIsActiveTrue(dto.getBadgeId())
             .orElseThrow(() -> new ResourceNotFoundException("La insignia con id: " + badgeId + " no existe o no está activa"));
 
         CompanyBadgeId id = new CompanyBadgeId(companyId, badgeId);
@@ -95,7 +99,6 @@ public class CompanyBadgesService {
         newCompanyBadge.setId(id);
         newCompanyBadge.setBadge(badge);
         newCompanyBadge.setCompany(company);
-        newCompanyBadge.setAwardedAt(LocalDateTime.now());
 
         return companyBadgesRepository.save(newCompanyBadge);
     }
