@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.proyecto.fenixtech.dto.BadgesRequestDTO;
 import com.proyecto.fenixtech.model.Badges;
 import com.proyecto.fenixtech.service.BadgesService;
 
@@ -109,7 +110,7 @@ public class BadgesController {
     public ResponseEntity<Map<String, Object>> countActive() {
         Long countActive = badgesService.countActive();
         Long count = badgesService.count();
-        Long countInactive =  badgesService.count() - badgesService.countActive();
+        Long countInactive = badgesService.count() - badgesService.countActive();
         Map<String, Object> response = new HashMap<>();
         response.put("total", count);
         response.put("activas", countActive);
@@ -134,8 +135,8 @@ public class BadgesController {
             @ApiResponse(responseCode = "400", description = "Solicitud inválida")
     })
     @PostMapping
-    public ResponseEntity<Badges> save(@Valid @RequestBody Badges badge) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(badgesService.save(badge));
+    public ResponseEntity<Badges> create(@Valid @RequestBody BadgesRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(badgesService.save(dto));
     }
 
     @Operation(summary = "Actualizar una insignia por ID", description = "Actualiza una insignia por su ID")
@@ -144,9 +145,8 @@ public class BadgesController {
             @ApiResponse(responseCode = "404", description = "Insignia no encontrada")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Badges> update(@PathVariable Integer id, @Valid @RequestBody Badges badge) {
-        Badges updatedBadge = badgesService.update(id, badge);
-        return ResponseEntity.status(HttpStatus.OK).body(updatedBadge);
+    public ResponseEntity<Badges> update(@PathVariable Integer id, @Valid @RequestBody BadgesRequestDTO dto) {
+        return ResponseEntity.ok(badgesService.update(id, dto));
     }
 
 }

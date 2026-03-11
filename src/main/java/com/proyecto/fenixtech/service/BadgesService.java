@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.fenixtech.repository.BadgesRepository;
+import com.proyecto.fenixtech.dto.BadgesRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Badges;
 
@@ -71,22 +72,34 @@ public class BadgesService {
     }
 
     @Transactional
-    public Badges save(Badges badge) {
+    public Badges save(BadgesRequestDTO dto) {
+        badgesRepository.findByBadgeNameIgnoreCase(dto.getBadgeName())
+                .ifPresent(badge -> {
+                    throw new IllegalArgumentException("Ya existe una insignia con el nombre: " + badge.getBadgeName());
+                });
+
+        Badges badge = new Badges();
+        badge.setBadgeName(dto.getBadgeName());
+        badge.setIconUrl(dto.getIconUrl());
         badge.setIsActive(true);
         return badgesRepository.save(badge);
     }
 
     @Transactional
-    public Badges update(Integer id, Badges badge) {
+    public Badges update(Integer id, BadgesRequestDTO dto) {
         Badges badgesUpdate = badgesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró la insignia con ID: " + id));
 
-        badgesUpdate.setBadgeName(badge.getBadgeName());
-        badgesUpdate.setIconUrl(badge.getIconUrl());
+        badgesRepository.findByBadgeNameIgnoreCase(dto.getBadgeName())
+            .ifPresent(existingBadge -> {
+                if (!existingBadge.getBadgeId().equals(id)) {
+                    throw new IllegalArgumentException("Ya existe otra insignia con el nombre: " + dto.getBadgeName());
+                }
+            });
+        
 
-        if (badge.getIsActive() != null) {
-            badgesUpdate.setIsActive(badge.getIsActive());
-        }
+        badgesUpdate.setBadgeName(dto.getBadgeName());
+        badgesUpdate.setIconUrl(dto.getIconUrl());
 
         return badgesRepository.save(badgesUpdate);
     }

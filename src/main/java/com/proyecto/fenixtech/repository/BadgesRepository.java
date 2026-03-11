@@ -13,6 +13,8 @@ public interface BadgesRepository extends JpaRepository<Badges, Integer> {
     Optional<Badges> findByBadgeIdAndIsActiveTrue(Integer badgeId);
     List<Badges> findByBadgeNameContainingIgnoreCase(String name);
     Long countByIsActiveTrue();
+    Optional<Badges> findByBadgeNameIgnoreCase(String badgeName);
+
 
 
     
