@@ -5,9 +5,12 @@ import com.proyecto.fenixtech.repository.ProductsRepository;
 import com.proyecto.fenixtech.repository.UsersRepository;
 
 import org.springframework.transaction.annotation.Transactional;
+
+import com.proyecto.fenixtech.dto.CartItemsDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.CartItems;
 import com.proyecto.fenixtech.model.Products;
+import com.proyecto.fenixtech.model.Users;
 import com.proyecto.fenixtech.model.enums.ProductStatus;
 
 import java.util.List;
@@ -73,39 +76,46 @@ public class CartItemsService {
     }
 
     @Transactional
-    public CartItems save(CartItems cartItem) {
-        if (cartItem.getUser() == null || cartItem.getUser().getUserId() == null) {
-            throw new IllegalArgumentException("El item del carrito debe estar asociado a un usuario válido con ID.");
-        }
-
-        Integer userId = cartItem.getUser().getUserId();
-        Integer productId = cartItem.getProduct().getProductId();
+    public CartItems save(CartItemsDTO dto) {
+        Integer userId = dto.getUserId();
+        Integer productId = dto.getProductId();
 
         Products product = productsRepository.findByProductIdAndProductStatusActive(productId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "El producto con ID " + productId + " no está disponible o ha sido retirado"));
 
-        usersRepository.findById(userId)
+        Users user = usersRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "El usuario con ID " + cartItem.getUser().getUserId() + " no existe"));
+                        "El usuario con ID " + userId + " no existe"));
 
-    return cartItemsRepository.findByUser_UserIdAndProduct_ProductId(userId, productId)
-            .map(existing -> {
-                int newQuantity = existing.getQuantity() + cartItem.getQuantity();
-                if (newQuantity > product.getStock()) {
-                    throw new IllegalArgumentException("No hay suficiente stock disponible");
-                }
-                
-                existing.setQuantity(newQuantity);
-                return cartItemsRepository.save(existing);
-            })
-            .orElseGet(() -> {
-                if (product.getStock() < cartItem.getQuantity()) {
-                    throw new IllegalArgumentException("Stock insuficiente para añadir este producto.");
-                }
-                cartItem.setProduct(product);
-                return cartItemsRepository.save(cartItem);
-            });    
+        if (product.getCompany().getUser().getUserId().equals(userId)) {
+            throw new IllegalArgumentException("No puedes añadir tus propios productos al carrito.");
+        }
+
+        return cartItemsRepository.findByUser_UserIdAndProduct_ProductId(userId, productId)
+                .map(existing -> {
+                    int newQuantity = existing.getQuantity() + dto.getQuantity();
+
+                    if (newQuantity > product.getStock()) {
+                        throw new IllegalArgumentException(
+                                "No hay suficiente stock disponible. Stock actual: " + product.getStock());
+                    }
+
+                    existing.setQuantity(newQuantity);
+                    return cartItemsRepository.save(existing);
+                })
+                .orElseGet(() -> {
+                    if (product.getStock() < dto.getQuantity()) {
+                        throw new IllegalArgumentException("Stock insuficiente para añadir este producto.");
+                    }
+
+                    CartItems newItem = new CartItems();
+                    newItem.setUser(user);
+                    newItem.setProduct(product);
+                    newItem.setQuantity(dto.getQuantity());
+
+                    return cartItemsRepository.save(newItem);
+                });
 
     }
 
@@ -118,23 +128,24 @@ public class CartItemsService {
     }
 
     @Transactional
-    public CartItems update(Integer id, Integer newQuantity) {
+    public CartItems update(Integer id, CartItemsDTO dto) {
         CartItems cartUpdate = cartItemsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el item del carrito con ID: " + id));
-
-        if (newQuantity < 1) {
-            throw new IllegalArgumentException("La cantidad no puede ser menor a 1");
-        }
-
-        if (cartUpdate.getProduct().getStock() < newQuantity) {
-            throw new IllegalArgumentException("La cantidad solicitada no puede ser mayor al stock disponible");
-        }
 
         if (cartUpdate.getProduct().getProductStatus() != ProductStatus.ACTIVE) {
             throw new IllegalArgumentException("Este producto ya no está disponible para la venta.");
         }
 
-        cartUpdate.setQuantity(newQuantity);
+        if (dto.getQuantity() > cartUpdate.getProduct().getStock()) {
+            throw new IllegalArgumentException(
+                    "No hay suficiente stock disponible. Máximo actual: " + cartUpdate.getProduct().getStock());
+        }
+
+        if (dto.getQuantity() <= 0) {
+            throw new IllegalArgumentException("La cantidad debe ser al menos 1.");
+        }
+
+        cartUpdate.setQuantity(dto.getQuantity());
 
         return cartItemsRepository.save(cartUpdate);
     }

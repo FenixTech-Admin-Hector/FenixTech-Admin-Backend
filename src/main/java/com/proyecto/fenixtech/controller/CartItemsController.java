@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.proyecto.fenixtech.dto.CartItemsDTO;
 import com.proyecto.fenixtech.model.CartItems;
 import com.proyecto.fenixtech.service.CartItemsService;
 
@@ -74,14 +75,14 @@ public class CartItemsController {
 
     @Operation(summary = "Obtener items del carrito en función de la cantidad", description = "Devuelve una lista de items con en función de un rango de catidades")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Items obtenidos con éxito")
+            @ApiResponse(responseCode = "200", description = "Items obtenidos con éxito")
     })
     @GetMapping("/quantity")
     public ResponseEntity<List<CartItems>> findByQuantityFilters(
             @RequestParam(required = false, defaultValue = "1") Integer minQty,
-            @RequestParam(required = false) Integer maxQty){
-    return ResponseEntity.status(HttpStatus.OK).body(cartItemsService.findByQuantityFilters(minQty, maxQty));
-            }
+            @RequestParam(required = false) Integer maxQty) {
+        return ResponseEntity.status(HttpStatus.OK).body(cartItemsService.findByQuantityFilters(minQty, maxQty));
+    }
 
     @Operation(summary = "Obtener el numero de items del carrito", description = "Devuelve el numero de items del carrito")
     @ApiResponses(value = {
@@ -101,7 +102,7 @@ public class CartItemsController {
             @ApiResponse(responseCode = "404", description = "Usuario o producto no encontrados")
     })
     @PostMapping
-    public ResponseEntity<CartItems> save(@Valid @RequestBody CartItems cartItem) {
+    public ResponseEntity<CartItems> save(@Valid @RequestBody CartItemsDTO cartItem) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cartItemsService.save(cartItem));
     }
 
@@ -122,14 +123,12 @@ public class CartItemsController {
             @ApiResponse(responseCode = "404", description = "Item no encontrado"),
             @ApiResponse(responseCode = "400", description = "Cantidad no válida o stock insuficiente")
     })
-    @PutMapping("/{id}/quantity")
-    public ResponseEntity<CartItems> update(@PathVariable Integer id, @RequestParam Integer newQuantity) {
-        CartItems updatedCartItem = cartItemsService.update(id, newQuantity);
-        return ResponseEntity.status(HttpStatus.OK).body(updatedCartItem);
+    @PutMapping("/{id}")
+    public ResponseEntity<CartItems> update(
+            @PathVariable Integer id,
+            @Valid @RequestBody CartItemsDTO dto) { 
+
+        return ResponseEntity.ok(cartItemsService.update(id, dto));
     }
-
-    
-
-
 
 }
