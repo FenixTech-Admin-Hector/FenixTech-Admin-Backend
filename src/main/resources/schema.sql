@@ -164,13 +164,21 @@ CREATE TABLE IF NOT EXISTS order_details (
     FOREIGN KEY (product_id) REFERENCES Products (product_id)
 );
 
+CREATE TABLE IF NOT EXISTS shipping_carriers (
+    carrier_id INT PRIMARY KEY AUTO_INCREMENT,
+    carrier_name VARCHAR(100) NOT NULL UNIQUE, 
+    base_price DECIMAL(10, 2) NOT NULL,
+    estimated_days INT NOT NULL,
+    carrier_logo TEXT,
+    tracking_url TEXT 
+);
+
 CREATE TABLE IF NOT EXISTS shipments (
     shipment_id INT PRIMARY KEY AUTO_INCREMENT,
-    -- UNIQUE garantiza 1 solo envío por pedido (Relación 1:1)
     order_id INT UNIQUE NOT NULL, 
     carrier_id INT NOT NULL,
 
-    -- Desnormalización crítica: NO hay FK a Addresses. Son textos "congelados" históricamente.
+    -- Desnormalización crítica para historial
     shipping_street VARCHAR(255) NOT NULL,
     shipping_city VARCHAR(100) NOT NULL,
     shipping_zip_code VARCHAR(20) NOT NULL,
@@ -178,17 +186,9 @@ CREATE TABLE IF NOT EXISTS shipments (
 
     tracking_number VARCHAR(100),
     shipment_status ENUM('PREPARING', 'IN_TRANSIT', 'DELIVERED') DEFAULT 'PREPARING',
+    
     FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE,
-    FOREIGN KEY (carrier_id) REFERENCES Carriers(carrier_id)
-);
-
-CREATE TABLE IF NOT EXISTS shipping_carriers (
-    carrier_id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL UNIQUE,
-    base_price DECIMAL(10, 2) NOT NULL,
-    estimated_days INT NOT NULL,
-    carrier_logo VARCHAR(255),
-    tracking_url VARCHAR(255)
+    FOREIGN KEY (carrier_id) REFERENCES Shipping_carriers(carrier_id)
 );
 -- ------------------------------------------------------------------------------
 -- MÓDULO 4: COMUNIDAD, RESEÑAS Y GAMIFICACIÓN

@@ -143,6 +143,14 @@ INSERT INTO order_details (order_id, product_id, quantity, unit_price_at_purchas
 (10, 11, 1, 350.00), (11, 13, 1, 90.00), (12, 14, 1, 85.00),
 (13, 1, 1, 250.00), (14, 2, 1, 300.00), (15, 3, 1, 150.00);
 
+-- Carriers
+INSERT INTO shipping_carriers (carrier_name, base_price, estimated_days, carrier_logo, tracking_url) VALUES
+('DHL Express', 12.50, 2, 'url_logo_dhl.svg', 'https://www.dhl.com/es-es/home/tracking/tracking-main.html?tracking-id={}'),
+('UPS', 11.00, 3, 'url_logo_ups.svg', 'https://www.ups.com/track?loc=es_ES&tracknum={}&adapter=Default'),
+('Correos', 4.95, 5, 'url_logo_correos.svg', 'https://www.correos.es/es/es/herramientas/localizador/envios/detalle?numero={}'),
+('SEUR', 8.90, 2, 'url_logo_seur.svg', 'https://www.seur.com/livetracking/pages/seguimiento-online-busqueda.do?id={}'),
+('MRW', 7.50, 1, 'url_logo_mrw.svg', 'https://www.mrw.es/seguimiento-envios-mrw/?n_envio={}');
+
 -- Shipments (15 records)
 INSERT INTO shipments (order_id, carrier_id, shipping_street, shipping_city, shipping_zip_code, shipping_country, tracking_number, shipment_status) VALUES
 (1, 1, 'Calle A 1', 'Madrid', '28001', 'Spain', 'TRK001', 'DELIVERED'),
@@ -161,13 +169,7 @@ INSERT INTO shipments (order_id, carrier_id, shipping_street, shipping_city, shi
 (14, 4, 'Calle N 14', 'Logroño', '26001', 'Spain', 'TRK014', 'PREPARING'),
 (15, 5, 'Calle O 15', 'Toledo', '45001', 'Spain', 'TRK015', 'DELIVERED');
 
--- Carriers
-INSERT INTO shipping_carriers (name, base_price, estimated_days, url_logo, tracking_url) VALUES
-('DHL Express', 12.50, 2, 'url_logo_dhl.svg', 'https://www.dhl.com/es-es/home/tracking/tracking-main.html?tracking-id={}'),
-('UPS', 11.00, 3, 'url_logo_ups.svg', 'https://www.ups.com/track?loc=es_ES&tracknum={}&adapter=Default'),
-('Correos', 4.95, 5, 'url_logo_correos.svg', 'https://www.correos.es/es/es/herramientas/localizador/envios/detalle?numero={}'),
-('SEUR', 8.90, 2, 'url_logo_seur.svg', 'https://www.seur.com/livetracking/pages/seguimiento-online-busqueda.do?id={}'),
-('MRW', 7.50, 1, 'url_logo_mrw.svg', 'https://www.mrw.es/seguimiento-envios-mrw/?n_envio={}');
+
 
 -- Posts (15 records)
 INSERT INTO posts (author_user_id, title, body, created_at) VALUES
