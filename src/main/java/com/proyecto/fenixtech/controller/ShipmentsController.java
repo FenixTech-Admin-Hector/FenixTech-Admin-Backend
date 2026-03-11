@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.proyecto.fenixtech.dto.ShipmentRequestDTO;
+import com.proyecto.fenixtech.dto.ShipmentResponseDTO;
+import com.proyecto.fenixtech.dto.ShipmentUpdateCarrierDTO;
 import com.proyecto.fenixtech.model.Shipments;
 import com.proyecto.fenixtech.model.enums.ShipmentStatus;
 import com.proyecto.fenixtech.service.ShipmentsService;
@@ -47,7 +50,7 @@ public class ShipmentsController {
                         @ApiResponse(responseCode = "404", description = "Envío no encontrado")
         })
         @GetMapping("/{id}")
-        public ResponseEntity<Shipments> findById(@PathVariable Integer id) {
+        public ResponseEntity<ShipmentResponseDTO> findById(@PathVariable Integer id) {
                 return ResponseEntity.status(HttpStatus.OK).body(shipmentsService.findById(id));
         }
 
@@ -85,7 +88,7 @@ public class ShipmentsController {
                         @ApiResponse(responseCode = "404", description = "Pedido no encontrado")
         })
         @PostMapping
-        public ResponseEntity<Shipments> save(@Valid @RequestBody Shipments shipment) {
+        public ResponseEntity<Shipments> save(@Valid @RequestBody ShipmentRequestDTO shipment) {
                 return ResponseEntity.status(HttpStatus.CREATED).body(shipmentsService.save(shipment));
         }
 
@@ -106,7 +109,7 @@ public class ShipmentsController {
                         @ApiResponse(responseCode = "404", description = "Envío no encontrado")
         })
         @PutMapping("/{id}")
-        public ResponseEntity<Shipments> update(@PathVariable Integer id, @Valid @RequestBody Shipments shipment) {
+        public ResponseEntity<Shipments> update(@PathVariable Integer id, @Valid @RequestBody ShipmentUpdateCarrierDTO shipment) {
                 return ResponseEntity.status(HttpStatus.OK).body(shipmentsService.update(id, shipment));
         }
 
