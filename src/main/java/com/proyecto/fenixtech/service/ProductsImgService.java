@@ -45,19 +45,6 @@ public class ProductsImgService {
     }
 
     @Transactional
-    public ProductsImg save(ProductsImg productsImg) {
-        if (productsImg.getProduct() == null || productsImg.getProduct().getProductId() == null) {
-            throw new IllegalArgumentException("La imagen debe estar asociada a un producto válido con ID.");
-        }
-
-        productsRepository.findById(productsImg.getProduct().getProductId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "El producto con ID " + productsImg.getProduct().getProductId() + " no existe"));
-
-        return productsImgRepository.save(productsImg);
-    }
-
-    @Transactional
     public void deleteById(Integer id) {
         if (!productsImgRepository.existsById(id)) {
             throw new IllegalArgumentException("No existe la imagen con id: " + id + " para eliminar");
@@ -65,17 +52,4 @@ public class ProductsImgService {
         productsImgRepository.deleteById(id);
     }
 
-    @Transactional
-    public ProductsImg update(Integer id, ProductsImg productsImg) {
-        if (productsImg.getProduct() == null || productsImg.getProduct().getProductId() == null) {
-            throw new IllegalArgumentException("La imagen debe estar asociada a un producto válido con ID.");
-        }
-
-        ProductsImg existingImg = productsImgRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró la imagen con ID: " + id));
-
-        existingImg.setImageUrl(productsImg.getImageUrl());
-
-        return productsImgRepository.save(existingImg);
-    }
 }
