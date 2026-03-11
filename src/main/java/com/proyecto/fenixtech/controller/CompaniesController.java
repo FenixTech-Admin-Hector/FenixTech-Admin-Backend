@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.fenixtech.service.CompaniesService;
+import com.proyecto.fenixtech.dto.CompaniesRequestUpdateDTO;
 import com.proyecto.fenixtech.model.Companies;
 
 import java.util.HashMap;
@@ -117,7 +118,7 @@ public class CompaniesController {
         @ApiResponse(responseCode = "404", description = "Empresa no encontrada")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Companies> update(@PathVariable Integer id, @Valid @RequestBody Companies company){
+    public ResponseEntity<Companies> update(@PathVariable Integer id, @Valid @RequestBody CompaniesRequestUpdateDTO company){
         Companies updatedCompany = companiesService.update(id, company);
         return ResponseEntity.status(HttpStatus.OK).body(updatedCompany);
     }
