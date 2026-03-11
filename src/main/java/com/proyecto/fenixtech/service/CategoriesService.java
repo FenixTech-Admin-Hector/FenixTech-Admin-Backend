@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.proyecto.fenixtech.dto.CategoriesRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Categories;
 import com.proyecto.fenixtech.repository.CategoriesRepository;
@@ -39,7 +40,16 @@ public class CategoriesService {
     }
 
     @Transactional
-    public Categories save(Categories category) {
+    public Categories save(CategoriesRequestDTO dto) {
+        categoriesRepository.findByNameIgnoreCase(dto.getName())
+                .ifPresent(category -> {
+                    throw new IllegalArgumentException("Ya existe una categoría con el nombre: " + category.getName());
+                });
+
+        Categories category = new Categories();
+        category.setName(dto.getName());
+        category.setDescription(dto.getDescription());
+
         return categoriesRepository.save(category);
     }
 
@@ -52,12 +62,19 @@ public class CategoriesService {
     }
 
     @Transactional
-    public Categories update(Integer id, Categories category) {
+    public Categories update(Integer id, CategoriesRequestDTO dto) {
         Categories existingCategory = categoriesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró la categoría con ID: " + id));
 
-        existingCategory.setName(category.getName());
-        existingCategory.setDescription(category.getDescription());
+        categoriesRepository.findByNameIgnoreCase(dto.getName())
+                .ifPresent(existing -> {
+                    if (!existing.getCategoryId().equals(id)) {
+                        throw new IllegalArgumentException("Ya existe otra categoría con el nombre: " + dto.getName());
+                    }
+                });
+
+        existingCategory.setName(dto.getName());
+        existingCategory.setDescription(dto.getDescription());
 
         return categoriesRepository.save(existingCategory);
     }

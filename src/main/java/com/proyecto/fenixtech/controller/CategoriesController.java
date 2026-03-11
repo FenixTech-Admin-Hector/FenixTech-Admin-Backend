@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+import com.proyecto.fenixtech.dto.CategoriesRequestDTO;
 import com.proyecto.fenixtech.model.Categories;
 
 import java.util.HashMap;
@@ -80,7 +81,7 @@ public class CategoriesController {
         @ApiResponse(responseCode = "400", description = "Solicitud inválida")
     })
     @PostMapping
-    public ResponseEntity<Categories> save(@Valid @RequestBody Categories category) {
+    public ResponseEntity<Categories> save(@Valid @RequestBody CategoriesRequestDTO category) {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoriesService.save(category));
     }
 
@@ -101,7 +102,7 @@ public class CategoriesController {
         @ApiResponse(responseCode = "404", description = "Categoría no encontrada")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Categories> update(@PathVariable Integer id, @Valid @RequestBody Categories category) {
+    public ResponseEntity<Categories> update(@PathVariable Integer id, @Valid @RequestBody CategoriesRequestDTO category) {
         Categories updatedCategory = categoriesService.update(id, category);
         return ResponseEntity.status(HttpStatus.OK).body(updatedCategory);
     }
