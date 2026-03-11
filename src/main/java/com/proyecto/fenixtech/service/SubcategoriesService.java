@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.fenixtech.repository.CategoriesRepository;
 import com.proyecto.fenixtech.repository.SubcategoriesRepository;
+import com.proyecto.fenixtech.dto.SubcategoriesRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
+import com.proyecto.fenixtech.model.Categories;
 import com.proyecto.fenixtech.model.Subcategories;
 
 @Service
@@ -18,7 +20,6 @@ public class SubcategoriesService {
 
     @Autowired
     private CategoriesRepository categoriesRepository;
-
 
     @Transactional(readOnly = true)
     public List<Subcategories> findAllSubcategories() {
@@ -49,15 +50,30 @@ public class SubcategoriesService {
     }
 
     @Transactional
-    public Subcategories save(Subcategories subcategory) {
-        if (subcategory.getCategory() == null || subcategory.getCategory().getCategoryId() == null) {
+    public Subcategories save(SubcategoriesRequestDTO dto) {
+        // 1. Validamos que el ID de la categoría padre venga en el DTO
+        if (dto.getCategoryId() == null) {
             throw new IllegalArgumentException("La subcategoría debe estar asociada a una categoría válida con ID.");
         }
 
-        categoriesRepository.findById(subcategory.getCategory().getCategoryId())
-            .orElseThrow(() -> new ResourceNotFoundException("La categoría con ID " 
-                + subcategory.getCategory().getCategoryId() + " no existe"));
-            
+        // 2. Verificamos que la categoría padre exista en la DB
+        Categories category = categoriesRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("La categoría con ID "
+                        + dto.getCategoryId() + " no existe"));
+
+        // 3. Opcional: Validar si ya existe una subcategoría con el mismo nombre
+        subcategoriesRepository.findByNameIgnoreCase(dto.getName())
+                .ifPresent(s -> {
+                    throw new IllegalArgumentException("Ya existe una subcategoría con el nombre: " + dto.getName());
+                });
+
+        // 4. Mapeamos el DTO a la Entidad
+        Subcategories subcategory = new Subcategories();
+        subcategory.setName(dto.getName());
+        subcategory.setDescription(dto.getDescription());
+        subcategory.setCategory(category);
+        // subcategory.setIsActive(true);
+
         return subcategoriesRepository.save(subcategory);
     }
 
@@ -70,29 +86,29 @@ public class SubcategoriesService {
     }
 
     @Transactional
-    public Subcategories update(Integer id, Subcategories subcategory) {
-        Subcategories existingSubcategories = subcategoriesRepository.findById(id)
+    public Subcategories update(Integer id, SubcategoriesRequestDTO dto) {
+        Subcategories existingSub = subcategoriesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró la subcategoría con ID: " + id));
-        
-        if (subcategory.getCategory() == null || subcategory.getCategory().getCategoryId() == null) {
-            throw new IllegalArgumentException("La subcategoría debe tener una categoría asociada.");
-        }
-        
-        if (!categoriesRepository.existsById(subcategory.getCategory().getCategoryId())) {
-            throw new ResourceNotFoundException("La categoría con ID " + subcategory.getCategory().getCategoryId() + " no existe");
+
+        if (dto.getCategoryId() != null) {
+            Categories newCategory = categoriesRepository.findById(dto.getCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "La categoría con ID " + dto.getCategoryId() + " no existe"));
+            existingSub.setCategory(newCategory);
         }
 
-        existingSubcategories.setName(subcategory.getName());
-        existingSubcategories.setDescription(subcategory.getDescription());
-        existingSubcategories.setCategory(subcategory.getCategory());
-        
-        return subcategoriesRepository.save(existingSubcategories);
+        subcategoriesRepository.findByNameIgnoreCase(dto.getName())
+                .ifPresent(sub -> {
+                    if (!sub.getSubcategoryId().equals(id)) {
+                        throw new IllegalArgumentException(
+                                "Ya existe otra subcategoría con el nombre: " + dto.getName());
+                    }
+                });
 
+        existingSub.setName(dto.getName());
+        existingSub.setDescription(dto.getDescription());
+
+        return subcategoriesRepository.save(existingSub);
     }
-        
-
-
-
-
 
 }

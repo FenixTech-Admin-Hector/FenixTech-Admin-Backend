@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+import com.proyecto.fenixtech.dto.SubcategoriesRequestDTO;
 import com.proyecto.fenixtech.model.Subcategories;
 import com.proyecto.fenixtech.service.SubcategoriesService;
 
@@ -91,7 +92,7 @@ public class SubcategoriesController {
         @ApiResponse(responseCode = "404", description = "Subcategoría no encontrada")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Subcategories> update(@PathVariable Integer id, @Valid @RequestBody Subcategories subcategory) {
+    public ResponseEntity<Subcategories> update(@PathVariable Integer id, @Valid @RequestBody SubcategoriesRequestDTO subcategory) {
         Subcategories updatedSubcategory = subcategoriesService.update(id, subcategory);
         return ResponseEntity.status(HttpStatus.OK).body(updatedSubcategory);
     }
@@ -113,7 +114,7 @@ public class SubcategoriesController {
         @ApiResponse(responseCode = "400", description = "Solicitud inválida")
     })
     @PostMapping
-    public ResponseEntity<Subcategories> save(@Valid @RequestBody Subcategories subcategory) {
+    public ResponseEntity<Subcategories> save(@Valid @RequestBody SubcategoriesRequestDTO subcategory) {
         Subcategories subcategories = subcategoriesService.save(subcategory);
         return ResponseEntity.status(HttpStatus.CREATED).body(subcategories);
     }
