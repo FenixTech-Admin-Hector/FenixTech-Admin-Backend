@@ -1,7 +1,11 @@
 package com.proyecto.fenixtech.service;
 
+import com.proyecto.fenixtech.dto.CommentsDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Comments;
+import com.proyecto.fenixtech.model.Posts;
+import com.proyecto.fenixtech.model.Users;
+import com.proyecto.fenixtech.model.enums.Rol;
 import com.proyecto.fenixtech.repository.CommentsRepository;
 import com.proyecto.fenixtech.repository.PostsRepository;
 import com.proyecto.fenixtech.repository.UsersRepository;
@@ -45,28 +49,49 @@ public class CommentsService {
     }
 
     @Transactional
-    public Comments save(Comments comment) {
-        usersRepository.findById(comment.getAuthor().getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + comment.getAuthor().getUserId()));
-        postsRepository.findById(comment.getPost().getPostId())
-                .orElseThrow(() -> new ResourceNotFoundException("Post no encontrado con id: " + comment.getPost().getPostId()));
+    public Comments save(CommentsDTO dto) {
+        Posts post = postsRepository.findById(dto.getPostId())
+                .orElseThrow(() -> new ResourceNotFoundException("El post no existe"));
+
+        Users user = usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(dto.getUserId(), Rol.ADMIN)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado o inactivo"));
+        Comments comment = new Comments();
+        comment.setBody(dto.getBody());
+        comment.setPost(post);
+        comment.setAuthor(user);
+
         return commentsRepository.save(comment);
     }
 
     @Transactional
-    public void deleteById(Integer id) {
+    public void deleteByUser(Integer id, Integer userId) {
+        Comments comment = commentsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Comentario no encontrado"));
+
+        if (!comment.getAuthor().getUserId().equals(userId)) {
+            throw new IllegalArgumentException("No puedes borrar un comentario que no te pertenece.");
+        }
+        commentsRepository.delete(comment);
+    }
+
+    @Transactional
+    public void deleteByAdmin(Integer id) {
         if (!commentsRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Comentario no encontrado con id: " + id);
+            throw new ResourceNotFoundException("Comentario no encontrado");
         }
         commentsRepository.deleteById(id);
     }
 
     @Transactional
-    public Comments update(Integer id, Comments comment) {
+    public Comments update(Integer id, CommentsDTO dto) {
         Comments existingComment = commentsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comentario no encontrado con id: " + id));
-        
-        existingComment.setBody(comment.getBody());
+
+        if (!existingComment.getAuthor().getUserId().equals(dto.getUserId())) {
+            throw new IllegalArgumentException("No puedes editar un comentario que no te pertenece.");
+        }
+
+        existingComment.setBody(dto.getBody());
 
         return commentsRepository.save(existingComment);
     }

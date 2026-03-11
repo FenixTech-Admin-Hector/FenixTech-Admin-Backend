@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -61,17 +60,6 @@ public class Comments implements Serializable {
     @JsonIgnoreProperties({"comments", "posts", "company", "addresses", "reviews", "proposals", "orders", "cartItems"})
     private Users author;
 
-    @JsonProperty("postId")
-    public void setPostId(Integer postId) {
-        this.post = new Posts();
-        this.post.setPostId(postId);
-    }
-
-    @JsonProperty("userId")
-    public void setUserId(Integer userId) {
-        this.author = new Users();
-        this.author.setUserId(userId);
-    }
 
 
 }

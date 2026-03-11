@@ -1,11 +1,14 @@
 package com.proyecto.fenixtech.controller;
 
+import com.proyecto.fenixtech.dto.CommentsDTO;
 import com.proyecto.fenixtech.model.Comments;
 import com.proyecto.fenixtech.service.CommentsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -74,7 +77,7 @@ public class CommentsController {
             @ApiResponse(responseCode = "400", description = "Solicitud inválida")
     })
     @PostMapping
-    public ResponseEntity<Comments> save(@RequestBody Comments comment) {
+    public ResponseEntity<Comments> save(@Valid @RequestBody CommentsDTO comment) {
         return ResponseEntity.status(HttpStatus.CREATED).body(commentsService.save(comment));
     }
 
@@ -84,18 +87,30 @@ public class CommentsController {
             @ApiResponse(responseCode = "404", description = "Comentario no encontrado")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Comments> update(@PathVariable Integer id, @RequestBody Comments comment) {
+    public ResponseEntity<Comments> update(@PathVariable Integer id, @Valid @RequestBody CommentsDTO comment) {
         return ResponseEntity.ok(commentsService.update(id, comment));
     }
 
-    @Operation(summary = "Eliminar un comentario", description = "Elimina un comentario por su ID")
+    @Operation(summary = "Eliminar un comentario (Usuario)", description = "El autor elimina su propio comentario por id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Comentario eliminado con éxito"),
+            @ApiResponse(responseCode = "400", description = "No puedes borrar un comentario que no te pertenece."),
+            @ApiResponse(responseCode = "404", description = "Comentario no encontrado")
+    })
+    @DeleteMapping("/{id}/user/{userId}")
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id, @PathVariable Integer userId) {
+        commentsService.deleteByUser(id, userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Eliminar comentario (ADMIN)", description = "El administrador elimina cualquier comentario.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Comentario eliminado con éxito"),
             @ApiResponse(responseCode = "404", description = "Comentario no encontrado")
     })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
-        commentsService.deleteById(id);
+    @DeleteMapping("/admin/{id}")
+    public ResponseEntity<Void> deleteByAdmin(@PathVariable Integer id) {
+        commentsService.deleteByAdmin(id);
         return ResponseEntity.noContent().build();
     }
 }
