@@ -7,6 +7,8 @@ import com.proyecto.fenixtech.repository.UsersRepository;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.proyecto.fenixtech.dto.OrderRequestUpdateDTO;
+import com.proyecto.fenixtech.dto.OrdersRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.CartItems;
 import com.proyecto.fenixtech.model.OrderDetails;
@@ -14,6 +16,7 @@ import com.proyecto.fenixtech.model.Orders;
 import com.proyecto.fenixtech.model.Products;
 import com.proyecto.fenixtech.model.Users;
 import com.proyecto.fenixtech.model.enums.OrderStatus;
+import com.proyecto.fenixtech.model.enums.PickupType;
 import com.proyecto.fenixtech.model.enums.ProductStatus;
 
 import java.time.LocalDate;
@@ -90,20 +93,36 @@ public class OrdersService {
     }
 
     @Transactional
-    public Orders createOrderFromUserCart(Integer userId, Boolean requiresShipping) {
-        Users buyer = usersRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "No se puede crear el pedido: El usuario con ID " + userId + " no existe"));
+    public Orders createOrderFromUserCart(OrdersRequestDTO dto) {
+        Users buyer = usersRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
-        List<CartItems> userCart = cartItemsRepository.findByUser_UserId(userId);
-
+        List<CartItems> userCart = cartItemsRepository.findByUser_UserId(dto.getUserId());
         if (userCart.isEmpty()) {
-            throw new ResourceNotFoundException("El carrito está vacío, no se puede crear el pedido.");
+            throw new IllegalArgumentException("El carrito está vacío.");
         }
 
+        // Extraemos el tipo de entrega del primer producto como referencia
+        PickupType tipoReferencia = userCart.get(0).getProduct().getPickupType();
+
+        for (CartItems item : userCart) {
+            if (item.getProduct().getPickupType() != tipoReferencia) {
+                throw new IllegalArgumentException(
+                        "Incompatibilidad en el carrito: Tienes productos de 'RECOGIDA_LOCAL' " +
+                                "y de 'ENVIO_DOMICILIO' mezclados. Por favor, sepáralos en pedidos distintos.");
+            }
+        }
+
+        // Crear el pedido
         Orders newOrder = new Orders();
         newOrder.setBuyer(buyer);
-        newOrder.setRequiresShipping(requiresShipping);
+
+        // Seteamos si requiere envío basado en el tipo validado
+        if (tipoReferencia == PickupType.ENVIO_DOMICILIO) {
+            newOrder.setRequiresShipping(true); // Es un pedido para enviar
+        } else {
+            newOrder.setRequiresShipping(false); // Es un pedido de RECOGIDA_LOCAL
+        }
         List<OrderDetails> detailsList = new ArrayList<>();
         Double totalCalculado = 0.0;
 
@@ -146,7 +165,7 @@ public class OrdersService {
 
         Orders savedOrder = ordersRepository.save(newOrder);
 
-        cartItemsRepository.deleteByUser_UserId(userId);
+        cartItemsRepository.deleteByUser_UserId(dto.getUserId());
 
         return savedOrder;
     }
@@ -173,9 +192,30 @@ public class OrdersService {
     }
 
     @Transactional
-    public Orders updateStatus(Integer id, OrderStatus newStatus) {
-        Orders order = findById(id);
-        order.setStatus(newStatus);
+    public Orders updateStatus(Integer id, OrderRequestUpdateDTO dto) {
+        Orders order = ordersRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado con ID: " + id));
+
+        // 1. Evitar cambios si el pedido ya está cancelado
+        if (order.getStatus() == OrderStatus.CANCELLED) {
+            throw new IllegalArgumentException("No se puede modificar un pedido que ya ha sido cancelado.");
+        }
+
+        // 2. Lógica especial: Si el nuevo estado es CANCELADO, devolvemos el stock
+        if (dto.getStatus() == OrderStatus.CANCELLED) {
+            for (OrderDetails detail : order.getOrderDetails()) {
+                Products product = detail.getProduct();
+                product.setStock(product.getStock() + detail.getQuantity());
+
+                if (product.getProductStatus() == ProductStatus.SOLD_OUT) {
+                    product.setProductStatus(ProductStatus.ACTIVE); 
+                }
+                productsRepository.save(product);
+            }
+        }
+
+        // 3. Actualizamos el estado
+        order.setStatus(dto.getStatus());
         return ordersRepository.save(order);
     }
 
