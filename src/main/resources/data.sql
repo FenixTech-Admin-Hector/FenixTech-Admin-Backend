@@ -144,22 +144,30 @@ INSERT INTO order_details (order_id, product_id, quantity, unit_price_at_purchas
 (13, 1, 1, 250.00), (14, 2, 1, 300.00), (15, 3, 1, 150.00);
 
 -- Shipments (15 records)
-INSERT INTO shipments (order_id, shipping_street, shipping_city, shipping_zip_code, shipping_country, tracking_number, carrier_name, shipment_status) VALUES
-(1, 'Calle A 1', 'Madrid', '28001', 'Spain', 'TRK001', 'DHL', 'DELIVERED'),
-(2, 'Calle B 2', 'Barcelona', '08001', 'Spain', 'TRK002', 'UPS', 'IN_TRANSIT'),
-(3, 'Calle C 3', 'Valencia', '46001', 'Spain', 'TRK003', 'Correos', 'PREPARING'),
-(4, 'Calle D 4', 'Sevilla', '41001', 'Spain', 'TRK004', 'SEUR', 'PREPARING'),
-(5, 'Calle E 5', 'Bilbao', '48001', 'Spain', 'TRK005', 'MRW', 'PREPARING'),
-(6, 'Calle F 6', 'Malaga', '29001', 'Spain', 'TRK006', 'DHL', 'DELIVERED'),
-(7, 'Calle G 7', 'Zaragoza', '50001', 'Spain', 'TRK007', 'UPS', 'IN_TRANSIT'),
-(8, 'Calle H 8', 'Oviedo', '33001', 'Spain', 'TRK008', 'Correos', 'DELIVERED'),
-(9, 'Calle I 9', 'A Coruña', '15001', 'Spain', 'TRK009', 'SEUR', 'DELIVERED'),
-(10, 'Calle J 10', 'Salamanca', '37001', 'Spain', 'TRK010', 'MRW', 'PREPARING'),
-(11, 'Calle K 11', 'Palma', '07001', 'Spain', 'TRK011', 'DHL', 'PREPARING'),
-(12, 'Calle L 12', 'Las Palmas', '35001', 'Spain', 'TRK012', 'UPS', 'IN_TRANSIT'),
-(13, 'Calle M 13', 'Pamplona', '31001', 'Spain', 'TRK013', 'Correos', 'DELIVERED'),
-(14, 'Calle N 14', 'Logroño', '26001', 'Spain', 'TRK014', 'SEUR', 'PREPARING'),
-(15, 'Calle O 15', 'Toledo', '45001', 'Spain', 'TRK015', 'MRW', 'DELIVERED');
+INSERT INTO shipments (order_id, carrier_id, shipping_street, shipping_city, shipping_zip_code, shipping_country, tracking_number, shipment_status) VALUES
+(1, 1, 'Calle A 1', 'Madrid', '28001', 'Spain', 'TRK001', 'DELIVERED'),
+(2, 2, 'Calle B 2', 'Barcelona', '08001', 'Spain', 'TRK002', 'IN_TRANSIT'),
+(3, 3, 'Calle C 3', 'Valencia', '46001', 'Spain', 'TRK003', 'PREPARING'),
+(4, 4, 'Calle D 4', 'Sevilla', '41001', 'Spain', 'TRK004', 'PREPARING'),
+(5, 5, 'Calle E 5', 'Bilbao', '48001', 'Spain', 'TRK005', 'PREPARING'),
+(6, 1, 'Calle F 6', 'Malaga', '29001', 'Spain', 'TRK006', 'DELIVERED'),
+(7, 2, 'Calle G 7', 'Zaragoza', '50001', 'Spain', 'TRK007', 'IN_TRANSIT'),
+(8, 3, 'Calle H 8', 'Oviedo', '33001', 'Spain', 'TRK008', 'DELIVERED'),
+(9, 4, 'Calle I 9', 'A Coruña', '15001', 'Spain', 'TRK009', 'DELIVERED'),
+(10, 5, 'Calle J 10', 'Salamanca', '37001', 'Spain', 'TRK010', 'PREPARING'),
+(11, 1, 'Calle K 11', 'Palma', '07001', 'Spain', 'TRK011', 'PREPARING'),
+(12, 2, 'Calle L 12', 'Las Palmas', '35001', 'Spain', 'TRK012', 'IN_TRANSIT'),
+(13, 3, 'Calle M 13', 'Pamplona', '31001', 'Spain', 'TRK013', 'DELIVERED'),
+(14, 4, 'Calle N 14', 'Logroño', '26001', 'Spain', 'TRK014', 'PREPARING'),
+(15, 5, 'Calle O 15', 'Toledo', '45001', 'Spain', 'TRK015', 'DELIVERED');
+
+-- Carriers
+INSERT INTO shipping_carriers (name, base_price, estimated_days, url_logo, tracking_url) VALUES
+('DHL Express', 12.50, 2, 'url_logo_dhl.svg', 'https://www.dhl.com/es-es/home/tracking/tracking-main.html?tracking-id={}'),
+('UPS', 11.00, 3, 'url_logo_ups.svg', 'https://www.ups.com/track?loc=es_ES&tracknum={}&adapter=Default'),
+('Correos', 4.95, 5, 'url_logo_correos.svg', 'https://www.correos.es/es/es/herramientas/localizador/envios/detalle?numero={}'),
+('SEUR', 8.90, 2, 'url_logo_seur.svg', 'https://www.seur.com/livetracking/pages/seguimiento-online-busqueda.do?id={}'),
+('MRW', 7.50, 1, 'url_logo_mrw.svg', 'https://www.mrw.es/seguimiento-envios-mrw/?n_envio={}');
 
 -- Posts (15 records)
 INSERT INTO posts (author_user_id, title, body, created_at) VALUES
