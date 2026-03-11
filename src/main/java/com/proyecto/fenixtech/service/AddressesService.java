@@ -6,7 +6,7 @@ import com.proyecto.fenixtech.repository.UsersRepository;
 import com.proyecto.fenixtech.model.Addresses;
 import com.proyecto.fenixtech.model.Users;
 import com.proyecto.fenixtech.model.enums.Rol;
-import com.proyecto.fenixtech.dto.AddressDTO;
+import com.proyecto.fenixtech.dto.AddressRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public class AddressesService {
     }
 
     @Transactional
-    public Addresses save(AddressDTO dto) {
+    public Addresses save(AddressRequestDTO dto) {
         List<Addresses> existingAddresses = addressesRepository.findByConditions(
                 dto.getStreet(),
                 dto.getCity(),
@@ -90,7 +90,7 @@ public class AddressesService {
     }
 
     @Transactional
-    public Addresses update(Integer id, AddressDTO dto) {
+    public Addresses update(Integer id, AddressRequestDTO dto) {
         Addresses addressUpdate = addressesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró la dirección con ID: " + id));
 

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.proyecto.fenixtech.dto.FollowDTO;
+import com.proyecto.fenixtech.dto.FollowRequestDTO;
 import com.proyecto.fenixtech.model.Follow;
 import com.proyecto.fenixtech.service.FollowService;
 
@@ -88,7 +88,7 @@ public class FollowController {
     })
     @PostMapping("/toggle")
     public ResponseEntity<Map<String, Object>> toggleFollow(
-            @Valid @RequestBody FollowDTO dto) {
+            @Valid @RequestBody FollowRequestDTO dto) {
 
         Boolean isFollowing = followService.toggleUser(dto);
         Map<String, Object> response = new HashMap<>();

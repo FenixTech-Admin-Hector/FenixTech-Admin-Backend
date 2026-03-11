@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.proyecto.fenixtech.dto.CartItemsDTO;
+import com.proyecto.fenixtech.dto.CartItemsRequestDTO;
 import com.proyecto.fenixtech.model.CartItems;
 import com.proyecto.fenixtech.service.CartItemsService;
 
@@ -102,7 +102,7 @@ public class CartItemsController {
             @ApiResponse(responseCode = "404", description = "Usuario o producto no encontrados")
     })
     @PostMapping
-    public ResponseEntity<CartItems> save(@Valid @RequestBody CartItemsDTO cartItem) {
+    public ResponseEntity<CartItems> save(@Valid @RequestBody CartItemsRequestDTO cartItem) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cartItemsService.save(cartItem));
     }
 
@@ -126,7 +126,7 @@ public class CartItemsController {
     @PutMapping("/{id}")
     public ResponseEntity<CartItems> update(
             @PathVariable Integer id,
-            @Valid @RequestBody CartItemsDTO dto) { 
+            @Valid @RequestBody CartItemsRequestDTO dto) { 
 
         return ResponseEntity.ok(cartItemsService.update(id, dto));
     }

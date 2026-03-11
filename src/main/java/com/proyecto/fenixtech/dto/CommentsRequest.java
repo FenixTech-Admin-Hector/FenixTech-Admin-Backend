@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class CommentsDTO {
+public class CommentsRequest {
     @NotBlank(message = "El contenido del comentario es obligatorio")
     private String body;
 

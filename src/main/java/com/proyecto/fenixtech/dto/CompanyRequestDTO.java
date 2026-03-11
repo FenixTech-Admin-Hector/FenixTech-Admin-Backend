@@ -4,7 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
-public class CompanyRegistrationDTO {
+public class CompanyRequestDTO {
 
     @NotBlank(message = "El email es obligatorio")
     @Email(regexp = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$", message = "El email está en un formato incorrecto")

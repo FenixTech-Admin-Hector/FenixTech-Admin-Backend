@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.proyecto.fenixtech.dto.FollowDTO;
+import com.proyecto.fenixtech.dto.FollowRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Follow;
 import com.proyecto.fenixtech.model.FollowsId;
@@ -51,7 +51,7 @@ public class FollowService {
 
   
     @Transactional
-    public Boolean toggleUser(FollowDTO dto) {
+    public Boolean toggleUser(FollowRequestDTO dto) {
         Integer followerId = dto.getFollowerId();
         Integer followingId = dto.getFollowing();
 

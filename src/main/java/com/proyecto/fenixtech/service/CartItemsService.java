@@ -6,7 +6,7 @@ import com.proyecto.fenixtech.repository.UsersRepository;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.proyecto.fenixtech.dto.CartItemsDTO;
+import com.proyecto.fenixtech.dto.CartItemsRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.CartItems;
 import com.proyecto.fenixtech.model.Products;
@@ -76,7 +76,7 @@ public class CartItemsService {
     }
 
     @Transactional
-    public CartItems save(CartItemsDTO dto) {
+    public CartItems save(CartItemsRequestDTO dto) {
         Integer userId = dto.getUserId();
         Integer productId = dto.getProductId();
 
@@ -128,7 +128,7 @@ public class CartItemsService {
     }
 
     @Transactional
-    public CartItems update(Integer id, CartItemsDTO dto) {
+    public CartItems update(Integer id, CartItemsRequestDTO dto) {
         CartItems cartUpdate = cartItemsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el item del carrito con ID: " + id));
 

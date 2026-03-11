@@ -4,7 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
-public class FollowDTO {
+public class FollowRequestDTO {
     @NotNull(message = "El ID del seguidor es obligatorio")
     private Integer followerId; 
 

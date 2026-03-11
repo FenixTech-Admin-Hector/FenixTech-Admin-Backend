@@ -1,6 +1,6 @@
 package com.proyecto.fenixtech.service;
 
-import com.proyecto.fenixtech.dto.CommentsDTO;
+import com.proyecto.fenixtech.dto.CommentsRequest;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Comments;
 import com.proyecto.fenixtech.model.Posts;
@@ -49,7 +49,7 @@ public class CommentsService {
     }
 
     @Transactional
-    public Comments save(CommentsDTO dto) {
+    public Comments save(CommentsRequest dto) {
         Posts post = postsRepository.findById(dto.getPostId())
                 .orElseThrow(() -> new ResourceNotFoundException("El post no existe"));
 
@@ -83,7 +83,7 @@ public class CommentsService {
     }
 
     @Transactional
-    public Comments update(Integer id, CommentsDTO dto) {
+    public Comments update(Integer id, CommentsRequest dto) {
         Comments existingComment = commentsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comentario no encontrado con id: " + id));
 

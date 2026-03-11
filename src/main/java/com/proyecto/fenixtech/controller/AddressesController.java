@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.proyecto.fenixtech.service.AddressesService;
-import com.proyecto.fenixtech.dto.AddressDTO;
+import com.proyecto.fenixtech.dto.AddressRequestDTO;
 import com.proyecto.fenixtech.model.Addresses;
 
 import java.util.HashMap;
@@ -95,7 +95,7 @@ public class AddressesController {
                         @ApiResponse(responseCode = "400", description = "Solicitud inválida")
         })
         @PostMapping
-        public ResponseEntity<Addresses> save(@Valid @RequestBody AddressDTO dto) {
+        public ResponseEntity<Addresses> save(@Valid @RequestBody AddressRequestDTO dto) {
                 return ResponseEntity.status(HttpStatus.CREATED).body(addressesService.save(dto));
         }
 
@@ -116,7 +116,7 @@ public class AddressesController {
                         @ApiResponse(responseCode = "404", description = "Dirección no encontrada")
         })
         @PutMapping("/{id}")
-        public ResponseEntity<Addresses> update(@PathVariable Integer id, @Valid @RequestBody AddressDTO dto) {
+        public ResponseEntity<Addresses> update(@PathVariable Integer id, @Valid @RequestBody AddressRequestDTO dto) {
                 Addresses updated = addressesService.update(id, dto);
                 return ResponseEntity.ok(updated);
         }

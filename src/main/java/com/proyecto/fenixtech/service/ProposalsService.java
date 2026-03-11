@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.proyecto.fenixtech.repository.CategoriesRepository;
 import com.proyecto.fenixtech.repository.ProposalsRepository;
 import com.proyecto.fenixtech.repository.UsersRepository;
-import com.proyecto.fenixtech.dto.ProposalDTO;
-import com.proyecto.fenixtech.dto.ProposalUpdateDTO;
+import com.proyecto.fenixtech.dto.ProposalRequestPostDTO;
+import com.proyecto.fenixtech.dto.ProposalRequestUpdateDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Categories;
 import com.proyecto.fenixtech.model.Proposals;
@@ -51,7 +51,7 @@ public class ProposalsService {
     }
 
     @Transactional
-    public Proposals save(ProposalDTO dto) {
+    public Proposals save(ProposalRequestPostDTO dto) {
         Users user = usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(dto.getUserId(), Rol.ADMIN)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
@@ -77,7 +77,7 @@ public class ProposalsService {
     }
 
     @Transactional
-    public Proposals update(Integer id, ProposalUpdateDTO dto) {
+    public Proposals update(Integer id, ProposalRequestUpdateDTO dto) {
         Proposals existing = proposalsRepository.findById(id).orElseThrow();
 
         if (dto.getTitle() != null)

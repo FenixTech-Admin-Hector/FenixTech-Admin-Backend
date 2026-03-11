@@ -1,6 +1,6 @@
 package com.proyecto.fenixtech.service;
 
-import com.proyecto.fenixtech.dto.ReviewsDTO;
+import com.proyecto.fenixtech.dto.ReviewsRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Companies;
 import com.proyecto.fenixtech.model.Reviews;
@@ -62,7 +62,7 @@ public class ReviewsService {
     }
 
     @Transactional
-    public Reviews save(ReviewsDTO dto) {
+    public Reviews save(ReviewsRequestDTO dto) {
         Users reviewer = usersRepository.findById(dto.getUserId())
                 .orElseThrow(
                         () -> new ResourceNotFoundException("El usuario con ID " + dto.getUserId() + " no existe"));
@@ -97,7 +97,7 @@ public class ReviewsService {
     }
 
     @Transactional
-    public Reviews update(Integer id, ReviewsDTO dto) {
+    public Reviews update(Integer id, ReviewsRequestDTO dto) {
         Reviews reviewUpdate = reviewsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró la review con ID: " + id));
 

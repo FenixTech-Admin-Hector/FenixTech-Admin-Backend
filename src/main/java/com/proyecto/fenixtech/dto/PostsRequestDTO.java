@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class PostsDTO {
+public class PostsRequestDTO {
     @NotBlank(message = "El título es obligatorio")
     private String title;
 

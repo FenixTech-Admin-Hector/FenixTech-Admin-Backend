@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proyecto.fenixtech.dto.PostsDTO;
+import com.proyecto.fenixtech.dto.PostsRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Posts;
 import com.proyecto.fenixtech.model.PostsImg;
@@ -54,7 +54,7 @@ public class PostsService {
     }
 
     @Transactional
-    public Posts save(PostsDTO dto) {
+    public Posts save(PostsRequestDTO dto) {
         Users user = usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(dto.getUserId(), Rol.ADMIN)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         Posts post = new Posts();
@@ -82,7 +82,7 @@ public class PostsService {
     }
 
     @Transactional
-    public Posts update(Integer id, PostsDTO dto) {
+    public Posts update(Integer id, PostsRequestDTO dto) {
         Posts postUpdate = postsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post no encontrado con id: " + id));
 

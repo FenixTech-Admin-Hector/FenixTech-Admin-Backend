@@ -1,6 +1,6 @@
 package com.proyecto.fenixtech.controller;
 
-import com.proyecto.fenixtech.dto.ReviewsDTO;
+import com.proyecto.fenixtech.dto.ReviewsRequestDTO;
 import com.proyecto.fenixtech.model.Reviews;
 import com.proyecto.fenixtech.service.ReviewsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -93,7 +93,7 @@ public class ReviewsController {
             @ApiResponse(responseCode = "400", description = "Solicitud inválida")
     })
     @PostMapping
-    public ResponseEntity<Reviews> save(@Valid @RequestBody ReviewsDTO review) {
+    public ResponseEntity<Reviews> save(@Valid @RequestBody ReviewsRequestDTO review) {
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewsService.save(review));
     }
 
@@ -114,7 +114,7 @@ public class ReviewsController {
             @ApiResponse(responseCode = "404", description = "Review no encontrada")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Reviews> update(@PathVariable Integer id, @Valid @RequestBody ReviewsDTO review) {
+    public ResponseEntity<Reviews> update(@PathVariable Integer id, @Valid @RequestBody ReviewsRequestDTO review) {
         Reviews updatedReview = reviewsService.update(id, review);
         return ResponseEntity.ok(updatedReview);
     }

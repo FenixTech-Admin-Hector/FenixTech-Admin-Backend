@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class AddressDTO {
+public class AddressRequestDTO {
     @NotNull
     private Integer userId;
 

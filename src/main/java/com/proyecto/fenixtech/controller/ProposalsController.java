@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.proyecto.fenixtech.dto.ProposalDTO;
-import com.proyecto.fenixtech.dto.ProposalUpdateDTO;
+import com.proyecto.fenixtech.dto.ProposalRequestPostDTO;
+import com.proyecto.fenixtech.dto.ProposalRequestUpdateDTO;
 import com.proyecto.fenixtech.model.Proposals;
 import com.proyecto.fenixtech.service.ProposalsService;
 
@@ -86,7 +86,7 @@ public class ProposalsController {
             @ApiResponse(responseCode = "400", description = "Solicitud inválida")
     })
     @PostMapping
-    public ResponseEntity<Proposals> create(@Valid @RequestBody ProposalDTO dto) {
+    public ResponseEntity<Proposals> create(@Valid @RequestBody ProposalRequestPostDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(proposalsService.save(dto));
     }
 
@@ -96,7 +96,7 @@ public class ProposalsController {
             @ApiResponse(responseCode = "404", description = "Propuesta no encontrada")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Proposals> update(@PathVariable Integer id, @RequestBody ProposalUpdateDTO dto) {
+    public ResponseEntity<Proposals> update(@PathVariable Integer id, @RequestBody ProposalRequestUpdateDTO dto) {
         Proposals updatedProposal = proposalsService.update(id, dto);
         return ResponseEntity.ok(updatedProposal);
     }

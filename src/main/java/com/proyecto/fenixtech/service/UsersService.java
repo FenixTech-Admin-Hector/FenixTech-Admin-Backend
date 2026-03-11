@@ -8,8 +8,8 @@ import com.proyecto.fenixtech.repository.ReviewsRepository;
 import com.proyecto.fenixtech.repository.UsersRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.proyecto.fenixtech.dto.CompanyRegistrationDTO;
-import com.proyecto.fenixtech.dto.ParticularRegistrationDTO;
+import com.proyecto.fenixtech.dto.CompanyRequestDTO;
+import com.proyecto.fenixtech.dto.ParticularRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Addresses;
 import com.proyecto.fenixtech.model.Companies;
@@ -275,7 +275,7 @@ public class UsersService {
     }
 
     @Transactional
-    public Users registerParticular(ParticularRegistrationDTO dto) {
+    public Users registerParticular(ParticularRequestDTO dto) {
         Users user = new Users();
         user.setEmail(dto.getEmail());
         user.setPasswordHash(dto.getPassword());
@@ -289,7 +289,7 @@ public class UsersService {
     }
 
     @Transactional
-    public Users registerCompany(CompanyRegistrationDTO dto) {
+    public Users registerCompany(CompanyRequestDTO dto) {
         Users user = new Users();
         user.setEmail(dto.getEmail());
         user.setPasswordHash(dto.getPassword());

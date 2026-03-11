@@ -1,6 +1,6 @@
 package com.proyecto.fenixtech.controller;
 
-import com.proyecto.fenixtech.dto.CommentsDTO;
+import com.proyecto.fenixtech.dto.CommentsRequest;
 import com.proyecto.fenixtech.model.Comments;
 import com.proyecto.fenixtech.service.CommentsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -77,7 +77,7 @@ public class CommentsController {
             @ApiResponse(responseCode = "400", description = "Solicitud inválida")
     })
     @PostMapping
-    public ResponseEntity<Comments> save(@Valid @RequestBody CommentsDTO comment) {
+    public ResponseEntity<Comments> save(@Valid @RequestBody CommentsRequest comment) {
         return ResponseEntity.status(HttpStatus.CREATED).body(commentsService.save(comment));
     }
 
@@ -87,7 +87,7 @@ public class CommentsController {
             @ApiResponse(responseCode = "404", description = "Comentario no encontrado")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Comments> update(@PathVariable Integer id, @Valid @RequestBody CommentsDTO comment) {
+    public ResponseEntity<Comments> update(@PathVariable Integer id, @Valid @RequestBody CommentsRequest comment) {
         return ResponseEntity.ok(commentsService.update(id, comment));
     }
 

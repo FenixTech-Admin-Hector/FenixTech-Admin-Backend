@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class CartItemsDTO {
+public class CartItemsRequestDTO {
     @NotNull(message = "El ID del usuario es obligatorio")
     private Integer userId;
 

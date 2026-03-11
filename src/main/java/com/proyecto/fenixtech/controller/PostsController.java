@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.proyecto.fenixtech.dto.PostsDTO;
+import com.proyecto.fenixtech.dto.PostsRequestDTO;
 import com.proyecto.fenixtech.model.Posts;
 import com.proyecto.fenixtech.service.PostsService;
 
@@ -116,7 +116,7 @@ public class PostsController {
                         @ApiResponse(responseCode = "404", description = "Post no encontrado")
         })
         @PutMapping("/{id}")
-        public ResponseEntity<Posts> updatePost(@PathVariable Integer id, @Valid @RequestBody PostsDTO dto) {
+        public ResponseEntity<Posts> updatePost(@PathVariable Integer id, @Valid @RequestBody PostsRequestDTO dto) {
                 Posts updatedPost = postsService.update(id, dto);
                 return ResponseEntity.ok(updatedPost);
         }
@@ -127,7 +127,7 @@ public class PostsController {
                         @ApiResponse(responseCode = "400", description = "Datos inválidos")
         })
         @PostMapping
-        public ResponseEntity<Posts> createPost(@Valid @RequestBody PostsDTO dto) {
+        public ResponseEntity<Posts> createPost(@Valid @RequestBody PostsRequestDTO dto) {
                 Posts newPost = postsService.save(dto);
                 return ResponseEntity.status(HttpStatus.CREATED).body(newPost);
         }
