@@ -8,7 +8,6 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
@@ -73,20 +72,7 @@ public class Posts implements Serializable {
     @JsonIgnoreProperties("post")
     private List<PostsImg> postImages = new ArrayList<>();
 
-    @JsonProperty("userId")
-    public void setUserId(Integer userId) {
-        this.author = new Users();
-        this.author.setUserId(userId);
-    }
-
-    public void setPostImages(List<PostsImg> postImages) {
-        this.postImages = postImages;
-        if (postImages != null) {
-            for (PostsImg img : postImages) {
-                img.setPost(this);
-            }
-        }
-    }
+    
 
 
 }

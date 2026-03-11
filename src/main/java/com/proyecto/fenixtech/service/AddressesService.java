@@ -11,7 +11,6 @@ import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 
 import java.util.List;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

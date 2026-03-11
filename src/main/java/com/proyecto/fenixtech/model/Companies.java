@@ -9,7 +9,6 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
@@ -89,11 +88,6 @@ public class Companies implements Serializable {
     @JsonIgnoreProperties({ "targetCompany", "user" })
     private List<Reviews> reviews = new ArrayList<>();
 
-    @JsonProperty("userId")
-    public void setUserId(Integer userId) {
-        this.user = new Users();
-        this.user.setUserId(userId);
-    }
 
 
 }

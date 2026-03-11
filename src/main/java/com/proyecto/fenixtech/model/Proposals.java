@@ -5,9 +5,7 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proyecto.fenixtech.model.enums.ProposalStatus;
 
 import io.swagger.v3.oas.annotations.media.Schema;
