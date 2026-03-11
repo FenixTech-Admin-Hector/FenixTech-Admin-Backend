@@ -6,8 +6,13 @@ import com.proyecto.fenixtech.repository.SubcategoriesRepository;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.proyecto.fenixtech.dto.ProductRequestUpdateDTO;
+import com.proyecto.fenixtech.dto.ProductsRequestPostDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
+import com.proyecto.fenixtech.model.Companies;
 import com.proyecto.fenixtech.model.Products;
+import com.proyecto.fenixtech.model.ProductsImg;
+import com.proyecto.fenixtech.model.Subcategories;
 import com.proyecto.fenixtech.model.enums.ConditionStatus;
 import com.proyecto.fenixtech.model.enums.ListingType;
 import com.proyecto.fenixtech.model.enums.PickupType;
@@ -90,7 +95,6 @@ public class ProductsService {
         String cStatusStr = (cStatus != null) ? cStatus.name() : null;
         String pTypeStr = (pType != null) ? pType.name() : null;
 
-
         return productsRepository.findByConditions(
                 lTypeStr, cStatusStr, minPrice, maxPrice, minStock, maxStock, location, pTypeStr);
     }
@@ -101,11 +105,39 @@ public class ProductsService {
     }
 
     @Transactional
-    public Products save(Products product) {
-        if (product.getProductsImg() != null && !product.getProductsImg().isEmpty()) {
-            product.getProductsImg().forEach(img -> {
+    public Products save(ProductsRequestPostDTO dto) {
+        Products product = new Products();
+
+        product.setProductTitle(dto.getTitle());
+        product.setPrice(dto.getPrice());
+        product.setStreet(dto.getStreet());
+        product.setZipCode(dto.getZipCode());
+        product.setCity(dto.getCity());
+        product.setRegion(dto.getRegion());
+        product.setCountry(dto.getCountry());
+        product.setStock(dto.getStockQuantity());
+        product.setPickupType(dto.getPickupType());
+        product.setListingType(dto.getListingType());
+        product.setDescription(dto.getDescription());
+
+        Subcategories sub = subcategoriesRepository.findById(dto.getSubcategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Subcategoría no encontrada con ID: " + dto.getSubcategoryId()));
+        product.setSubcategory(sub);
+
+        Companies comp = companiesRepository.findById(dto.getCompanyId())
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Empresa no encontrada con ID: " + dto.getCompanyId()));
+        product.setCompany(comp);
+
+        if (dto.getImageUrls() != null) {
+            List<ProductsImg> images = dto.getImageUrls().stream().map(url -> {
+                ProductsImg img = new ProductsImg();
+                img.setImageUrl(url);
                 img.setProduct(product);
-            });
+                return img;
+            }).toList();
+            product.setProductsImg(images);
         }
 
         return productsRepository.save(product);
@@ -116,36 +148,42 @@ public class ProductsService {
         Products product = productsRepository.findById(id)
                 .orElseThrow(
                         () -> new IllegalArgumentException("No existe el producto con id: " + id + " para eliminar"));
-        //Se limpian los carritos que tienen ese producto en especifico
-                      
-        productsRepository.deleteCartItemsByProductId(id);        
-        // Soft Delete: Cambiamos el estado a HIDDEN
+        productsRepository.deleteCartItemsByProductId(id);
+
         product.setProductStatus(ProductStatus.HIDDEN);
         productsRepository.save(product);
     }
 
     @Transactional
-    public Products update(Integer id, Products product) {
-        Products productUpdate = productsRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el producto con ID: " + id));
+    public Products update(Integer id, ProductRequestUpdateDTO dto) {
+        Products product = productsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
 
-        productUpdate.setProductTitle(product.getProductTitle());
-        productUpdate.setDescription(product.getDescription());
-        productUpdate.setStatus(product.getStatus());
-        productUpdate.setListingType(product.getListingType());
-        productUpdate.setPrice(product.getPrice());
-        productUpdate.setStock(product.getStock());
-        if (product.getCompany() != null) {
-            productUpdate.setProductStatus(product.getProductStatus());
+        product.setProductTitle(dto.getTitle());
+        product.setDescription(dto.getDescription());
+        product.setPrice(dto.getPrice());
+        product.setStock(dto.getStock());
+        product.setStatus(dto.getConditionStatus());
+        product.setListingType(dto.getListingType());
+        product.setPickupType(dto.getPickupType());
+
+        product.setStreet(dto.getStreet());
+        product.setCity(dto.getCity());
+        product.setRegion(dto.getRegion());
+        product.setZipCode(dto.getZipCode());
+        product.setCountry(dto.getCountry());
+
+        if (dto.getStock() <= 0) {
+            product.setProductStatus(ProductStatus.SOLD_OUT);
         } else {
-            productUpdate.setProductStatus(ProductStatus.ACTIVE);
+            product.setProductStatus(ProductStatus.ACTIVE);
         }
-        productUpdate.setPickupType(product.getPickupType());
-        productUpdate.setLocation(product.getLocation());
-        productUpdate.setSubcategory(product.getSubcategory());
-        productUpdate.setCompany(product.getCompany());
 
-        return productsRepository.save(productUpdate);
+        Subcategories sub = subcategoriesRepository.findById(dto.getSubcategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Subcategoría no válida"));
+        product.setSubcategory(sub);
+
+        return productsRepository.save(product);
     }
 
 }

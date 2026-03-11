@@ -34,7 +34,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @NoArgsConstructor
@@ -96,10 +95,31 @@ public class Products implements Serializable {
     @Enumerated(EnumType.STRING)
     private PickupType pickupType;
 
-    @Schema(description = "Ubicación del producto", example = "Madrid, España")
-    @NotNull(message = "La ubicación es obligatoria")
-    @Column(name = "location")
-    private String location;
+    @Schema(description = "Calle donde se encuentra el producto", example = "Calle Falsa 123")
+    @NotBlank(message = "La calle es obligatoria")
+    @Column(name = "street")
+    private String street;
+
+    @Schema(description = "Ciudad donde se encuentra el producto", example = "Madrid")
+    @NotBlank(message = "La ciudad es obligatoria")
+    @Column(name = "city")
+    private String city;
+
+    @Schema(description = "Región donde se encuentra el producto", example = "Madrid")
+    @NotBlank(message = "La región es obligatoria")
+    @Column(name = "region")
+    private String region;
+
+    @Schema(description = "Código postal donde se encuentra el producto", example = "28001")
+    @NotBlank(message = "El código postal es obligatorio")
+    @Size(min = 5, max = 5, message = "El código postal debe tener 5 dígitos")
+    @Column(name = "zip_code")
+    private String zipCode;
+
+    @Schema(description = "País donde se encuentra el producto", example = "España")
+    @NotBlank(message = "El país es obligatorio")
+    @Column(name = "country")
+    private String country;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subcategory_id", nullable = false)
@@ -144,25 +164,4 @@ public class Products implements Serializable {
     }
 
    
-    @JsonProperty("companyId")
-    public void setCompanyId(Integer companyId) {
-        this.company = new Companies();
-        this.company.setCompanyId(companyId);
-    }
-
-    @JsonProperty("subcategoryId")
-    public void setSubcategoryId(Integer subcategoryId) {
-        this.subcategory = new Subcategories();
-        this.subcategory.setSubcategoryId(subcategoryId);
-    }
-
-    public void setProductsImg(List<ProductsImg> productsImg) {
-        this.productsImg = productsImg;
-        if (productsImg != null) {
-            for (ProductsImg img : productsImg) {
-                img.setProduct(this);
-            }
-        }
-    }
-
 }

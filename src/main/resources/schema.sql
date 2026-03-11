@@ -89,7 +89,11 @@ CREATE TABLE IF NOT EXISTS products (
     stock_quantity INT DEFAULT 1,
     status ENUM('ACTIVE', 'SOLD_OUT', 'HIDDEN') DEFAULT 'ACTIVE',
     pickup_type ENUM('RECOGIDA_LOCAL', 'ENVIO_DOMICILIO') DEFAULT 'RECOGIDA_LOCAL',
-    location VARCHAR(255) NOT NULL,
+    street VARCHAR(255) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    region VARCHAR(100) NOT NULL,
+    zip_code VARCHAR(20) NOT NULL,
+    country VARCHAR(100) NOT NULL,
     FOREIGN KEY (company_id) REFERENCES Companies(company_id) ON DELETE CASCADE,
     FOREIGN KEY (subcategory_id) REFERENCES Subcategories(subcategory_id)
 );

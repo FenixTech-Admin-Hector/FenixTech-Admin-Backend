@@ -86,22 +86,22 @@ INSERT INTO badges (name, icon_url, is_active) VALUES
 ('Community Star', '/icons/star.png', FALSE);
 
 -- Products (15 records)
-INSERT INTO products (company_id, subcategory_id, title, description, condition_status, listing_type, price, stock_quantity, status, pickup_type, location) VALUES
-(1, 1, 'Laptop Dell Latitude', 'Buen estado, i5 8th gen', 'USED_GOOD', 'SALE', 250.00, 5, 'ACTIVE', 'ENVIO_DOMICILIO', 'Valencia, España'),
-(2, 2, 'PC Gaming Entry', 'GTX 1050, i3', 'USED_FAIR', 'SALE', 300.00, 2, 'ACTIVE', 'RECOGIDA_LOCAL', 'Bilbao, España'),
-(3, 3, 'Nvidia GTX 1080', 'Usada para diseño', 'USED_GOOD', 'SALE', 150.00, 10, 'ACTIVE', 'ENVIO_DOMICILIO', 'Zaragoza, España'),
-(4, 4, 'Intel i7 7700K', 'Sin caja original', 'USED_GOOD', 'SALE', 120.00, 8, 'ACTIVE', 'RECOGIDA_LOCAL', 'Valencia, España'),
-(5, 5, 'Teclado Mecánico Logitech', 'Switch Blue', 'NEW', 'SALE', 80.00, 20, 'ACTIVE', 'ENVIO_DOMICILIO', 'Murcia, España'),
-(6, 6, 'Raton Razer', 'Modelo antiguo', 'USED_FAIR', 'DONATION', 0.00, 5, 'ACTIVE' , 'ENVIO_DOMICILIO', 'Madrid, España'),
-(7, 7, 'Router Asus', 'WiFi 6', 'NEW', 'SALE', 100.00, 15, 'ACTIVE', 'ENVIO_DOMICILIO', 'Santander, España'),
-(8, 8, 'Switch Cisco 24p', 'Reacondicionado', 'USED_GOOD', 'SALE', 50.00, 3, 'ACTIVE', 'RECOGIDA_LOCAL', 'Valencia, España'),
-(9, 9, 'Ender 3 Pro', 'Con mejoras', 'USED_GOOD', 'SALE', 110.00, 1, 'ACTIVE', 'ENVIO_DOMICILIO', 'Barcelona, España'),
-(10, 10, 'Toner HP 85A', 'Compatible nuevo', 'NEW', 'SALE', 15.00, 50, 'ACTIVE', 'RECOGIDA_LOCAL', 'Sevilla, España'),
-(11, 1, 'MacBook Air 2015', 'Bateria nueva', 'USED_FAIR', 'SALE', 350.00, 4, 'ACTIVE', 'ENVIO_DOMICILIO', 'Valencia, España'),
-(12, 2, 'HP EliteDesk', 'Mini PC oficina', 'USED_GOOD', 'DONATION', 0.00, 10, 'ACTIVE', 'ENVIO_DOMICILIO', 'Barcelona, España'),
-(13, 3, 'AMD RX 580', '8GB VRAM', 'USED_GOOD', 'SALE', 90.00, 6, 'ACTIVE', 'ENVIO_DOMICILIO', 'Madrid, España'),
-(14, 4, 'Ryzen 5 3600', 'Con disipador', 'USED_GOOD', 'SALE', 85.00, 7, 'ACTIVE', 'RECOGIDA_LOCAL', 'Sevilla, España'),
-(15, 5, 'Teclado Membrana HP', 'Basico', 'NEW', 'DONATION', 0.00, 100, 'ACTIVE', 'ENVIO_DOMICILIO', 'Valladolid, España');
+INSERT INTO products (company_id, subcategory_id, title, description, condition_status, listing_type, price, stock_quantity, status, pickup_type, street, city, region, zip_code, country) VALUES
+(1, 1, 'Laptop Dell Latitude', 'Buen estado, i5 8th gen', 'USED_GOOD', 'SALE', 250.00, 5, 'ACTIVE', 'ENVIO_DOMICILIO', 'Calle Mayor 1', 'Valencia', 'Valencia', '46001', 'España'),
+(2, 2, 'PC Gaming Entry', 'GTX 1050, i3', 'USED_FAIR', 'SALE', 300.00, 2, 'ACTIVE', 'RECOGIDA_LOCAL', 'Gran Vía 12', 'Bilbao', 'Vizcaya', '48001', 'España'),
+(3, 3, 'Nvidia GTX 1080', 'Usada para diseño', 'USED_GOOD', 'SALE', 150.00, 10, 'ACTIVE', 'ENVIO_DOMICILIO', 'Paseo Independencia 5', 'Zaragoza', 'Zaragoza', '50001', 'España'),
+(4, 4, 'Intel i7 7700K', 'Sin caja original', 'USED_GOOD', 'SALE', 120.00, 8, 'ACTIVE', 'RECOGIDA_LOCAL', 'Avenida del Cid 20', 'Valencia', 'Valencia', '46014', 'España'),
+(5, 5, 'Teclado Mecánico Logitech', 'Switch Blue', 'NEW', 'SALE', 80.00, 20, 'ACTIVE', 'ENVIO_DOMICILIO', 'Plaza Circular 3', 'Murcia', 'Murcia', '30001', 'España'),
+(6, 6, 'Raton Razer', 'Modelo antiguo', 'USED_FAIR', 'DONATION', 0.00, 5, 'ACTIVE', 'ENVIO_DOMICILIO', 'Calle Alcalá 50', 'Madrid', 'Madrid', '28001', 'España'),
+(7, 7, 'Router Asus', 'WiFi 6', 'NEW', 'SALE', 100.00, 15, 'ACTIVE', 'ENVIO_DOMICILIO', 'Calle Real 15', 'Santander', 'Cantabria', '39001', 'España'),
+(8, 8, 'Switch Cisco 24p', 'Reacondicionado', 'USED_GOOD', 'SALE', 50.00, 3, 'ACTIVE', 'RECOGIDA_LOCAL', 'Calle Colón 10', 'Valencia', 'Valencia', '46004', 'España'),
+(9, 9, 'Ender 3 Pro', 'Con mejoras', 'USED_GOOD', 'SALE', 110.00, 1, 'ACTIVE', 'ENVIO_DOMICILIO', 'Carrer de Balmes 40', 'Barcelona', 'Barcelona', '08001', 'España'),
+(10, 10, 'Toner HP 85A', 'Compatible nuevo', 'NEW', 'SALE', 15.00, 50, 'ACTIVE', 'RECOGIDA_LOCAL', 'Calle Sierpes 5', 'Sevilla', 'Sevilla', '41004', 'España'),
+(11, 1, 'MacBook Air 2015', 'Bateria nueva', 'USED_FAIR', 'SALE', 350.00, 4, 'ACTIVE', 'ENVIO_DOMICILIO', 'Calle de la Paz 8', 'Valencia', 'Valencia', '46003', 'España'),
+(12, 2, 'HP EliteDesk', 'Mini PC oficina', 'USED_GOOD', 'DONATION', 0.00, 10, 'ACTIVE', 'ENVIO_DOMICILIO', 'Avinguda Diagonal 100', 'Barcelona', 'Barcelona', '08019', 'España'),
+(13, 3, 'AMD RX 580', '8GB VRAM', 'USED_GOOD', 'SALE', 90.00, 6, 'ACTIVE', 'ENVIO_DOMICILIO', 'Paseo de la Castellana 120', 'Madrid', 'Madrid', '28046', 'España'),
+(14, 4, 'Ryzen 5 3600', 'Con disipador', 'USED_GOOD', 'SALE', 85.00, 7, 'ACTIVE', 'RECOGIDA_LOCAL', 'Calle Betis 30', 'Sevilla', 'Sevilla', '41010', 'España'),
+(15, 5, 'Teclado Membrana HP', 'Basico', 'NEW', 'DONATION', 0.00, 100, 'ACTIVE', 'ENVIO_DOMICILIO', 'Plaza Mayor 1', 'Valladolid', 'Valladolid', '47001', 'España');
 
 -- Products Images (15 records) - ¡AÑADIDO! Relacionando cada producto con su imagen
 INSERT INTO products_img (product_id, image_url) VALUES
