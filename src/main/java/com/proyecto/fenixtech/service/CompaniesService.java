@@ -7,9 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Companies;
-import com.proyecto.fenixtech.model.json.EnvironmentalMetrics;
-import com.proyecto.fenixtech.model.json.ImpactMetrics;
-import com.proyecto.fenixtech.model.json.SocialMetrics;
+
 
 import java.util.List;
 

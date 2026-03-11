@@ -1,10 +1,6 @@
 package com.proyecto.fenixtech.service;
 
 import com.proyecto.fenixtech.repository.CommentsRepository;
-import com.proyecto.fenixtech.repository.CompaniesRepository;
-import com.proyecto.fenixtech.repository.FollowRepository;
-import com.proyecto.fenixtech.repository.OrderDetailsRepository;
-import com.proyecto.fenixtech.repository.OrdersRepository;
 import com.proyecto.fenixtech.repository.PostsRepository;
 import com.proyecto.fenixtech.repository.ProductsRepository;
 import com.proyecto.fenixtech.repository.ProposalsRepository;
@@ -17,7 +13,6 @@ import com.proyecto.fenixtech.dto.ParticularRegistrationDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Addresses;
 import com.proyecto.fenixtech.model.Companies;
-import com.proyecto.fenixtech.model.Products;
 import com.proyecto.fenixtech.model.Users;
 
 import java.time.LocalDate;
@@ -27,7 +22,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proyecto.fenixtech.model.enums.ProductStatus;
 import com.proyecto.fenixtech.model.enums.Rol;
 import com.proyecto.fenixtech.model.json.EnvironmentalMetrics;
 import com.proyecto.fenixtech.model.json.ImpactMetrics;
@@ -51,13 +45,8 @@ public class UsersService {
     private ProposalsRepository proposalsRepository;
 
     @Autowired
-    private FollowRepository followRepository;
-
-    @Autowired
     private CommentsRepository commentsRepository;
 
-    @Autowired
-    private CompaniesRepository companiesRepository;
 
     @Transactional(readOnly = true)
     public List<Users> findAllUsers() {

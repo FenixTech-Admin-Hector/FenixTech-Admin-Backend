@@ -13,7 +13,6 @@ import com.proyecto.fenixtech.model.FollowsId;
 import com.proyecto.fenixtech.repository.FollowRepository;
 import com.proyecto.fenixtech.repository.UsersRepository;
 
-import jakarta.persistence.criteria.CriteriaBuilder.In;
 
 import com.proyecto.fenixtech.model.Users;
 
