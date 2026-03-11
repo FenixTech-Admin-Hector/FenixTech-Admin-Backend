@@ -1,5 +1,6 @@
 package com.proyecto.fenixtech.controller;
 
+import com.proyecto.fenixtech.dto.ReviewsDTO;
 import com.proyecto.fenixtech.model.Reviews;
 import com.proyecto.fenixtech.service.ReviewsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -91,8 +93,8 @@ public class ReviewsController {
             @ApiResponse(responseCode = "400", description = "Solicitud inválida")
     })
     @PostMapping
-    public ResponseEntity<Reviews> save(@RequestBody Reviews review) {
-        return ResponseEntity.ok(reviewsService.save(review));
+    public ResponseEntity<Reviews> save(@Valid @RequestBody ReviewsDTO review) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(reviewsService.save(review));
     }
 
     @Operation(summary = "Eliminar una review", description = "Elimina una review por su ID")
@@ -112,7 +114,7 @@ public class ReviewsController {
             @ApiResponse(responseCode = "404", description = "Review no encontrada")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Reviews> update(@PathVariable Integer id, @Valid @RequestBody Reviews review) {
+    public ResponseEntity<Reviews> update(@PathVariable Integer id, @Valid @RequestBody ReviewsDTO review) {
         Reviews updatedReview = reviewsService.update(id, review);
         return ResponseEntity.ok(updatedReview);
     }

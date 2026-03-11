@@ -1,5 +1,6 @@
 package com.proyecto.fenixtech.service;
 
+import com.proyecto.fenixtech.dto.ReviewsDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Companies;
 import com.proyecto.fenixtech.model.Reviews;
@@ -62,40 +63,34 @@ public class ReviewsService {
     }
 
     @Transactional
-    public Reviews save(Reviews review) {
-        if (review.getReviewer() == null || review.getReviewer().getUserId() == null) {
-            throw new IllegalArgumentException("La review debe estar asociada a un usuario válido con ID.");
-        }
-        if (review.getTargetCompany() == null || review.getTargetCompany().getCompanyId() == null) {
-            throw new IllegalArgumentException("La review debe estar asociada a una empresa válida con ID.");
-        }
+    public Reviews save(ReviewsDTO dto) {
+        Users reviewer = usersRepository.findById(dto.getUserId())
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("El usuario con ID " + dto.getUserId() + " no existe"));
 
-        Users reviewer = usersRepository.findById(review.getReviewer().getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "El usuario con ID " + review.getReviewer().getUserId() + " no existe"));
-
-        if (reviewer.getRole() == Rol.EMPRESA) {
-            throw new IllegalArgumentException("El rol para hacer reviews del usuario tiene que ser: " + Rol.PARTICULAR.name());
+        if (reviewer.getRole() == Rol.EMPRESA || reviewer.getRole() == Rol.ADMIN) {
+            throw new IllegalArgumentException("Solo los usuarios particulares pueden dejar reseñas.");
         }
 
+        Companies targetCompany = companiesRepository.findById(dto.getCompanyId())
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("La empresa con ID " + dto.getCompanyId() + " no existe"));
 
-        Companies targetCompany = companiesRepository.findById(review.getTargetCompany().getCompanyId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "La empresa con ID " + review.getTargetCompany().getCompanyId() + " no existe"));
-
+        Reviews review = new Reviews();
+        review.setRating(dto.getRating());
+        review.setComment(dto.getComment());
         review.setReviewer(reviewer);
         review.setTargetCompany(targetCompany);
-        //Valorar implementar una columna updated_at para guardar fechas de actualizacion
 
-        reputationService.processReviewScore(review.getTargetCompany().getCompanyId(), review.getRating());
-
+        reputationService.processReviewScore(targetCompany.getCompanyId(), dto.getRating());
         return reviewsRepository.save(review);
     }
 
     @Transactional
     public void deleteById(Integer id) {
         Reviews review = reviewsRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("No existe la review con id: " + id + " para eliminar"));
+                .orElseThrow(
+                        () -> new IllegalArgumentException("No existe la review con id: " + id + " para eliminar"));
 
         reputationService.deleteReviewScore(review.getTargetCompany().getCompanyId(), review.getRating());
 
@@ -103,17 +98,23 @@ public class ReviewsService {
     }
 
     @Transactional
-    public Reviews update (Integer id, Reviews review){
+    public Reviews update(Integer id, ReviewsDTO dto) {
         Reviews reviewUpdate = reviewsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró la review con ID: " + id));
 
-        if(!reviewUpdate.getRating().equals(review.getRating())){
-            reputationService.updateReviewScore(reviewUpdate.getTargetCompany().getCompanyId(), reviewUpdate.getRating(), review.getRating());
+        if (!reviewUpdate.getReviewer().getUserId().equals(dto.getUserId())) {
+            throw new IllegalArgumentException("No puedes editar una reseña que no te pertenece.");
         }
 
-        reviewUpdate.setRating(review.getRating());
-        reviewUpdate.setComment(review.getComment());
-        reviewUpdate.setCreatedAt(LocalDateTime.now());
+        if (!reviewUpdate.getRating().equals(dto.getRating())) {
+            reputationService.updateReviewScore(
+                    reviewUpdate.getTargetCompany().getCompanyId(),
+                    reviewUpdate.getRating(),
+                    dto.getRating());
+        }
+
+        reviewUpdate.setRating(dto.getRating());
+        reviewUpdate.setComment(dto.getComment());
 
         return reviewsRepository.save(reviewUpdate);
     }
