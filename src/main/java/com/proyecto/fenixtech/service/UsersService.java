@@ -282,7 +282,7 @@ public class UsersService {
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setUserImg(dto.getUserImg());
-        user.setRole(Rol.EMPRESA);
+        user.setRole(Rol.PARTICULAR);
         user.setIsActive(true);
 
         return usersRepository.save(user);
