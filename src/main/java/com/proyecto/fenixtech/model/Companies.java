@@ -92,6 +92,9 @@ public class Companies implements Serializable {
     @JsonIgnoreProperties({ "targetCompany", "user" })
     private List<Reviews> reviews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("following")
+    private List<Follow> followers;
 
-
+    
 }

@@ -134,10 +134,6 @@ public class Users implements Serializable {
     @JsonIgnoreProperties("follower")
     private List<Follow> following; 
 
-    @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("following")
-    private List<Follow> followers;
-
     @PrePersist
     public void prePersist() {
         if (this.isActive == null) {

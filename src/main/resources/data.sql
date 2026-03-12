@@ -31,7 +31,7 @@ INSERT INTO companies (user_id, company_name, cif, reputation_score, impact_metr
 (6, 'Future Tech', 'B6666666H', 120, '{"environmental": {"totalCo2SavedKg": 60.0}, "social": {"itemsDonated": 12}}', TRUE),
 (7, 'Hardware Heroes', 'B7777777I', 180, '{"environmental": {"totalCo2SavedKg": 90.5}, "social": {"itemsDonated": 18}}', TRUE),
 (8, 'Sustainable Systems', 'B8888888D', 250, '{"environmental": {"totalCo2SavedKg": 150.0}, "social": {"itemsDonated": 30}}', TRUE),
-(9, 'ReNew Devices', 'B9999999E', 80, '{"environmental": {"totalCo2SavedKg": 40.0}, "social": {"itemsDonated": 8}}'),
+(9, 'ReNew Devices', 'B9999999E', 80, '{"environmental": {"totalCo2SavedKg": 40.0}, "social": {"itemsDonated": 8}}', TRUE),
 (10, 'Circular Electronics', 'B1010101A', 220, '{"environmental": {"totalCo2SavedKg": 130.5}, "social": {"itemsDonated": 28}}', TRUE),
 (11, 'Green Chip', 'B1212121F', 110, '{"environmental": {"totalCo2SavedKg": 55.0}, "social": {"itemsDonated": 11}}', TRUE),
 (12, 'Eco Parts', 'B1313131G', 160, '{"environmental": {"totalCo2SavedKg": 85.0}, "social": {"itemsDonated": 16}}', TRUE),
