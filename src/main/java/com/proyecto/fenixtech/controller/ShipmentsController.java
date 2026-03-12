@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.proyecto.fenixtech.dto.ShipmentRequestDTO;
 import com.proyecto.fenixtech.dto.ShipmentResponseDTO;
 import com.proyecto.fenixtech.dto.ShipmentUpdateCarrierDTO;
+import com.proyecto.fenixtech.dto.ShipmentUpdateStatusDTO;
 import com.proyecto.fenixtech.model.Shipments;
 import com.proyecto.fenixtech.model.enums.ShipmentStatus;
 import com.proyecto.fenixtech.service.ShipmentsService;
@@ -109,8 +111,25 @@ public class ShipmentsController {
                         @ApiResponse(responseCode = "404", description = "Envío no encontrado")
         })
         @PutMapping("/{id}")
-        public ResponseEntity<Shipments> update(@PathVariable Integer id, @Valid @RequestBody ShipmentUpdateCarrierDTO shipment) {
+        public ResponseEntity<Shipments> update(@PathVariable Integer id,
+                        @Valid @RequestBody ShipmentUpdateCarrierDTO shipment) {
                 return ResponseEntity.status(HttpStatus.OK).body(shipmentsService.update(id, shipment));
+        }
+
+        @Operation(summary = "Actualizar estado del envío (Solo Admin)", description = "Permite a los administradores cambiar el estado del envío. Si pasa a DELIVERED, el pedido se completa y se reparten puntos/medallas.")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Estado actualizado con éxito"),
+                        @ApiResponse(responseCode = "403", description = "Acceso denegado (No eres Admin)"),
+                        @ApiResponse(responseCode = "404", description = "Envío no encontrado")
+        })
+
+        @PatchMapping("/{id}/status")
+        public ResponseEntity<Shipments> updateShipmentStatus(
+                        @PathVariable Integer id,
+                        @Valid @RequestBody ShipmentUpdateStatusDTO dto) {
+
+                Shipments updatedShipment = shipmentsService.updateStatus(id, dto);
+                return ResponseEntity.ok(updatedShipment);
         }
 
 }

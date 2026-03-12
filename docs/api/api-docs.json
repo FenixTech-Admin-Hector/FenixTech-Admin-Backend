@@ -6772,12 +6772,6 @@
             "type": "boolean",
             "description": "Visibilidad de la empresa",
             "example": true
-          },
-          "followers": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Follow"
-            }
           }
         },
         "required": [
@@ -8448,9 +8442,6 @@
       "PageableObject": {
         "type": "object",
         "properties": {
-          "unpaged": {
-            "type": "boolean"
-          },
           "pageNumber": {
             "type": "integer",
             "format": "int32"
@@ -8461,6 +8452,9 @@
           "pageSize": {
             "type": "integer",
             "format": "int32"
+          },
+          "unpaged": {
+            "type": "boolean"
           },
           "offset": {
             "type": "integer",
@@ -8474,10 +8468,10 @@
       "SortObject": {
         "type": "object",
         "properties": {
-          "unsorted": {
+          "sorted": {
             "type": "boolean"
           },
-          "sorted": {
+          "unsorted": {
             "type": "boolean"
           },
           "empty": {

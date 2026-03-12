@@ -1,13 +1,16 @@
 package com.proyecto.fenixtech.service;
 
+import com.proyecto.fenixtech.dto.OrderRequestUpdateDTO;
 import com.proyecto.fenixtech.dto.ShipmentRequestDTO;
 import com.proyecto.fenixtech.dto.ShipmentResponseDTO;
 import com.proyecto.fenixtech.dto.ShipmentUpdateCarrierDTO;
+import com.proyecto.fenixtech.dto.ShipmentUpdateStatusDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Addresses;
 import com.proyecto.fenixtech.model.Orders;
 import com.proyecto.fenixtech.model.Shipments;
 import com.proyecto.fenixtech.model.ShippingCarriers;
+import com.proyecto.fenixtech.model.enums.OrderStatus;
 import com.proyecto.fenixtech.model.enums.ShipmentStatus;
 import com.proyecto.fenixtech.repository.OrdersRepository;
 import com.proyecto.fenixtech.repository.ShipmentsRepository;
@@ -34,6 +37,10 @@ public class ShipmentsService {
 
     @Autowired
     private OrdersRepository ordersRepository;
+
+    @Autowired
+    private OrdersService ordersService;
+
 
     @Transactional(readOnly = true)
     public List<Shipments> findAllShipments() {
@@ -157,6 +164,25 @@ public class ShipmentsService {
         String prefix = newCarrier.getCarrierName().substring(0, 3).toUpperCase();
         String randomCode = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         shipment.setTrackingNumber(prefix + "-" + randomCode);
+
+        return shipmentsRepository.save(shipment);
+    }
+
+    @Transactional
+    public Shipments updateStatus(Integer id, ShipmentUpdateStatusDTO dto) {
+        Shipments shipment = shipmentsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Envío no encontrado"));
+
+        shipment.setStatus(dto.getStatus());
+        
+        if (dto.getStatus() == ShipmentStatus.DELIVERED) {
+            Orders order = shipment.getOrder();
+            
+            OrderRequestUpdateDTO orderDto = new OrderRequestUpdateDTO();
+            orderDto.setStatus(OrderStatus.COMPLETED);
+            
+            ordersService.updateStatus(order.getOrderId(), orderDto); 
+        }
 
         return shipmentsRepository.save(shipment);
     }

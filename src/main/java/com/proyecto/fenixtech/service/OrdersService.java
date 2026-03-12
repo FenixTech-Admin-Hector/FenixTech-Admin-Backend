@@ -155,9 +155,6 @@ public class OrdersService {
 
             totalCalculado += (product.getPrice() * item.getQuantity());
 
-            if (product.getCompany() != null) {
-                reputationService.proccessTransaction(product.getCompany().getCompanyId(), product, item.getQuantity());
-            }
         }
 
         newOrder.setOrderDetails(detailsList);
@@ -208,9 +205,21 @@ public class OrdersService {
                 product.setStock(product.getStock() + detail.getQuantity());
 
                 if (product.getProductStatus() == ProductStatus.SOLD_OUT) {
-                    product.setProductStatus(ProductStatus.ACTIVE); 
+                    product.setProductStatus(ProductStatus.ACTIVE);
                 }
                 productsRepository.save(product);
+            }
+        }
+
+        if (dto.getStatus() == OrderStatus.COMPLETED && order.getStatus() != OrderStatus.COMPLETED) {
+            for (OrderDetails detail : order.getOrderDetails()) {
+                Products product = detail.getProduct();
+                if (product.getCompany() != null) {
+                    reputationService.proccessTransaction(
+                            product.getCompany().getCompanyId(),
+                            product,
+                            detail.getQuantity());
+                }
             }
         }
 
