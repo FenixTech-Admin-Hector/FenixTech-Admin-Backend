@@ -1,24 +1,12 @@
 package com.proyecto.fenixtech.controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 
 import com.proyecto.fenixtech.service.CompaniesService;
 import com.proyecto.fenixtech.dto.CompaniesRequestUpdateDTO;
 import com.proyecto.fenixtech.model.Companies;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -26,114 +14,108 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-
-@Tag(name = "Companies", description = "API para gestión de empresas")
+@Tag(name = "Companies", description = "API para gestión de empresas con métricas de impacto")
 @RequestMapping("/companies")
 @RestController
 public class CompaniesController {
-    @Autowired 
+
+    @Autowired
     private CompaniesService companiesService;
 
-    @Operation(summary = "Obtener todas las empresas", description = "Devuelve una lista de todas las empresas")
+    @Operation(summary = "Obtener todas las empresas activas", description = "Retorna la lista de empresas que tienen is_active = true")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Empresas obtenidas con éxito")
+        @ApiResponse(responseCode = "200", description = "Empresas activas obtenidas con éxito")
     })
     @GetMapping
-    public ResponseEntity<List<Companies>> findAllCompanies(){
-        return ResponseEntity.status(HttpStatus.OK).body(companiesService.findAllCompanies());
+    public ResponseEntity<List<Companies>> findAll() {
+        return ResponseEntity.ok(companiesService.findAll());
     }
 
-    @Operation(summary = "Obtener empresa por ID", description = "Devuelve una empresa por su ID")
+    @Operation(summary = "Obtener todas las empresas (Admin)", description = "Retorna todas las empresas incluyendo las inactivas")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Empresa obtenida con éxito"),
-        @ApiResponse(responseCode = "404", description = "Empresa no encontrada")
+        @ApiResponse(responseCode = "200", description = "Lista completa de empresas obtenida con éxito")
     })
-    @GetMapping("/{id}")
-    public ResponseEntity<Companies> findById(@PathVariable Integer id){
-        return ResponseEntity.status(HttpStatus.OK).body(companiesService.findById(id));
+    @GetMapping("/all")
+    public ResponseEntity<List<Companies>> findAllCompanies() {
+        return ResponseEntity.ok(companiesService.findAllCompanies());
     }
 
-    @Operation(summary = "Obtener empresa por ID de usuario", description = "Devuelve una empresa por su ID de usuario")
+    @Operation(summary = "Obtener empresa activa por ID", description = "Busca una empresa por su ID siempre que esté activa")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Empresa encontrada con éxito"),
-        @ApiResponse(responseCode = "404", description = "El usuario no está asociado a ninguna empresa")
+        @ApiResponse(responseCode = "404", description = "Empresa no encontrada o inactiva")
     })
-    @GetMapping("/user/{id}")
-    public ResponseEntity<Companies> findByUserId( @PathVariable Integer id){
-        return ResponseEntity.status(HttpStatus.OK).body(companiesService.findByUserId(id));
+    @GetMapping("/{id}")
+    public ResponseEntity<Companies> findByIdActive(@PathVariable Integer id) {
+        return ResponseEntity.ok(companiesService.findByIdActive(id));
     }
 
-    @Operation(summary = "Obtener empresas por nombre", description = "Devuelve una lista de empresas que contengan una cadena de texto en su nombre")
-    @ApiResponses(value =  {
-        @ApiResponse(responseCode = "200", description = "Empresas encontradas con éxito")
-    })
-    @GetMapping("/name")
-    public ResponseEntity<List<Companies>> findByName( @RequestParam(required = true) String name){
-        return ResponseEntity.status(HttpStatus.OK).body(companiesService.findByCompanyName(name));
-    }
-
-    @Operation(summary = "Obtener empresas por una serie de filtros", description ="Devuelve una lista de empresas en función de sus puntos de reputación y sus métricas de impacto")
+    @Operation(summary = "Obtener empresa por ID de usuario", description = "Busca la empresa asociada a un ID de usuario específico")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Empresas encontradas con éxito")
+        @ApiResponse(responseCode = "200", description = "Empresa vinculada al usuario encontrada"),
+        @ApiResponse(responseCode = "404", description = "No existe empresa para ese usuario")
     })
-    @GetMapping("/filters")
-    public ResponseEntity<List<Companies>> findByImpactFilters(@RequestParam(required = false, defaultValue = "0") Integer minReputation,
-    @RequestParam(required = false) Integer maxReputation, @RequestParam(required = false, defaultValue = "0.0") Double minCo2Saved, @RequestParam(required = false, defaultValue = "0") Integer minItemsDonated){
-        return ResponseEntity.status(HttpStatus.OK).body(companiesService.findByImpactFilters(minReputation, maxReputation, minCo2Saved, minItemsDonated));
-    }
-    @GetMapping("/top3")
-    public ResponseEntity<List<Companies>> findTop3ByReputationScore(){
-        return ResponseEntity.status(HttpStatus.OK).body(companiesService.findTop3ByReputationScore());
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Companies> findByUserId(@PathVariable Integer userId) {
+        return ResponseEntity.ok(companiesService.findByUserId(userId));
     }
 
-
-    @Operation(summary = "Obtener el numero de empresas", description = "Devuelve el numero de empresas")
+    @Operation(summary = "Filtrar empresas por impacto", description = "Filtra por reputación y métricas ambientales/sociales del JSON")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Numero de empresas obtenido con éxito")
+        @ApiResponse(responseCode = "200", description = "Resultados de búsqueda obtenidos")
+    })
+    @GetMapping("/search/impact")
+    public ResponseEntity<List<Companies>> findByImpactFilters(
+            @RequestParam(required = false) Integer minReputation,
+            @RequestParam(required = false) Integer maxReputation,
+            @RequestParam(required = false) Double minCo2Saved,
+            @RequestParam(required = false) Integer minItemsDonated) {
+        return ResponseEntity.ok(companiesService.findByImpactFilters(minReputation, maxReputation, minCo2Saved, minItemsDonated));
+    }
+
+    @Operation(summary = "Top 3 empresas", description = "Obtiene las 3 empresas con mayor reputación activa")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Top 3 obtenido con éxito")
+    })
+    @GetMapping("/top")
+    public ResponseEntity<List<Companies>> findTop3() {
+        return ResponseEntity.ok(companiesService.findTop3ByReputationScore());
+    }
+
+    @Operation(summary = "Contar empresas activas", description = "Retorna el número total de empresas con estado activo")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Conteo realizado con éxito")
     })
     @GetMapping("/count")
     public ResponseEntity<Map<String, Object>> count() {
         Long count = companiesService.count();
         Map<String, Object> response = new HashMap<>();
-        response.put("cantidad", count);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        response.put("count_active_companies", count);
+        return ResponseEntity.ok(response);
     }
 
-
-    @Operation(summary = "Eliminar una empresa por ID", description = "Elimina una empresa por su ID")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Empresa eliminada con éxito"),
-        @ApiResponse(responseCode = "404", description = "Empresa no encontrada")
-    })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Integer id){
-        companiesService.deleteById(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @Operation(summary = "Actualizar una empresa por ID", description = "Actualiza una empresa por su ID")
+    @Operation(summary = "Actualizar empresa por ID", description = "Actualiza los datos básicos de la empresa")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Empresa actualizada con éxito"),
         @ApiResponse(responseCode = "404", description = "Empresa no encontrada")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Companies> update(@PathVariable Integer id, @Valid @RequestBody CompaniesRequestUpdateDTO company){
-        Companies updatedCompany = companiesService.update(id, company);
-        return ResponseEntity.status(HttpStatus.OK).body(updatedCompany);
+    public ResponseEntity<Companies> update(@PathVariable Integer id, @Valid @RequestBody CompaniesRequestUpdateDTO dto) {
+        return ResponseEntity.ok(companiesService.update(id, dto));
     }
 
-
-
-
-
-    
-
-
-
-
-
-
-
-
+    @Operation(summary = "Borrado lógico de empresa", description = "Desactiva la empresa y su usuario asociado")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Empresa desactivada correctamente"),
+        @ApiResponse(responseCode = "404", description = "Empresa no encontrada")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
+        companiesService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

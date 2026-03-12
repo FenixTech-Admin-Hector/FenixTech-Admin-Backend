@@ -4,7 +4,6 @@ import com.proyecto.fenixtech.repository.CommentsRepository;
 import com.proyecto.fenixtech.repository.PostsRepository;
 import com.proyecto.fenixtech.repository.ProductsRepository;
 import com.proyecto.fenixtech.repository.ProposalsRepository;
-import com.proyecto.fenixtech.repository.ReviewsRepository;
 import com.proyecto.fenixtech.repository.UsersRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,8 +34,6 @@ public class UsersService {
     @Autowired
     private ProductsRepository productsRepository;
 
-    @Autowired
-    private ReviewsRepository reviewsRepository;
 
     @Autowired
     private PostsRepository postsRepository;
@@ -46,7 +43,6 @@ public class UsersService {
 
     @Autowired
     private CommentsRepository commentsRepository;
-
 
     @Transactional(readOnly = true)
     public List<Users> findAllUsers() {
@@ -238,16 +234,13 @@ public class UsersService {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
         if (user.getRole() == Rol.EMPRESA && user.getCompany() != null) {
-            Integer companyId = user.getCompany().getCompanyId();
+            Companies company = user.getCompany();
 
-            // Limpiezas manuales necesarias
-            productsRepository.deleteCartItemsByCompanyId(companyId);
-            reviewsRepository.deleteAll(user.getCompany().getReviews());
-            productsRepository.hideAllByCompanyId(companyId);
+            company.setIsActive(false);
 
-            // Al ponerlo a null, orphanRemoval = true se encarga de borrar la empresa
-            // físicamente
-            user.setCompany(null);
+            productsRepository.deleteCartItemsByCompanyId(company.getCompanyId());
+
+            productsRepository.hideAllByCompanyId(company.getCompanyId());
         }
 
         cleanUserInteractions(user);
@@ -325,7 +318,7 @@ public class UsersService {
         fiscalAddress.setZipCode(dto.getZipCode());
         fiscalAddress.setRegion(dto.getRegion());
         fiscalAddress.setCountry(dto.getCountry());
-        fiscalAddress.setUser(user); 
+        fiscalAddress.setUser(user);
 
         // 3. Añadir la dirección a la lista del usuario
         user.getAddresses().add(fiscalAddress);

@@ -70,6 +70,10 @@ public class Companies implements Serializable {
     @Pattern(regexp = "^.+\\.(png|jpg|jpeg|PNG|JPG|JPEG)$", message = "La imagen debe ser un archivo .png, .jpg o .jpeg")
     @Column(name = "company_img", columnDefinition = "TEXT")
     private String companyImg;
+
+    @Schema(description = "Visibilidad de la empresa", example = "true")
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
     
     @OneToOne
     @JoinColumn(name = "user_id", unique = true, nullable = false)

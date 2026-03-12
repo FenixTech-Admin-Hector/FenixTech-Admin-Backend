@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS companies (
     -- JSON: Flexibilidad absoluta para métricas (CO2, e-waste, agua...) sin alterar tablas
     impact_metrics JSON,
     company_img VARCHAR(255) DEFAULT null,
+    is_active BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (user_id) REFERENCES Users (user_id) ON DELETE CASCADE
 );
 
@@ -261,8 +262,8 @@ CREATE TABLE IF NOT EXISTS company_badges (
     company_id INT NOT NULL,
     badge_id INT NOT NULL,
     awarded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    -- CLAVE COMPUESTA: Actúa como policía impidiendo que una empresa gane 2 veces la misma insignia
+
     PRIMARY KEY (company_id, badge_id),
     FOREIGN KEY (company_id) REFERENCES Companies (company_id) ON DELETE CASCADE,
-    FOREIGN KEY (badge_id) REFERENCES Badges (badge_id) ON DELETE CASCADE
+    FOREIGN KEY (badge_id) REFERENCES Badges (badge_id)
 );

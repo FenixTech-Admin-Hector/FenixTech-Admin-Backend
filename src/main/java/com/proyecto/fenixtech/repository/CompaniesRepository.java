@@ -24,13 +24,17 @@ public interface CompaniesRepository extends JpaRepository<Companies, Integer> {
          * exist(User)
          * existById(id)
          */
+        List<Companies> findByIsActiveTrue();
+        Optional<Companies> findByCompanyIdAndIsActiveTrue(Integer id);
+        Optional<Companies> findByUser_UserIdAndIsActiveTrue(Integer id);
+        List<Companies> findByCompanyNameContainingIgnoreCaseAndIsActiveTrue(String name);
+        List<Companies> findTop3ByIsActiveTrueOrderByReputationScoreDesc();
 
-        Optional<Companies> findByUser_UserId(Integer id);
-
-        List<Companies> findByCompanyNameContainingIgnoringCase(String name);
-        List<Companies> findTop3ByOrderByReputationScoreDesc();
+        Long countByIsActiveTrue();
+        
 
         @Query(value = "SELECT * FROM companies WHERE " +
+                        "is_active = TRUE AND " + // Condición fundamental de Soft Delete
                         "(:minReputation IS NULL OR reputation_score >= :minReputation) AND " +
                         "(:maxReputation IS NULL OR reputation_score <= :maxReputation) AND " +
                         "(:minCo2Saved IS NULL OR JSON_EXTRACT(impact_metrics, '$.environmental.totalCo2SavedKg') >= :minCo2Saved) AND "
@@ -41,5 +45,7 @@ public interface CompaniesRepository extends JpaRepository<Companies, Integer> {
                         @Param("maxReputation") Integer maxReputation,
                         @Param("minCo2Saved") Double minCo2Saved,
                         @Param("minItemsDonated") Integer minItemsDonated);
+
+        
 
 }

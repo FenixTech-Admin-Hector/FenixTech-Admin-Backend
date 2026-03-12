@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.proyecto.fenixtech.dto.CompaniesRequestUpdateDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Companies;
+import com.proyecto.fenixtech.model.enums.Rol;
 
 import java.util.List;
 
@@ -23,29 +24,34 @@ public class CompaniesService {
     private UsersRepository usersRepository;
 
     @Transactional(readOnly = true)
+    public List<Companies> findAll() {
+        return companiesRepository.findByIsActiveTrue();
+    }
+
+    @Transactional(readOnly = true)
     public List<Companies> findAllCompanies() {
         return companiesRepository.findAll();
     }
 
     @Transactional(readOnly = true)
-    public Companies findById(Integer id) {
-        return companiesRepository.findById(id)
+    public Companies findByIdActive(Integer id) {
+        return companiesRepository.findByCompanyIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa no encontrada con id:" + id));
     }
 
     @Transactional(readOnly = true)
     public Companies findByUserId(Integer id) {
-        usersRepository.findById(id)
+        usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(id, Rol.ADMIN)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id:" + id));
 
-        return companiesRepository.findByUser_UserId(id)
+        return companiesRepository.findByUser_UserIdAndIsActiveTrue(id)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("El usuario" + id + "no está asociado a ninguna empresa"));
     }
 
     @Transactional(readOnly = true)
     public List<Companies> findByCompanyName(String name) {
-        return companiesRepository.findByCompanyNameContainingIgnoringCase(name);
+        return companiesRepository.findByCompanyNameContainingIgnoreCaseAndIsActiveTrue(name);
     }
 
     @Transactional(readOnly = true)
@@ -72,20 +78,26 @@ public class CompaniesService {
 
     @Transactional(readOnly = true)
     public List<Companies> findTop3ByReputationScore() {
-        return companiesRepository.findTop3ByOrderByReputationScoreDesc();
+        return companiesRepository.findTop3ByIsActiveTrueOrderByReputationScoreDesc();
     }
 
     @Transactional(readOnly = true)
     public Long count() {
-        return companiesRepository.count();
+        return companiesRepository.countByIsActiveTrue();
     }
 
     @Transactional
     public void deleteById(Integer id) {
-        if (!companiesRepository.existsById(id)) {
-            throw new IllegalArgumentException("No existe la empresa con id: " + id + " para eliminar");
+        Companies company = companiesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Empresa no encontrada"));
+
+        company.setIsActive(false);
+
+        if (company.getUser() != null) {
+            company.getUser().setIsActive(false);
         }
-        companiesRepository.deleteById(id);
+
+        companiesRepository.save(company);
     }
 
     @Transactional
