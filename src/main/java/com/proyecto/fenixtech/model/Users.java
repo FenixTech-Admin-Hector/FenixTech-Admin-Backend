@@ -5,6 +5,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import java.util.Collection;
+
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -37,14 +42,15 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@ToString(exclude = { "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments", "following"})
+@ToString(exclude = { "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments",
+        "following" })
 @EqualsAndHashCode(exclude = { "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts",
-        "comments", "following"})
+        "comments", "following" })
 
 @Schema(description = "Modelo de Usuario", name = "Users")
 @Entity
 @Table(name = "users")
-public class Users implements Serializable {
+public class Users implements Serializable, UserDetails {
     @Schema(description = "Identificador unico del usuario", example = "1")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -98,7 +104,7 @@ public class Users implements Serializable {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true )
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({ "user", "companyBadges", "products", "reviews", "followers" })
     private Companies company;
 
@@ -132,16 +138,82 @@ public class Users implements Serializable {
 
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("follower")
-    private List<Follow> following; 
+    private List<Follow> following;
 
     @PrePersist
     public void prePersist() {
         if (this.isActive == null) {
             this.isActive = true;
         }
-        
+
     }
 
+    // =========================================================================
+    // IMPLEMENTACIÓN DE USERDETAILS (SPRING SECURITY)
+    // =========================================================================
 
-    
+    /**
+     * Convierte tu Enum 'Rol' en el formato que entiende Spring Security.
+     * Importante: Spring Security suele requerir el prefijo "ROLE_" (ej.
+     * ROLE_ADMIN).
+     */
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
+    }
+
+    /**
+     * Le decimos a Spring que el nombre de usuario (username) para el login es tu
+     * columna 'email'.
+     */
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    /**
+     * Le decimos a Spring dónde está la contraseña hasheada.
+     */
+    @Override
+    public String getPassword() {
+        return this.passwordHash;
+    }
+
+    /**
+     * Indica si la cuenta ha caducado. Siempre true (no implementamos cuentas
+     * caducadas).
+     */
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    /**
+     * Indica si la cuenta está bloqueada temporalmente.
+     * Podemos enlazarlo con tu columna 'isActive' para que si un admin lo
+     * desactiva, no pueda entrar.
+     */
+    @Override
+    public boolean isAccountNonLocked() {
+        return Boolean.TRUE.equals(this.isActive);
+    }
+
+    /**
+     * Indica si las credenciales (contraseña) han caducado. Siempre true.
+     */
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    /**
+     * Indica si el usuario está habilitado (activo).
+     * También lo enlazamos con tu columna 'isActive' y que no esté borrado
+     * lógicamente.
+     */
+    @Override
+    public boolean isEnabled() {
+        return Boolean.TRUE.equals(this.isActive) && this.deletedAt == null;
+    }
+
 }

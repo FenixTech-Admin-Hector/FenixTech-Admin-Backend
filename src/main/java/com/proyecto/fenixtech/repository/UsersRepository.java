@@ -29,6 +29,8 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
 
     Optional<Users> findByEmail(String email);
 
+    Optional<Users> findByEmailAndIsActiveTrue(String email);
+
     List<Users> findAllByOrderByCreatedAtDesc();
 
     List<Users> findAllByOrderByCreatedAtAsc();
