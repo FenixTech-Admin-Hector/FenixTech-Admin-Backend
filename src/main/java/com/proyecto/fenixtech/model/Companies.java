@@ -88,7 +88,7 @@ public class Companies implements Serializable {
     @JsonIgnoreProperties({ "company", "badge" })
     private List<CompanyBadges> companyBadges = new ArrayList<>();
 
-    @OneToMany(mappedBy = "targetCompany", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "targetCompany", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnoreProperties({ "targetCompany", "user" })
     private List<Reviews> reviews = new ArrayList<>();
 

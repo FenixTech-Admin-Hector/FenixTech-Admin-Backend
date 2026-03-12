@@ -75,6 +75,14 @@ public class ReviewsService {
                 .orElseThrow(
                         () -> new ResourceNotFoundException("La empresa con ID " + dto.getCompanyId() + " no existe"));
 
+        if (!targetCompany.getIsActive()) {
+            throw new IllegalArgumentException("No se pueden dejar reseñas a una empresa inactiva.");
+        }
+
+        if (reviewsRepository.existsByReviewer_UserIdAndTargetCompany_CompanyId(dto.getUserId(), dto.getCompanyId())) {
+            throw new IllegalArgumentException("Ya has dejado una reseña para esta empresa.");
+        }
+
         Reviews review = new Reviews();
         review.setRating(dto.getRating());
         review.setComment(dto.getComment());

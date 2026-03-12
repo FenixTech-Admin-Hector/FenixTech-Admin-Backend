@@ -27,13 +27,13 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Tabla para gestionar seguidores y seguidos
 CREATE TABLE IF NOT EXISTS follows (
+    follow_id INT AUTO_INCREMENT PRIMARY KEY,
     follower_id INT NOT NULL,
     following_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (follower_id, following_id),
-    CONSTRAINT fk_follower FOREIGN KEY (follower_id) REFERENCES users (user_id) ON DELETE CASCADE,
-    CONSTRAINT fk_following FOREIGN KEY (following_id) REFERENCES users (user_id) ON DELETE CASCADE,
-    CONSTRAINT chk_not_self_follow CHECK (follower_id <> following_id)
+    FOREIGN KEY (follower_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (following_id) REFERENCES companies (company_id) ON DELETE CASCADE,
+    UNIQUE (follower_id, following_id) 
 );
 
 CREATE TABLE IF NOT EXISTS companies (

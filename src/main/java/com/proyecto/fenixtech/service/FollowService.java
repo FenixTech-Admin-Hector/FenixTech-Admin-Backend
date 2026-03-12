@@ -1,20 +1,20 @@
 package com.proyecto.fenixtech.service;
 
+import com.proyecto.fenixtech.dto.FollowRequestDTO;
+import com.proyecto.fenixtech.exception.ResourceNotFoundException;
+import com.proyecto.fenixtech.model.Companies;
+import com.proyecto.fenixtech.model.Follow;
+import com.proyecto.fenixtech.model.Users;
+import com.proyecto.fenixtech.model.enums.Rol;
+import com.proyecto.fenixtech.repository.CompaniesRepository;
+import com.proyecto.fenixtech.repository.FollowRepository;
+import com.proyecto.fenixtech.repository.UsersRepository;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.proyecto.fenixtech.dto.FollowRequestDTO;
-import com.proyecto.fenixtech.exception.ResourceNotFoundException;
-import com.proyecto.fenixtech.model.Follow;
-import com.proyecto.fenixtech.model.FollowsId;
-import com.proyecto.fenixtech.repository.FollowRepository;
-import com.proyecto.fenixtech.repository.UsersRepository;
-
-
-import com.proyecto.fenixtech.model.Users;
 
 @Service
 public class FollowService {
@@ -25,70 +25,60 @@ public class FollowService {
     @Autowired
     private UsersRepository usersRepository;
 
-    @Transactional(readOnly = true)
-    public List<Follow> getActiveFollowers(Integer userId) {
-        validateUserExists(userId);
-        return followRepository.findActiveFollowers(userId);
-    }
+    @Autowired
+    private CompaniesRepository companiesRepository;
 
-    @Transactional(readOnly = true)
-    public List<Follow> getActiveFollowing(Integer userId) {
-        validateUserExists(userId);
-        return followRepository.findActiveFollowing(userId);
-    }
-
-    @Transactional(readOnly = true)
-    public Long countActiveFollowers(Integer userId) {
-        validateUserExists(userId);
-        return followRepository.countByFollowing_UserIdAndFollower_IsActiveTrue(userId);
-    }
-
-    @Transactional(readOnly = true)
-    public Long countActiveFollowing(Integer userId) {
-        validateUserExists(userId);
-        return followRepository.countByFollower_UserIdAndFollowing_IsActiveTrue(userId);
-    }
-
-  
     @Transactional
-    public Boolean toggleUser(FollowRequestDTO dto) {
-        Integer followerId = dto.getFollowerId();
-        Integer followingId = dto.getFollowing();
+    public Boolean toggleFollow(FollowRequestDTO dto) {
+        Users follower = usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(dto.getFollowerId(), Rol.ADMIN)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario seguidor no encontrado o no esta activo"));
 
-        if (followerId.equals(followingId)) {
-            throw new IllegalArgumentException("No puedes seguirte a ti mismo");
+        if (follower.getRole() != Rol.PARTICULAR) {
+            throw new IllegalArgumentException("Solo los usuarios particulares activos pueden seguir empresas.");
         }
 
-        Users follower = usersRepository.findById(followerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario seguidor no encontrado"));
-        
-        Users following = usersRepository.findById(followingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario a seguir no encontrado"));
+        Companies company = companiesRepository.findByCompanyIdAndIsActiveTrue(dto.getFollowing())
+                .orElseThrow(() -> new ResourceNotFoundException("Empresa no encontrada o inactiva"));
 
-        if (!follower.getIsActive() || !following.getIsActive()) {
-            throw new IllegalArgumentException("No se pueden realizar interacciones con cuentas inactivas");
-        }
 
-        FollowsId followsId = new FollowsId(followerId, followingId);
-
-        if (followRepository.existsById(followsId)) {
-            followRepository.deleteById(followsId);
-            return false;
-        }
-
-        Follow follow = new Follow();
-        follow.setId(followsId);
-        follow.setFollower(follower);
-        follow.setFollowing(following);
-
-        followRepository.save(follow);
-        return true;
+        return followRepository.findByFollower_UserIdAndFollowing_CompanyId(dto.getFollowerId(), dto.getFollowing())
+                .map(follow -> {
+                    followRepository.delete(follow);
+                    return false; 
+                })
+                .orElseGet(() -> {
+                    Follow newFollow = new Follow();
+                    newFollow.setFollower(follower);
+                    newFollow.setFollowing(company);
+                    followRepository.save(newFollow);
+                    return true; 
+                });
     }
 
-    
-    private void validateUserExists(Integer userId) {
-        if (!usersRepository.existsById(userId)) {
-            throw new ResourceNotFoundException("Usuario no encontrado con id: " + userId);
-        }
+    @Transactional(readOnly = true)
+    public Long countFollowersByCompany(Integer companyId) {
+        return followRepository.countByFollowing_CompanyId(companyId);
+    }
+
+    @Transactional(readOnly = true)
+    public Long countFollowingByUser(Integer userId) {
+        usersRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + userId));
+
+        return followRepository.countByFollower_UserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Follow> getFollowersByCompany(Integer companyId) {
+        companiesRepository.findById(companyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Empresa no encontrada"));
+        return followRepository.findByFollowing_CompanyId(companyId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Follow> getFollowingByUser(Integer userId) {
+        usersRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+        return followRepository.findByFollower_UserId(userId);
     }
 }

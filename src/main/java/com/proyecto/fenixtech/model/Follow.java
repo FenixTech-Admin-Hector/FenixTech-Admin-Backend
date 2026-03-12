@@ -4,56 +4,41 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.Table;
-
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
-@ToString(exclude = { "follower", "following" })
-@EqualsAndHashCode(exclude = { "follower", "following" })
-
-@Schema(description = "Modelo de Seguidores", name = "Follows")
+@Schema(description = "Modelo de Seguimiento (Particular sigue a Empresa)", name = "Follow")
 @Entity
 @Table(name = "follows")
 public class Follow implements Serializable {
-    @Schema(description = "Identificador compuesto entre seguidores y seguidos", example= "1,2")
-    @EmbeddedId
-    private FollowsId id;
 
-    @Schema(description = "Fecha de creación del seguidor", example = "2023-10-27T10:00:00")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "ID único del seguimiento", example = "1")
+    private Integer followId;
+
+    @Schema(description = "Fecha en la que se empezó a seguir a la empresa", example = "2023-10-27T10:00:00")
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt = null;
+    private LocalDateTime createdAt;
 
+    @Schema(description = "Usuario con rol PARTICULAR que realiza el seguimiento")
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("followerId")
     @JoinColumn(name = "follower_id", nullable = false)
     @JsonIgnoreProperties({ "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments", "following", "followers"})
     private Users follower;
 
+    @Schema(description = "Empresa que está siendo seguida")
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("followingId")
     @JoinColumn(name = "following_id", nullable = false)
-    @JsonIgnoreProperties({ "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments", "following", "followers"})
-    private Users following;
-
-    
-
+    @JsonIgnoreProperties({ "user", "products", "companyBadges", "reviews", "followers" })
+    private Companies following; 
 }
