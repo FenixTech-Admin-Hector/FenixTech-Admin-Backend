@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.proyecto.fenixtech.model.enums.Rol;
@@ -43,6 +44,10 @@ public class UsersService {
 
     @Autowired
     private CommentsRepository commentsRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @Transactional(readOnly = true)
     public List<Users> findAllUsers() {
@@ -160,37 +165,6 @@ public class UsersService {
     }
 
     @Transactional
-    public Users save(Users user) {
-        if (usersRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("El email ya está registrado");
-        }
-
-        user.setFirstName(user.getFirstName().trim());
-        user.setLastName(user.getLastName().trim());
-        user.setIsActive(true);
-
-        if (user.getRole() == Rol.ADMIN) {
-            throw new SecurityException(
-                    "Operación no permitida: No se pueden crear cuentas de Administrador por esta vía.");
-        }
-        if (user.getRole() == null) {
-            user.setRole(Rol.PARTICULAR);
-        }
-
-        if (user.getCompany() != null) {
-            user.getCompany().setUser(user);
-        }
-
-        if (user.getAddresses() != null) {
-            for (int i = 0; i < user.getAddresses().size(); i++) {
-                user.getAddresses().get(i).setUser(user);
-            }
-        }
-
-        return usersRepository.save(user);
-    }
-
-    @Transactional
     public Users createAdmin(Users user) {
         if (usersRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new IllegalArgumentException("El email ya está registrado");
@@ -200,6 +174,7 @@ public class UsersService {
         user.setLastName(user.getLastName().trim());
         user.setIsActive(true);
         user.setRole(Rol.ADMIN);
+        user.setPasswordHash(passwordEncoder.encode(user.getPassword()));
 
         return usersRepository.save(user);
     }
@@ -221,8 +196,7 @@ public class UsersService {
         existingUser.setEmail(user.getEmail());
 
         if (user.getPasswordHash() != null && !user.getPasswordHash().isBlank()) {
-            // En el futuro, se hará distinto al usar BYCrypt
-            existingUser.setPasswordHash(user.getPasswordHash());
+            existingUser.setPasswordHash(passwordEncoder.encode(user.getPassword()));
         }
 
         return usersRepository.save(existingUser);
@@ -271,7 +245,7 @@ public class UsersService {
     public Users registerParticular(ParticularRequestDTO dto) {
         Users user = new Users();
         user.setEmail(dto.getEmail());
-        user.setPasswordHash(dto.getPassword());
+        user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setUserImg(dto.getUserImg());
@@ -285,7 +259,7 @@ public class UsersService {
     public Users registerCompany(CompanyRequestDTO dto) {
         Users user = new Users();
         user.setEmail(dto.getEmail());
-        user.setPasswordHash(dto.getPassword());
+        user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setUserImg(dto.getUserImg());

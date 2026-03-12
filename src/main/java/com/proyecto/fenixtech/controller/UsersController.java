@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.proyecto.fenixtech.service.UsersService;
-import com.proyecto.fenixtech.dto.CompanyRequestDTO;
-import com.proyecto.fenixtech.dto.ParticularRequestDTO;
 import com.proyecto.fenixtech.model.Users;
 import com.proyecto.fenixtech.model.enums.Rol;
 
@@ -205,17 +203,6 @@ public class UsersController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Crear un usuario particular", description = "Crea un nuevo particular")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Usuario creado con éxito"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos (ej. contraseña débil) o email ya registrado")
-    })
-    @PostMapping("register/particular")
-    public ResponseEntity<Users> registerParticular(@Valid @RequestBody ParticularRequestDTO dto) {
-        Users newUser = usersService.registerParticular(dto);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
-    }
 
     @Operation(summary = "Crear un administrador", description = "Crea un nuevo administrador")
     @ApiResponses(value = {
@@ -228,16 +215,6 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedAdmin);
     }
 
-    @Operation(summary = "Crear un usuario company", description = "Crea un nuevo usuario empresa")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Usuario empresa creado con éxito"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos (ej. contraseña débil) o email ya registrado")
-    })
-    @PostMapping("/register/company")
-    public ResponseEntity<Users> registerCompany(@Valid @RequestBody CompanyRequestDTO dto) {
-        Users newUser = usersService.registerCompany(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
-    }
 
     @Operation(summary = "Borrar un usuario", description = "Borra un usuario existente")
     @ApiResponses(value = {
