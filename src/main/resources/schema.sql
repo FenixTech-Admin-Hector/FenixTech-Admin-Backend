@@ -25,17 +25,6 @@ CREATE TABLE IF NOT EXISTS users (
     is_active BOOLEAN DEFAULT TRUE
 );
 
--- Tabla para gestionar seguidores y seguidos
-CREATE TABLE IF NOT EXISTS follows (
-    follow_id INT AUTO_INCREMENT PRIMARY KEY,
-    follower_id INT NOT NULL,
-    following_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (follower_id) REFERENCES users (user_id) ON DELETE CASCADE,
-    FOREIGN KEY (following_id) REFERENCES companies (company_id) ON DELETE CASCADE,
-    UNIQUE (follower_id, following_id) 
-);
-
 CREATE TABLE IF NOT EXISTS companies (
     company_id INT PRIMARY KEY AUTO_INCREMENT,
     -- UNIQUE en user_id garantiza la relación 1 a 1
@@ -48,7 +37,18 @@ CREATE TABLE IF NOT EXISTS companies (
     impact_metrics JSON,
     company_img VARCHAR(255) DEFAULT null,
     is_active BOOLEAN DEFAULT TRUE,
-    FOREIGN KEY (user_id) REFERENCES Users (user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
+);
+
+-- Tabla para gestionar seguidores y seguidos
+CREATE TABLE IF NOT EXISTS follows (
+    follow_id INT AUTO_INCREMENT PRIMARY KEY,
+    follower_id INT NOT NULL,
+    following_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (follower_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (following_id) REFERENCES companies (company_id) ON DELETE CASCADE,
+    UNIQUE (follower_id, following_id) 
 );
 
 CREATE TABLE IF NOT EXISTS addresses (
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS addresses (
     region VARCHAR(100) NOT NULL,
     zip_code VARCHAR(20) NOT NULL,
     country VARCHAR(100) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES Users (user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_users_active ON users (is_active);
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS subcategories (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     is_active BOOLEAN DEFAULT TRUE,
-    FOREIGN KEY (category_id) REFERENCES Categories (category_id)
+    FOREIGN KEY (category_id) REFERENCES categories (category_id)
 );
 
 CREATE TABLE IF NOT EXISTS products (
@@ -112,8 +112,8 @@ CREATE TABLE IF NOT EXISTS products (
     region VARCHAR(100) NOT NULL,
     zip_code VARCHAR(20) NOT NULL,
     country VARCHAR(100) NOT NULL,
-    FOREIGN KEY (company_id) REFERENCES Companies (company_id) ON DELETE CASCADE,
-    FOREIGN KEY (subcategory_id) REFERENCES Subcategories (subcategory_id)
+    FOREIGN KEY (company_id) REFERENCES companies (company_id) ON DELETE CASCADE,
+    FOREIGN KEY (subcategory_id) REFERENCES subcategories (subcategory_id)
 );
 
 CREATE TABLE IF NOT EXISTS products_img (
@@ -134,8 +134,8 @@ CREATE TABLE IF NOT EXISTS cart_items (
     user_id INT NOT NULL,
     product_id INT NOT NULL,
     quantity INT DEFAULT 1,
-    FOREIGN KEY (user_id) REFERENCES Users (user_id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES Products (product_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products (product_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS orders (
@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS orders (
         'CANCELLED'
     ) DEFAULT 'PENDING_PAYMENT',
     requires_shipping BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (buyer_user_id) REFERENCES Users (user_id)
+    FOREIGN KEY (buyer_user_id) REFERENCES users (user_id)
 );
 
 CREATE TABLE IF NOT EXISTS order_details (
@@ -163,8 +163,8 @@ CREATE TABLE IF NOT EXISTS order_details (
     quantity INT NOT NULL,
     -- Desnormalización crítica: "Fotocopia" del precio en el momento de la compra
     unit_price_at_purchase DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (order_id) REFERENCES Orders (order_id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES Products (product_id)
+    FOREIGN KEY (order_id) REFERENCES orders (order_id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products (product_id)
 );
 
 CREATE TABLE IF NOT EXISTS shipping_carriers (
@@ -191,8 +191,8 @@ CREATE TABLE IF NOT EXISTS shipments (
     tracking_number VARCHAR(100),
     shipment_status ENUM('PREPARING', 'IN_TRANSIT', 'DELIVERED') DEFAULT 'PREPARING',
     
-    FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE,
-    FOREIGN KEY (carrier_id) REFERENCES Shipping_carriers(carrier_id)
+    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
+    FOREIGN KEY (carrier_id) REFERENCES shipping_carriers(carrier_id)
 );
 -- ------------------------------------------------------------------------------
 -- MÓDULO 4: COMUNIDAD, RESEÑAS Y GAMIFICACIÓN
@@ -204,7 +204,7 @@ CREATE TABLE IF NOT EXISTS posts (
     title VARCHAR(200) NOT NULL,
     body TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (author_user_id) REFERENCES Users (user_id) ON DELETE CASCADE
+    FOREIGN KEY (author_user_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS posts_img (
@@ -220,8 +220,8 @@ CREATE TABLE IF NOT EXISTS comments (
     author_user_id INT NOT NULL,
     body TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (post_id) REFERENCES Posts (post_id) ON DELETE CASCADE,
-    FOREIGN KEY (author_user_id) REFERENCES Users (user_id) ON DELETE CASCADE
+    FOREIGN KEY (post_id) REFERENCES posts (post_id) ON DELETE CASCADE,
+    FOREIGN KEY (author_user_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS proposals (
@@ -232,8 +232,8 @@ CREATE TABLE IF NOT EXISTS proposals (
     description TEXT NOT NULL,
     status ENUM('OPEN', 'FULFILLED') DEFAULT 'OPEN',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (requester_user_id) REFERENCES Users (user_id) ON DELETE CASCADE,
-    FOREIGN KEY (category_id) REFERENCES Categories (category_id) ON DELETE CASCADE
+    FOREIGN KEY (requester_user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories (category_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS reviews (
@@ -247,8 +247,8 @@ CREATE TABLE IF NOT EXISTS reviews (
     ),
     review_comment TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (reviewer_user_id) REFERENCES Users (user_id) ON DELETE CASCADE,
-    FOREIGN KEY (target_company_id) REFERENCES Companies (company_id) ON DELETE CASCADE
+    FOREIGN KEY (reviewer_user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (target_company_id) REFERENCES companies (company_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS badges (
@@ -264,6 +264,6 @@ CREATE TABLE IF NOT EXISTS company_badges (
     awarded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (company_id, badge_id),
-    FOREIGN KEY (company_id) REFERENCES Companies (company_id) ON DELETE CASCADE,
-    FOREIGN KEY (badge_id) REFERENCES Badges (badge_id)
+    FOREIGN KEY (company_id) REFERENCES companies (company_id) ON DELETE CASCADE,
+    FOREIGN KEY (badge_id) REFERENCES badges (badge_id)
 );
