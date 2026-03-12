@@ -14,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -47,12 +48,25 @@ public class Categories implements Serializable {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    @Schema(description = "Visibilidad de la categoría", example = "true")
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
+
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({ "category" })
     private List<Subcategories> subcategories = new ArrayList<>();
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnoreProperties("category")
     private List<Proposals> proposals = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        if (this.isActive == null) {
+            this.isActive = true;
+        }
+    }
+
 
 }

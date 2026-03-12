@@ -52,7 +52,7 @@ public class SubcategoriesController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<Subcategories> findById(@PathVariable Integer id) {
-        return ResponseEntity.status(HttpStatus.OK).body(subcategoriesService.findById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(subcategoriesService.findByIdActive(id));
     }
 
     @Operation(summary = "Obtener subcategorías por ID de categoría", description = "Devuelve una lista de subcategorías asociadas a un ID de categoría")

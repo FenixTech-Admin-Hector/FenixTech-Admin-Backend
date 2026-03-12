@@ -17,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -50,14 +51,26 @@ public class Subcategories implements Serializable {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    @Schema(description = "Visibilidad de la subcategoría", example = "true")
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     @JsonIgnoreProperties("subcategories")
     private Categories category;
 
-    @OneToMany(mappedBy = "subcategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "subcategory",cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JsonIgnoreProperties({"subcategory", "company"}) 
     private List<Products> products = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        if (this.isActive == null) {
+            this.isActive = true;
+        }
+    }
+
 
 
 }

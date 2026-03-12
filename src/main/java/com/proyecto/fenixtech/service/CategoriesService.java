@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.proyecto.fenixtech.dto.CategoriesRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Categories;
+import com.proyecto.fenixtech.model.enums.ProductStatus;
 import com.proyecto.fenixtech.repository.CategoriesRepository;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +20,12 @@ public class CategoriesService {
 
     @Transactional(readOnly = true)
     public List<Categories> findAllCategories() {
-        return categoriesRepository.findAll();
+        return categoriesRepository.findByIsActiveTrue();
     }
 
     @Transactional(readOnly = true)
     public Categories findById(Integer id) {
-        return categoriesRepository.findById(id)
+        return categoriesRepository.findByCategoryIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id:" + id));
     }
 
@@ -36,7 +37,7 @@ public class CategoriesService {
 
     @Transactional(readOnly = true)
     public Long count() {
-        return categoriesRepository.count();
+        return categoriesRepository.countByIsActiveTrue();
     }
 
     @Transactional
@@ -55,10 +56,22 @@ public class CategoriesService {
 
     @Transactional
     public void deleteById(Integer id) {
-        if (!categoriesRepository.existsById(id)) {
-            throw new IllegalArgumentException("No existe la categoría con id: " + id + " para eliminar");
+        Categories category = categoriesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + id));
+
+        category.setIsActive(false);
+
+        if (category.getSubcategories() != null) {
+            category.getSubcategories().forEach(sub -> {
+                sub.setIsActive(false);
+
+                if (sub.getProducts() != null) {
+                    sub.getProducts().forEach(p -> p.setProductStatus(ProductStatus.HIDDEN));
+                }
+            });
         }
-        categoriesRepository.deleteById(id);
+
+        categoriesRepository.save(category);
     }
 
     @Transactional
@@ -78,9 +91,5 @@ public class CategoriesService {
 
         return categoriesRepository.save(existingCategory);
     }
-
-
-
-
 
 }

@@ -58,25 +58,25 @@ INSERT INTO addresses (user_id, street, city, region, zip_code, country) VALUES
 (15, 'Calle Tajo 22', 'Toledo', 'Castilla-La Mancha', '45001', 'Spain');
 
 -- Categories (5 records)
-INSERT INTO categories (name, description) VALUES 
-('Ordenadores', 'Equipos completos de sobremesa y portátiles'),
-('Componentes', 'Piezas internas para PC y servidores'),
-('Periféricos', 'Dispositivos externos de entrada y salida'),
-('Redes', 'Equipos de conectividad y redes'),
-('Impresión', 'Impresoras, escáneres y consumibles');
+INSERT INTO categories (name, description, is_active) VALUES 
+('Ordenadores', 'Equipos completos de sobremesa y portátiles', TRUE),
+('Componentes', 'Piezas internas para PC y servidores', TRUE),
+('Periféricos', 'Dispositivos externos de entrada y salida', TRUE),
+('Redes', 'Equipos de conectividad y redes', TRUE),
+('Impresión', 'Impresoras, escáneres y consumibles', TRUE);
 
 -- Subcategories (10 records)
-INSERT INTO subcategories (category_id, name, description) VALUES
-(1, 'Portátiles', 'Ordenadores portátiles de todo tipo'),
-(1, 'Sobremesa', 'Torres y equipos all-in-one'),
-(2, 'Tarjetas Gráficas', 'GPUs para gaming y diseño'),
-(2, 'Procesadores', 'CPUs Intel y AMD'),
-(3, 'Teclados', 'Teclados mecánicos y de membrana'),
-(3, 'Ratones', 'Ratones ópticos y láser'),
-(4, 'Routers', 'Routers WiFi y neutros'),
-(4, 'Switches', 'Switches gestionables y no gestionables'),
-(5, 'Impresoras 3D', 'Impresoras de filamento y resina'),
-(5, 'Cartuchos', 'Tinta y tóner');
+INSERT INTO subcategories (category_id, name, description, is_active) VALUES
+(1, 'Portátiles', 'Ordenadores portátiles de todo tipo', TRUE),
+(1, 'Sobremesa', 'Torres y equipos all-in-one', TRUE),
+(2, 'Tarjetas Gráficas', 'GPUs para gaming y diseño', TRUE),
+(2, 'Procesadores', 'CPUs Intel y AMD', TRUE),
+(3, 'Teclados', 'Teclados mecánicos y de membrana', TRUE),
+(3, 'Ratones', 'Ratones ópticos y láser', TRUE),
+(4, 'Routers', 'Routers WiFi y neutros', TRUE),
+(4, 'Switches', 'Switches gestionables y no gestionables', TRUE),
+(5, 'Impresoras 3D', 'Impresoras de filamento y resina', TRUE),
+(5, 'Cartuchos', 'Tinta y tóner', TRUE);
 
 -- Badges (4 records)
 INSERT INTO badges (name, icon_url, is_active) VALUES

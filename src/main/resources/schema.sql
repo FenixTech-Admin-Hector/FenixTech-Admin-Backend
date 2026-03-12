@@ -70,7 +70,8 @@ CREATE INDEX idx_users_active ON users (is_active);
 CREATE TABLE IF NOT EXISTS categories (
     category_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
-    description TEXT
+    description TEXT,
+    is_active BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS subcategories (
@@ -78,7 +79,8 @@ CREATE TABLE IF NOT EXISTS subcategories (
     category_id INT NOT NULL,
     name VARCHAR(100) NOT NULL,
     description TEXT,
-    FOREIGN KEY (category_id) REFERENCES Categories (category_id) ON DELETE CASCADE
+    is_active BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (category_id) REFERENCES Categories (category_id)
 );
 
 CREATE TABLE IF NOT EXISTS products (

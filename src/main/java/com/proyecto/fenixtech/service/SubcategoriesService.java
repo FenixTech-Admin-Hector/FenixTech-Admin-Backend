@@ -12,6 +12,7 @@ import com.proyecto.fenixtech.dto.SubcategoriesRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Categories;
 import com.proyecto.fenixtech.model.Subcategories;
+import com.proyecto.fenixtech.model.enums.ProductStatus;
 
 @Service
 public class SubcategoriesService {
@@ -22,67 +23,84 @@ public class SubcategoriesService {
     private CategoriesRepository categoriesRepository;
 
     @Transactional(readOnly = true)
-    public List<Subcategories> findAllSubcategories() {
-        return subcategoriesRepository.findAll();
+    public List<Subcategories> findAll() {
+        return subcategoriesRepository.findAll(); 
     }
 
     @Transactional(readOnly = true)
     public Subcategories findById(Integer id) {
         return subcategoriesRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Subcategoría no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Subcategoría no encontrada con id: " + id)); //
+    }
+
+    @Transactional(readOnly = true)
+    public List<Subcategories> findAllSubcategories() {
+        return subcategoriesRepository.findByIsActiveTrue();
+    }
+
+    @Transactional(readOnly = true)
+    public Subcategories findByIdActive(Integer id) {
+        return subcategoriesRepository.findBySubcategoryIdAndIsActiveTrue(id)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Subcategoría no encontrada o inactiva con id: " + id));
     }
 
     @Transactional(readOnly = true)
     public List<Subcategories> findByCategoryId(Integer id) {
-        categoriesRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + id));
-        return subcategoriesRepository.findByCategory_CategoryId(id);
+        categoriesRepository.findByCategoryIdAndIsActiveTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada o inactiva con id: " + id));
+
+        return subcategoriesRepository.findByCategory_CategoryIdAndIsActiveTrue(id);
     }
 
     @Transactional(readOnly = true)
     public List<Subcategories> findByName(String name) {
-        return subcategoriesRepository.findByNameContainingIgnoreCase(name);
+        return subcategoriesRepository.findByNameContainingIgnoreCaseAndIsActiveTrue(name);
     }
 
     @Transactional(readOnly = true)
     public Long count() {
-        return subcategoriesRepository.count();
+        return subcategoriesRepository.countByIsActiveTrue();
     }
 
     @Transactional
     public Subcategories save(SubcategoriesRequestDTO dto) {
-        // 1. Validamos que el ID de la categoría padre venga en el DTO
         if (dto.getCategoryId() == null) {
             throw new IllegalArgumentException("La subcategoría debe estar asociada a una categoría válida con ID.");
         }
 
-        // 2. Verificamos que la categoría padre exista en la DB
         Categories category = categoriesRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("La categoría con ID "
                         + dto.getCategoryId() + " no existe"));
 
-        // 3. Opcional: Validar si ya existe una subcategoría con el mismo nombre
         subcategoriesRepository.findByNameIgnoreCase(dto.getName())
                 .ifPresent(s -> {
                     throw new IllegalArgumentException("Ya existe una subcategoría con el nombre: " + dto.getName());
                 });
 
-        // 4. Mapeamos el DTO a la Entidad
         Subcategories subcategory = new Subcategories();
         subcategory.setName(dto.getName());
         subcategory.setDescription(dto.getDescription());
         subcategory.setCategory(category);
-        // subcategory.setIsActive(true);
+        subcategory.setIsActive(true);
 
         return subcategoriesRepository.save(subcategory);
     }
 
     @Transactional
     public void deleteById(Integer id) {
-        if (!subcategoriesRepository.existsById(id)) {
-            throw new IllegalArgumentException("No existe la subcategoría con id: " + id + " para eliminar");
+        Subcategories subcategory = subcategoriesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Subcategoría no encontrada"));
+
+        subcategory.setIsActive(false);
+
+        if (subcategory.getProducts() != null) {
+            subcategory.getProducts().forEach(product -> {
+                product.setProductStatus(ProductStatus.HIDDEN);
+            });
         }
-        subcategoriesRepository.deleteById(id);
+
+        subcategoriesRepository.save(subcategory);
     }
 
     @Transactional
