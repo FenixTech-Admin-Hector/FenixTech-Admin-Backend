@@ -17,9 +17,21 @@ public class ShippingCarriersService {
     private ShippingCarriersRepository shippingCarriersRepository;
 
     @Transactional(readOnly = true)
-    public List<ShippingCarriers> findAllShippingCarriers() {
+    public List<ShippingCarriers> findAllActive() {
+        return shippingCarriersRepository.findByIsActiveTrue();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ShippingCarriers> findAll() {
         return shippingCarriersRepository.findAll();
     }
+
+    @Transactional(readOnly = true)
+    public ShippingCarriers findByIdActive(Integer id) {
+        return shippingCarriersRepository.findByCarrierIdAndIsActiveTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Empresa de transporte no encontrada con id: " + id +" o inactiva"));
+    }
+
 
     @Transactional(readOnly = true)
     public ShippingCarriers findById(Integer id) {
@@ -52,10 +64,11 @@ public class ShippingCarriersService {
 
     @Transactional
     public void deleteById(Integer id) {
-        if (!shippingCarriersRepository.existsById(id)) {
-            throw new IllegalArgumentException("No existe la empresa de transporte con id: " + id + " para eliminar");
-        }
-        shippingCarriersRepository.deleteById(id);
+        ShippingCarriers carrier = shippingCarriersRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Transportista no encontrado"));
+
+        carrier.setIsActive(false);
+        shippingCarriersRepository.save(carrier);
     }
 
     @Transactional

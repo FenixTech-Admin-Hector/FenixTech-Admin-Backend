@@ -14,6 +14,7 @@ import com.proyecto.fenixtech.service.ShippingCarriersService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -25,20 +26,41 @@ public class ShippingCarriersController {
     @Autowired
     private ShippingCarriersService shippingCarriersService;
 
-    @Operation(summary = "Obtener todos los transportistas", description = "Retorna una lista de todas las empresas de transporte configuradas.")
+    @Operation(summary = "Obtener todos los transportistas activos", description = "Retorna una lista de todas las empresas activas de transporte configuradas.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de transportistas obtenida con éxito"),
+    })
     @GetMapping
-    public ResponseEntity<List<ShippingCarriers>> getAll() {
-        return ResponseEntity.ok(shippingCarriersService.findAllShippingCarriers());
+    public ResponseEntity<List<ShippingCarriers>> getAllActive() {
+        return ResponseEntity.ok(shippingCarriersService.findAllActive());
+    }
+
+    @Operation(summary = "Obtener todos los transportistas", description = "Retorna una lista de todas las empresas de transporte configuradas.")   
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de transportistas obtenida con éxito")
+    })
+    @GetMapping("/admin")
+    public ResponseEntity<List<ShippingCarriers>> getAll(){
+        return ResponseEntity.ok(shippingCarriersService.findAll());
     }
 
     @Operation(summary = "Obtener transportista por ID", description = "Busca una empresa de transporte específica por su identificador único.")
     @ApiResponse(responseCode = "200", description = "Transportista encontrado")
     @ApiResponse(responseCode = "404", description = "Transportista no encontrado")
-    @GetMapping("/{id}")
-    public ResponseEntity<ShippingCarriers> getById(
-            @Parameter(description = "ID del transportista") @PathVariable Integer id) {
+    @GetMapping("admin/{id}")
+    public ResponseEntity<ShippingCarriers> getById(@PathVariable Integer id) {
         return ResponseEntity.ok(shippingCarriersService.findById(id));
     }
+
+    @Operation(summary = "Obtener transportista activo por ID", description = "Busca una empresa de transporte activa específica por su identificador único.")
+    @ApiResponse(responseCode = "200", description = "Transportista encontrado")
+    @ApiResponse(responseCode = "404", description = "Transportista no encontrado o inactivo")
+    @GetMapping("/{id}")
+    public ResponseEntity<ShippingCarriers> getByIdActive(@PathVariable Integer id) {
+        return ResponseEntity.ok(shippingCarriersService.findByIdActive(id));
+    }
+
+
 
     @Operation(summary = "Crear nuevo transportista", description = "Registra una nueva empresa de transporte en el sistema.")
     @PostMapping

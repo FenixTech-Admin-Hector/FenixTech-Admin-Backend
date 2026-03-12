@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -64,8 +65,21 @@ public class ShippingCarriers implements Serializable {
     @Column(name = "estimated_days", nullable = false)
     private Integer estimatedDays;
 
+    @Schema(description = "Visibilidad del transportista", example = "true")
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
+
     @OneToMany(mappedBy = "carrier")
     @JsonIgnoreProperties({"carrier", "order"})
     private List<Shipments> shipments;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.isActive == null) {
+            this.isActive = true;
+        }
+    }
+
 
 }

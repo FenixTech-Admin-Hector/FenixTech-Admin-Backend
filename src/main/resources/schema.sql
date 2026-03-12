@@ -172,7 +172,8 @@ CREATE TABLE IF NOT EXISTS shipping_carriers (
     base_price DECIMAL(10, 2) NOT NULL,
     estimated_days INT NOT NULL,
     carrier_logo TEXT,
-    tracking_url TEXT 
+    tracking_url TEXT, 
+    is_active BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS shipments (
