@@ -65,8 +65,7 @@ public class Proposals implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requester_user_id", nullable = false)
-    @JsonIgnoreProperties({ "proposals", "company", "addresses", "reviews", "orders", "cartItems", "posts",
-            "comments" })
+    @JsonIgnoreProperties({ "proposals", "company", "addresses", "reviews", "orders", "cartItems", "posts", "comments", "following" })
     private Users requester;
 
     @ManyToOne(fetch = FetchType.LAZY)

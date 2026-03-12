@@ -61,12 +61,12 @@ public class Reviews implements Serializable{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewer_user_id", nullable = false)
-    @JsonIgnoreProperties({"reviews", "company", "addresses", "proposals", "orders", "cartItems", "posts", "comments"})
+    @JsonIgnoreProperties({"reviews", "company", "addresses", "proposals", "orders", "cartItems", "posts", "comments", "following"})
     private Users reviewer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_company_id", nullable = false)
-    @JsonIgnoreProperties({"reviews", "companyBadges", "products", "user"})
+    @JsonIgnoreProperties({"reviews", "companyBadges", "products", "user", "followers"})
     private Companies targetCompany;
 
 

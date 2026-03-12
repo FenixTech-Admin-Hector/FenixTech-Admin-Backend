@@ -128,7 +128,7 @@ public class Products implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
-    @JsonIgnoreProperties({"products", "companyBadges", "reviews", "user"})
+    @JsonIgnoreProperties({"products", "companyBadges", "reviews", "user", "followers"})
     private Companies company;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)

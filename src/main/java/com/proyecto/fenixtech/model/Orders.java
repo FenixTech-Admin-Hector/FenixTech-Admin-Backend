@@ -71,7 +71,7 @@ public class Orders implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer_user_id", nullable = false)
-    @JsonIgnoreProperties({"orders", "company", "addresses", "reviews", "proposals", "cartItems", "posts", "comments"})
+    @JsonIgnoreProperties({"orders", "company", "addresses", "reviews", "proposals", "cartItems", "posts", "comments", "following"})
     private Users buyer;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)

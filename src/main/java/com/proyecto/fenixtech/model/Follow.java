@@ -33,7 +33,7 @@ public class Follow implements Serializable {
     @Schema(description = "Usuario con rol PARTICULAR que realiza el seguimiento")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "follower_id", nullable = false)
-    @JsonIgnoreProperties({ "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments", "following", "followers"})
+    @JsonIgnoreProperties({ "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments", "following"})
     private Users follower;
 
     @Schema(description = "Empresa que está siendo seguida")

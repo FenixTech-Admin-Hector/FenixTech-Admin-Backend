@@ -37,9 +37,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@ToString(exclude = { "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments", "following", "followers"})
+@ToString(exclude = { "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments", "following"})
 @EqualsAndHashCode(exclude = { "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts",
-        "comments", "following", "followers"})
+        "comments", "following"})
 
 @Schema(description = "Modelo de Usuario", name = "Users")
 @Entity
@@ -99,7 +99,7 @@ public class Users implements Serializable {
     private LocalDateTime deletedAt;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true )
-    @JsonIgnoreProperties({ "user", "companyBadges", "products", "reviews" })
+    @JsonIgnoreProperties({ "user", "companyBadges", "products", "reviews", "followers" })
     private Companies company;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

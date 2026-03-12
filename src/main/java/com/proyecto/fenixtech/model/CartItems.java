@@ -52,7 +52,7 @@ public class CartItems implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnoreProperties({ "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts",
-            "comments" })
+            "comments", "following" })
     private Users user;
 
     @PrePersist

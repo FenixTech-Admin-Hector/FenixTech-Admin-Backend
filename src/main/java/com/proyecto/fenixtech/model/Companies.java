@@ -33,8 +33,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@ToString(exclude = { "user", "products", "companyBadges", "reviews" })
-@EqualsAndHashCode(exclude = { "user", "products", "companyBadges", "reviews" })
+@ToString(exclude = { "user", "products", "companyBadges", "reviews", "followers" })
+@EqualsAndHashCode(exclude = { "user", "products", "companyBadges", "reviews", "followers" })
 
 @Schema(description = "Modelo de Empresa", name = "Companies")
 @Entity
@@ -77,7 +77,7 @@ public class Companies implements Serializable {
     
     @OneToOne
     @JoinColumn(name = "user_id", unique = true, nullable = false)
-    @JsonIgnoreProperties({ "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments" })
+    @JsonIgnoreProperties({ "company", "addresses", "reviews", "proposals", "orders", "cartItems", "posts", "comments", "following" })
     private Users user;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)

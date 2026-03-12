@@ -57,7 +57,7 @@ public class Comments implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_user_id", nullable = false)
-    @JsonIgnoreProperties({"comments", "posts", "company", "addresses", "reviews", "proposals", "orders", "cartItems"})
+    @JsonIgnoreProperties({"comments", "posts", "company", "addresses", "reviews", "proposals", "orders", "cartItems", "following"})
     private Users author;
 
 

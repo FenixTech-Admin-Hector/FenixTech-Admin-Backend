@@ -44,7 +44,7 @@ public class CompanyBadges implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("companyId")
     @JoinColumn(name = "company_id")
-    @JsonIgnoreProperties("companyBadges")
+    @JsonIgnoreProperties({"companyBadges", "products", "user", "followers", "reviews"})
     private Companies company;
 
     @ManyToOne(fetch = FetchType.LAZY)
