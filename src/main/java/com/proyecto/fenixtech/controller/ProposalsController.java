@@ -67,12 +67,11 @@ public class ProposalsController {
         return proposalsService.findByUserId(id);
     }
 
-    @Operation(summary = "Obtener el numero depropuestas", description = "Devuelve el número total de propuestas")
+    @Operation(summary = "Obtener el numero de propuestas", description = "Devuelve el número total de propuestas")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Número de propuestas obtenido con éxito")
     })
     @GetMapping("/count")
-
     public ResponseEntity<Map<String, Long>> count() {
         Long count = proposalsService.count();
         Map<String, Long> response = new HashMap<>();
@@ -90,7 +89,7 @@ public class ProposalsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(proposalsService.save(dto));
     }
 
-    @Operation(summary = "Actualizar propuesta (Uso ADMIN)", description = "Permite al administrador modificar el estado, título, descripción o categoría")
+    @Operation(summary = "Actualizar propuesta", description = "Permite modificar el estado, título, descripción o categoría")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Propuesta actualizada con éxito"),
             @ApiResponse(responseCode = "404", description = "Propuesta no encontrada")

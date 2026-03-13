@@ -33,32 +33,32 @@ public class SecurityConfig {
 
                         // Acceso Público
                         .requestMatchers(HttpMethod.GET, "/companies", "/companies/{id}", "/companies/top", "/count",
-                                "/products/**", "/productsImg/**", "/postsImg/**")
+                                "/products/**", "/productsImg/**", "/postsImg/**", "/comments/posts/{postId}")
                         .permitAll()
 
                         // Acceso solo admin
                         .requestMatchers(HttpMethod.GET, "/addresses", "/addresses/{id}", "/addresses/filters",
                                 "/addresses/count", "/badges/**", "/cart_items", "/cart_items/{id}",
                                 "/cart_items/product/{id}", "/cart_items/quantity", "/cart_items/count",
-                                "companies/all", "/companies/search/impact")
+                                "companies/all", "/companies/search/impact", "/comments/users/{userId}", "/comments/count" )
                         .hasRole("ADMIN")
 
                         // Acceso privado
                         .requestMatchers(HttpMethod.GET, "/addresses/user/{id}", "/cart_items/user/{id}",
                                 "/cart_items/my/count")
                         .hasAnyRole("PARTICULAR", "ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/companies/user/{userId}").hasAnyRole("EMPRESA", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/companies/user/{userId}", "/proposals/").hasAnyRole("EMPRESA", "ADMIN")
 
-                        .requestMatchers(HttpMethod.POST, "/addresses", "/cart_items").hasRole("PARTICULAR")
+                        .requestMatchers(HttpMethod.POST, "/addresses", "/comments", "/cart_items", "/proposals" ).hasRole("PARTICULAR")
                         .requestMatchers(HttpMethod.POST, "/badges").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/products").hasRole("EMPRESA")
 
                         .requestMatchers(HttpMethod.PUT, "/addresses/{id}", "/cart_items/{id}").hasRole("PARTICULAR")
                         .requestMatchers(HttpMethod.PUT, "/badges/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/companies/{id}", "/products/{id}")
+                        .requestMatchers(HttpMethod.PUT, "/companies/{id}", "/products/{id}", "/proposals/{id}")
                         .hasAnyRole("EMPRESA", "ADMIN")
 
-                        .requestMatchers(HttpMethod.DELETE, "/addresses/{id}", "/cart_items/{id}")
+                        .requestMatchers(HttpMethod.DELETE, "/addresses/{id}", "/cart_items/{id}", "/comments/{id}/user/{userId}" )
                         .hasAnyRole("PARTICULAR", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/companies/{id}", "/products/{id}", "/productsImg/{id}",
                                 "/postsImg/post/{postId}/image/{imageId}")

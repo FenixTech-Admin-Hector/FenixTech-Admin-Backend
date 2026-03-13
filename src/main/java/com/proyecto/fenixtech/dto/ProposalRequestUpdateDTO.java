@@ -12,5 +12,5 @@ public class ProposalRequestUpdateDTO {
     @NotBlank(message = "La descripción es obligatoria")
     private String description;
     private Integer categoryId;
-    private ProposalStatus status; // El campo que le interesa al ADMIN
+    private ProposalStatus status;
 }

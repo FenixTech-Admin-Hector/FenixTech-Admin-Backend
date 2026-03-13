@@ -12,6 +12,8 @@ import com.proyecto.fenixtech.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,15 +52,16 @@ public class CommentsService {
 
     @Transactional
     public Comments save(CommentsRequest dto) {
+
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         Posts post = postsRepository.findById(dto.getPostId())
                 .orElseThrow(() -> new ResourceNotFoundException("El post no existe"));
 
-        Users user = usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(dto.getUserId(), Rol.ADMIN)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado o inactivo"));
         Comments comment = new Comments();
         comment.setBody(dto.getBody());
         comment.setPost(post);
-        comment.setAuthor(user);
+        comment.setAuthor(currentUser);
 
         return commentsRepository.save(comment);
     }
@@ -68,31 +71,14 @@ public class CommentsService {
         Comments comment = commentsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comentario no encontrado"));
 
-        if (!comment.getAuthor().getUserId().equals(userId)) {
-            throw new IllegalArgumentException("No puedes borrar un comentario que no te pertenece.");
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!currentUser.getRole().name().equals("ADMIN") &&
+                !comment.getAuthor().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("No puedes borrar un comentario ajeno");
         }
+        
         commentsRepository.delete(comment);
     }
 
-    @Transactional
-    public void deleteByAdmin(Integer id) {
-        if (!commentsRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Comentario no encontrado");
-        }
-        commentsRepository.deleteById(id);
-    }
-
-    @Transactional
-    public Comments update(Integer id, CommentsRequest dto) {
-        Comments existingComment = commentsRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Comentario no encontrado con id: " + id));
-
-        if (!existingComment.getAuthor().getUserId().equals(dto.getUserId())) {
-            throw new IllegalArgumentException("No puedes editar un comentario que no te pertenece.");
-        }
-
-        existingComment.setBody(dto.getBody());
-
-        return commentsRepository.save(existingComment);
-    }
 }

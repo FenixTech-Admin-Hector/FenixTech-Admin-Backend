@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -81,17 +80,7 @@ public class CommentsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commentsService.save(comment));
     }
 
-    @Operation(summary = "Actualizar un comentario", description = "Actualiza un comentario existente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Comentario actualizado con éxito"),
-            @ApiResponse(responseCode = "404", description = "Comentario no encontrado")
-    })
-    @PutMapping("/{id}")
-    public ResponseEntity<Comments> update(@PathVariable Integer id, @Valid @RequestBody CommentsRequest comment) {
-        return ResponseEntity.ok(commentsService.update(id, comment));
-    }
-
-    @Operation(summary = "Eliminar un comentario (Usuario)", description = "El autor elimina su propio comentario por id")
+    @Operation(summary = "Eliminar un comentario", description = "El autor elimina su propio comentario por id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Comentario eliminado con éxito"),
             @ApiResponse(responseCode = "400", description = "No puedes borrar un comentario que no te pertenece."),
@@ -103,14 +92,4 @@ public class CommentsController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Eliminar comentario (ADMIN)", description = "El administrador elimina cualquier comentario.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Comentario eliminado con éxito"),
-            @ApiResponse(responseCode = "404", description = "Comentario no encontrado")
-    })
-    @DeleteMapping("/admin/{id}")
-    public ResponseEntity<Void> deleteByAdmin(@PathVariable Integer id) {
-        commentsService.deleteByAdmin(id);
-        return ResponseEntity.noContent().build();
-    }
 }
