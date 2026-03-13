@@ -31,16 +31,26 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
                         .permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/addresses", "/addresses/{id}" , "/addresses/filters" , "/addresses/count", "/badges/**", "/cart_items", "/cart_items/{id}", "/cart_items/product/{id}", "/cart_items/quantity", "/cart_items/count" ).hasRole("ADMIN")
+                        //Acceso Público
+                        .requestMatchers(HttpMethod.GET, "/companies", "/companies/{id}", "/companies/top", "/count" , "/products/**").permitAll()
+
+                        //Acceso solo admin
+                        .requestMatchers(HttpMethod.GET, "/addresses", "/addresses/{id}" , "/addresses/filters" , "/addresses/count", "/badges/**", "/cart_items", "/cart_items/{id}", "/cart_items/product/{id}", "/cart_items/quantity", "/cart_items/count", "companies/all", "/companies/search/impact" ).hasRole("ADMIN")
+
+                        //Acceso privado 
                         .requestMatchers(HttpMethod.GET, "/addresses/user/{id}", "/cart_items/user/{id}", "/cart_items/my/count").hasAnyRole("PARTICULAR", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/companies/user/{userId}").hasAnyRole("EMPRESA", "ADMIN")
                         
                         .requestMatchers(HttpMethod.POST, "/addresses", "/cart_items").hasRole("PARTICULAR")
                         .requestMatchers(HttpMethod.POST, "/badges").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/products").hasRole("EMPRESA")
                         
                         .requestMatchers(HttpMethod.PUT, "/addresses/{id}", "/cart_items/{id}").hasRole("PARTICULAR")
                         .requestMatchers(HttpMethod.PUT, "/badges/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/companies/{id}", "/products/{id}").hasAnyRole("EMPRESA", "ADMIN")
 
                         .requestMatchers(HttpMethod.DELETE, "/addresses/{id}", "/cart_items/{id}").hasAnyRole("PARTICULAR", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/companies/{id}", "/products/{id}").hasAnyRole("EMPRESA", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/badges/{id}").hasRole("ADMIN")
 
                         // 4. El resto requiere estar logueado

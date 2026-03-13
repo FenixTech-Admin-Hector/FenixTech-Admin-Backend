@@ -13,6 +13,7 @@ import com.proyecto.fenixtech.model.Companies;
 import com.proyecto.fenixtech.model.Products;
 import com.proyecto.fenixtech.model.ProductsImg;
 import com.proyecto.fenixtech.model.Subcategories;
+import com.proyecto.fenixtech.model.Users;
 import com.proyecto.fenixtech.model.enums.ConditionStatus;
 import com.proyecto.fenixtech.model.enums.ListingType;
 import com.proyecto.fenixtech.model.enums.PickupType;
@@ -21,6 +22,8 @@ import com.proyecto.fenixtech.model.enums.ProductStatus;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -106,6 +109,11 @@ public class ProductsService {
 
     @Transactional
     public Products save(ProductsRequestPostDTO dto) {
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        
+        Companies comp = companiesRepository.findByUser_UserIdAndIsActiveTrue(currentUser.getUserId())
+            .orElseThrow(() -> new ResourceNotFoundException("No tienes una empresa asociada para crear productos"));
+
         Products product = new Products();
 
         product.setProductTitle(dto.getTitle());
@@ -125,9 +133,6 @@ public class ProductsService {
                         "Subcategoría no encontrada con ID: " + dto.getSubcategoryId()));
         product.setSubcategory(sub);
 
-        Companies comp = companiesRepository.findById(dto.getCompanyId())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("Empresa no encontrada con ID: " + dto.getCompanyId()));
         product.setCompany(comp);
 
         if (dto.getImageUrls() != null) {
@@ -148,6 +153,13 @@ public class ProductsService {
         Products product = productsRepository.findById(id)
                 .orElseThrow(
                         () -> new IllegalArgumentException("No existe el producto con id: " + id + " para eliminar"));
+        
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!currentUser.getRole().name().equals("ADMIN") &&
+                !product.getCompany().getUser().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("No puedes modificar un producto que no pertenece a tu empresa.");
+        }
+        
         productsRepository.deleteCartItemsByProductId(id);
 
         product.setProductStatus(ProductStatus.HIDDEN);
@@ -158,6 +170,12 @@ public class ProductsService {
     public Products update(Integer id, ProductRequestUpdateDTO dto) {
         Products product = productsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!currentUser.getRole().name().equals("ADMIN") &&
+                !product.getCompany().getUser().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("No puedes modificar un producto que no pertenece a tu empresa.");
+        }
 
         product.setProductTitle(dto.getTitle());
         product.setDescription(dto.getDescription());
