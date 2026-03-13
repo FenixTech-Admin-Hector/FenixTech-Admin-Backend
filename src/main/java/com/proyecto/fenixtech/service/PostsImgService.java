@@ -4,10 +4,13 @@ import com.proyecto.fenixtech.repository.PostsImgRepository;
 import com.proyecto.fenixtech.repository.PostsRepository;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.PostsImg;
+import com.proyecto.fenixtech.model.Users;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +48,13 @@ public class PostsImgService {
 
         if (!img.getPost().getPostId().equals(postId)) {
             throw new IllegalArgumentException("La imagen no pertenece al post indicado");
+        }
+
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!currentUser.getRole().name().equals("ADMIN") &&
+                !img.getPost().getAuthor().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("No puedes borrar imágenes de un post que no has escrito tú");
         }
 
         postsImgRepository.delete(img);

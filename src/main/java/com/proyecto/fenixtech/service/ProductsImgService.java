@@ -4,11 +4,13 @@ import com.proyecto.fenixtech.repository.ProductsImgRepository;
 import com.proyecto.fenixtech.repository.ProductsRepository;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.ProductsImg;
-
+import com.proyecto.fenixtech.model.Users;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,10 +48,17 @@ public class ProductsImgService {
 
     @Transactional
     public void deleteById(Integer id) {
-        if (!productsImgRepository.existsById(id)) {
-            throw new IllegalArgumentException("No existe la imagen con id: " + id + " para eliminar");
+        ProductsImg img = productsImgRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Imagen no encontrada"));
+
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!currentUser.getRole().name().equals("ADMIN") &&
+                !img.getProduct().getCompany().getUser().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("No puedes borrar imágenes de la competencia");
         }
-        productsImgRepository.deleteById(id);
+
+        productsImgRepository.delete(img);
     }
 
 }
