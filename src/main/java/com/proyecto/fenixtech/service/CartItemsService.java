@@ -15,6 +15,8 @@ import com.proyecto.fenixtech.model.enums.ProductStatus;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,6 +29,10 @@ public class CartItemsService {
 
     @Autowired
     private ProductsRepository productsRepository;
+
+    private Users getAuthenticatedUser() {
+        return (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 
     @Transactional(readOnly = true)
     public List<CartItems> findAllCartItems() {
@@ -41,6 +47,12 @@ public class CartItemsService {
 
     @Transactional(readOnly = true)
     public List<CartItems> findByUserId(Integer userId) {
+        Users currentUser = getAuthenticatedUser();
+        
+        if (!currentUser.getRole().name().equals("ADMIN") && !currentUser.getUserId().equals(userId)) {
+            throw new AccessDeniedException("No tienes permiso para ver este carrito");
+        }
+
         usersRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + userId));
 
@@ -75,56 +87,58 @@ public class CartItemsService {
         return cartItemsRepository.count();
     }
 
+    public Long countByCurrentUser() {
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return cartItemsRepository.countByUser_UserId(currentUser.getUserId()); 
+    }
+
     @Transactional
     public CartItems save(CartItemsRequestDTO dto) {
-        Integer userId = dto.getUserId();
+        Users currentUser = getAuthenticatedUser();
         Integer productId = dto.getProductId();
 
         Products product = productsRepository.findByProductIdAndProductStatusActive(productId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "El producto con ID " + productId + " no está disponible o ha sido retirado"));
+                        "El producto con ID " + productId + " no está disponible"));
 
-        Users user = usersRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "El usuario con ID " + userId + " no existe"));
-
-        if (product.getCompany().getUser().getUserId().equals(userId)) {
+        if (product.getCompany().getUser().getUserId().equals(currentUser.getUserId())) {
             throw new IllegalArgumentException("No puedes añadir tus propios productos al carrito.");
         }
 
-        return cartItemsRepository.findByUser_UserIdAndProduct_ProductId(userId, productId)
+        return cartItemsRepository.findByUser_UserIdAndProduct_ProductId(currentUser.getUserId(), productId)
                 .map(existing -> {
                     int newQuantity = existing.getQuantity() + dto.getQuantity();
-
                     if (newQuantity > product.getStock()) {
-                        throw new IllegalArgumentException(
-                                "No hay suficiente stock disponible. Stock actual: " + product.getStock());
+                        throw new IllegalArgumentException("Stock insuficiente. Máximo: " + product.getStock());
                     }
-
                     existing.setQuantity(newQuantity);
                     return cartItemsRepository.save(existing);
                 })
                 .orElseGet(() -> {
                     if (product.getStock() < dto.getQuantity()) {
-                        throw new IllegalArgumentException("Stock insuficiente para añadir este producto.");
+                        throw new IllegalArgumentException("Stock insuficiente.");
                     }
-
                     CartItems newItem = new CartItems();
-                    newItem.setUser(user);
+                    newItem.setUser(currentUser); 
                     newItem.setProduct(product);
                     newItem.setQuantity(dto.getQuantity());
-
                     return cartItemsRepository.save(newItem);
                 });
-
     }
 
     @Transactional
     public void deleteById(Integer id) {
-        if (!cartItemsRepository.existsById(id)) {
-            throw new IllegalArgumentException("No existe el item del carrito con id: " + id + " para eliminar");
+        CartItems item = cartItemsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Item no encontrado"));
+
+        Users currentUser = getAuthenticatedUser();
+
+        if (!currentUser.getRole().name().equals("ADMIN") && 
+            !item.getUser().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("No tienes permiso para eliminar este item");
         }
-        cartItemsRepository.deleteById(id);
+
+        cartItemsRepository.deleteById(item.getCartItemId());
     }
 
     @Transactional
@@ -132,6 +146,13 @@ public class CartItemsService {
         CartItems cartUpdate = cartItemsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el item del carrito con ID: " + id));
 
+        Users currentUser = getAuthenticatedUser();
+
+        if (!currentUser.getRole().name().equals("ADMIN") && 
+            !cartUpdate.getUser().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("No tienes permiso para modificar este item");
+        }
+        
         if (cartUpdate.getProduct().getProductStatus() != ProductStatus.ACTIVE) {
             throw new IllegalArgumentException("Este producto ya no está disponible para la venta.");
         }

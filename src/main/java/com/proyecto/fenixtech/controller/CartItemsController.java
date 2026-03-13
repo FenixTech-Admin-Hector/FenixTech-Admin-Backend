@@ -96,6 +96,16 @@ public class CartItemsController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @Operation(summary = "Obtener el número de items en MI carrito", description = "Devuelve la cantidad de items del usuario autenticado")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Obtener numero de items del carrito asociado al usuario")
+    })
+    @GetMapping("/my/count")
+    public ResponseEntity<Map<String, Object>> countMyItems() {
+        Long count = cartItemsService.countByCurrentUser();
+        return ResponseEntity.ok(Map.of("cantidad", count));
+    }
+
     @Operation(summary = "Añadir un item al carrito", description = "Añade un item al carrito")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Item añadido con éxito"),
@@ -126,7 +136,7 @@ public class CartItemsController {
     @PutMapping("/{id}")
     public ResponseEntity<CartItems> update(
             @PathVariable Integer id,
-            @Valid @RequestBody CartItemsRequestDTO dto) { 
+            @Valid @RequestBody CartItemsRequestDTO dto) {
 
         return ResponseEntity.ok(cartItemsService.update(id, dto));
     }

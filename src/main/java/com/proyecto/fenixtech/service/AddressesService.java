@@ -5,14 +5,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.proyecto.fenixtech.repository.UsersRepository;
 import com.proyecto.fenixtech.model.Addresses;
 import com.proyecto.fenixtech.model.Users;
-import com.proyecto.fenixtech.model.enums.Rol;
 import com.proyecto.fenixtech.dto.AddressRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.access.AccessDeniedException;
 
 @Service
 public class AddressesService {
@@ -34,6 +35,12 @@ public class AddressesService {
 
     @Transactional(readOnly = true)
     public List<Addresses> findByUserId(Integer id) {
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!currentUser.getRole().name().equals("ADMIN") && !currentUser.getUserId().equals(id)) {
+            throw new AccessDeniedException("No tienes permiso para consultar las direcciones de este usuario");
+        }
+
         usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
 
@@ -53,25 +60,20 @@ public class AddressesService {
 
     @Transactional
     public Addresses save(AddressRequestDTO dto) {
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         List<Addresses> existingAddresses = addressesRepository.findByConditions(
-                dto.getStreet(),
-                dto.getCity(),
-                dto.getRegion(),
-                dto.getCountry(),
-                dto.getZipCode());
+                dto.getStreet(), dto.getCity(), dto.getRegion(), dto.getCountry(), dto.getZipCode());
 
         boolean alreadyHasIt = existingAddresses.stream()
-                .anyMatch(a -> a.getUser().getUserId().equals(dto.getUserId()));
+                .anyMatch(a -> a.getUser().getUserId().equals(currentUser.getUserId()));
 
         if (alreadyHasIt) {
             throw new IllegalArgumentException("Ya tienes esta dirección registrada en tu perfil.");
         }
 
-        Users user = usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(dto.getUserId(), Rol.ADMIN)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
-
         Addresses address = new Addresses();
-        address.setUser(user);
+        address.setUser(currentUser); 
         address.setStreet(dto.getStreet());
         address.setCity(dto.getCity());
         address.setRegion(dto.getRegion());
@@ -83,10 +85,17 @@ public class AddressesService {
 
     @Transactional
     public void deleteById(Integer id) {
-        if (!addressesRepository.existsById(id)) {
-            throw new IllegalArgumentException("No existe la dirección con id: " + id + " para eliminar");
+        Addresses address = addressesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Dirección no encontrada"));
+
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!currentUser.getRole().name().equals("ADMIN") &&
+                !address.getUser().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("No tienes permiso para eliminar esta dirección");
         }
-        addressesRepository.deleteById(id);
+
+        addressesRepository.delete(address);
     }
 
     @Transactional
@@ -94,15 +103,19 @@ public class AddressesService {
         Addresses addressUpdate = addressesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró la dirección con ID: " + id));
 
-        Users user = usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(dto.getUserId(), Rol.ADMIN)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado o no autorizado"));
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!currentUser.getRole().name().equals("ADMIN") &&
+                !addressUpdate.getUser().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("No tienes permiso para modificar esta dirección");
+        }
 
         List<Addresses> duplicates = addressesRepository.findByConditions(
                 dto.getStreet(), dto.getCity(), dto.getRegion(),
                 dto.getCountry(), dto.getZipCode());
 
         boolean isDuplicate = duplicates.stream()
-                .anyMatch(a -> a.getUser().getUserId().equals(dto.getUserId()) && !a.getAddressId().equals(id));
+                .anyMatch(a -> a.getUser().getUserId().equals(currentUser.getUserId()) && !a.getAddressId().equals(id));
 
         if (isDuplicate) {
             throw new IllegalArgumentException("Ya tienes otra dirección registrada con estos mismos datos.");
@@ -113,7 +126,7 @@ public class AddressesService {
         addressUpdate.setRegion(dto.getRegion());
         addressUpdate.setCountry(dto.getCountry());
         addressUpdate.setZipCode(dto.getZipCode());
-        addressUpdate.setUser(user);
+
         return addressesRepository.save(addressUpdate);
     }
 

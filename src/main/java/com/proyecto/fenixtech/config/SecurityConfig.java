@@ -11,6 +11,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import com.proyecto.fenixtech.config.JwtAuthenticationFilter;
 
+import org.springframework.http.HttpMethod;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -23,21 +25,33 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Desactivamos protección web clásica
-            .authorizeHttpRequests(auth -> auth
-                // Puertas abiertas
-                .requestMatchers("/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                // Puertas cerradas (necesitan Token)
-                .anyRequest().authenticated()
-            )
-            // No guardamos sesiones en memoria
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            // Mapeamos las credenciales en ApplicationConfig
-            .authenticationProvider(authenticationProvider)
-            // Ponemos a JWT como filtro
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .csrf(csrf -> csrf.disable()) // Desactivamos protección web clásica
+                .authorizeHttpRequests(auth -> auth
+                        // 1. Puertas abiertas (¡Faltaba el .permitAll() aquí!)
+                        .requestMatchers("/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+                        .permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/addresses", "/addresses/{id}" , "/addresses/filters" , "/addresses/count", "/badges/**", "/cart_items", "/cart_items/{id}", "/cart_items/product/{id}", "/cart_items/quantity", "/cart_items/count" ).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/addresses/user/{id}", "/cart_items/user/{id}", "/cart_items/my/count").hasAnyRole("PARTICULAR", "ADMIN")
+                        
+                        .requestMatchers(HttpMethod.POST, "/addresses", "/cart_items").hasRole("PARTICULAR")
+                        .requestMatchers(HttpMethod.POST, "/badges").hasRole("ADMIN")
+                        
+                        .requestMatchers(HttpMethod.PUT, "/addresses/{id}", "/cart_items/{id}").hasRole("PARTICULAR")
+                        .requestMatchers(HttpMethod.PUT, "/badges/{id}").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.DELETE, "/addresses/{id}", "/cart_items/{id}").hasAnyRole("PARTICULAR", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/badges/{id}").hasRole("ADMIN")
+
+                        // 4. El resto requiere estar logueado
+                        .anyRequest().authenticated())
+                // No guardamos sesiones en memoria
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // Mapeamos las credenciales en ApplicationConfig
+                .authenticationProvider(authenticationProvider)
+                // Ponemos a JWT como filtro
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

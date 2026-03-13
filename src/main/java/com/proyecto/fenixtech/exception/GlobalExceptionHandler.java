@@ -2,7 +2,7 @@ package com.proyecto.fenixtech.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-
+import java.nio.file.AccessDeniedException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +13,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-// import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,22 +25,32 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // @ExceptionHandler(BadCredentialsException.class)
-    // public ResponseEntity<?> serializacionError(
-    // BadCredentialsException ex, HttpServletRequest request) {
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> serializacionError(
+            BadCredentialsException ex, HttpServletRequest request) {
 
-    // // Solo para cuando hacemos login y falla
-    // // Spring Security captura las excepciones para recurso inexistente o recurso
-    // prohibido
-    // Map<String, Object> response = new HashMap<>();
-    // response.put("timestamp", java.time.LocalDateTime.now());
-    // response.put("status", 401);
-    // response.put("error", "BadCredentialsException: Error en usuario o
-    // contraseña");
-    // response.put("message", ex.getMessage());
-    // response.put("path", request.getRequestURI());
-    // return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-    // }
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", java.time.LocalDateTime.now());
+        response.put("status", 401);
+        response.put("error", "BadCredentialsException: Error en usuario o contraseña");
+        response.put("message", ex.getMessage());
+        response.put("path", request.getRequestURI());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> handleAccessDeniedException(
+            AccessDeniedException ex, HttpServletRequest request) {
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", java.time.LocalDateTime.now());
+        response.put("status", 403);
+        response.put("error", "Forbidden: No tienes permiso para acceder a este recurso");
+        response.put("message", ex.getMessage());
+        response.put("path", request.getRequestURI());
+
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> serializacionError(
@@ -218,19 +228,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    //Excepción para que las fechas de inicio no sea menor que la de fin
+    // Excepción para que las fechas de inicio no sea menor que la de fin
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleIlegalExceptionHandler(
-            IllegalArgumentException ex, HttpServletRequest request){
-                Map<String, Object> response = new HashMap<>();
-                response.put("timestamp", java.time.LocalDateTime.now());
-                response.put("status", 400);
-                response.put("error", "Bad Request");
-                response.put("message", ex.getMessage());
-                response.put("path", request.getRequestURI());
+            IllegalArgumentException ex, HttpServletRequest request) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", java.time.LocalDateTime.now());
+        response.put("status", 400);
+        response.put("error", "Bad Request");
+        response.put("message", ex.getMessage());
+        response.put("path", request.getRequestURI());
 
-                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-            }
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
     // Método auxiliar para detectar 404s disfrazados
     private boolean isActually404Error(String message, String path) {
@@ -252,7 +262,6 @@ public class GlobalExceptionHandler {
                         && !lowerMessage.contains("sql")
                         && !lowerMessage.contains("connection"));
     }
-
 
     private boolean isDevelopment() {
         // Cambia esto según tu entorno
