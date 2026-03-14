@@ -61,7 +61,6 @@ public class ShippingCarriersController {
     }
 
 
-
     @Operation(summary = "Crear nuevo transportista", description = "Registra una nueva empresa de transporte en el sistema.")
     @PostMapping
     public ResponseEntity<ShippingCarriers> create(@Valid @RequestBody ShippingCarrierRequestDTO dto) {
