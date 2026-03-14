@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -51,14 +53,27 @@ public class OrdersService {
 
     @Transactional(readOnly = true)
     public Orders findById(Integer id) {
-        return ordersRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado con id: " + id));
+        Orders order = ordersRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado"));
+
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!currentUser.getRole().name().equals("ADMIN") &&
+                !order.getBuyer().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("No tienes permiso para ver este pedido.");
+        }
+
+        return order;
     }
 
     @Transactional(readOnly = true)
     public List<Orders> findByBuyerId(Integer id) {
-        usersRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!currentUser.getRole().name().equals("ADMIN") && !currentUser.getUserId().equals(id)) {
+            throw new AccessDeniedException("No puedes consultar el historial de compras de otro usuario.");
+        }
+
         return ordersRepository.findByBuyer_UserId(id);
     }
 
@@ -94,58 +109,55 @@ public class OrdersService {
 
     @Transactional
     public Orders createOrderFromUserCart(OrdersRequestDTO dto) {
-        Users buyer = usersRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+        Users buyer = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        List<CartItems> userCart = cartItemsRepository.findByUser_UserId(dto.getUserId());
+        // Recuperar el carrito del usuario autenticado
+        List<CartItems> userCart = cartItemsRepository.findByUser_UserId(buyer.getUserId());
         if (userCart.isEmpty()) {
             throw new IllegalArgumentException("El carrito está vacío.");
         }
 
-        // Extraemos el tipo de entrega del primer producto como referencia
+        // Validar consistencia logística (No mezclar RECOGIDA con ENVIO)
         PickupType tipoReferencia = userCart.get(0).getProduct().getPickupType();
-
         for (CartItems item : userCart) {
             if (item.getProduct().getPickupType() != tipoReferencia) {
                 throw new IllegalArgumentException(
-                        "Incompatibilidad en el carrito: Tienes productos de 'RECOGIDA_LOCAL' " +
-                                "y de 'ENVIO_DOMICILIO' mezclados. Por favor, sepáralos en pedidos distintos.");
+                        "Incompatibilidad en el carrito: No puedes mezclar productos de recogida local con envío a domicilio.");
             }
         }
 
-        // Crear el pedido
+        // Inicializar la Orden
         Orders newOrder = new Orders();
         newOrder.setBuyer(buyer);
+        newOrder.setOrderDate(LocalDateTime.now()); // Fecha actual del sistema
+        newOrder.setStatus(OrderStatus.PENDING_PAYMENT); // Estado inicial
+        newOrder.setRequiresShipping(tipoReferencia == PickupType.ENVIO_DOMICILIO);
 
-        // Seteamos si requiere envío basado en el tipo validado
-        if (tipoReferencia == PickupType.ENVIO_DOMICILIO) {
-            newOrder.setRequiresShipping(true); // Es un pedido para enviar
-        } else {
-            newOrder.setRequiresShipping(false); // Es un pedido de RECOGIDA_LOCAL
-        }
         List<OrderDetails> detailsList = new ArrayList<>();
         Double totalCalculado = 0.0;
 
+        // Procesar productos y Stock
         for (CartItems item : userCart) {
             Products product = item.getProduct();
 
+            // Validar disponibilidad
             if (product.getProductStatus() != ProductStatus.ACTIVE) {
-                throw new IllegalArgumentException("El producto '" + product.getProductTitle() +
-                        "' ya no está disponible. Por favor, elimínalo de tu carrito.");
+                throw new IllegalArgumentException(
+                        "El producto '" + product.getProductTitle() + "' ya no está activo.");
             }
 
+            // Validar y descontar stock
             if (product.getStock() < item.getQuantity()) {
-                throw new IllegalArgumentException("Stock insuficiente para el producto: " + product.getProductTitle());
+                throw new IllegalArgumentException("Stock insuficiente para: " + product.getProductTitle());
             }
 
             product.setStock(product.getStock() - item.getQuantity());
-
             if (product.getStock() == 0) {
                 product.setProductStatus(ProductStatus.SOLD_OUT);
             }
-
             productsRepository.save(product);
 
+            // Crear detalle de línea
             OrderDetails detail = new OrderDetails();
             detail.setProduct(product);
             detail.setQuantity(item.getQuantity());
@@ -154,15 +166,16 @@ public class OrdersService {
             detailsList.add(detail);
 
             totalCalculado += (product.getPrice() * item.getQuantity());
-
         }
 
+        // Finalizar cálculo y guardar
         newOrder.setOrderDetails(detailsList);
         newOrder.setTotalAmount(totalCalculado);
 
         Orders savedOrder = ordersRepository.save(newOrder);
 
-        cartItemsRepository.deleteByUser_UserId(dto.getUserId());
+        // Limpiar el carrito tras la compra exitosa
+        cartItemsRepository.deleteByUser_UserId(buyer.getUserId());
 
         return savedOrder;
     }
