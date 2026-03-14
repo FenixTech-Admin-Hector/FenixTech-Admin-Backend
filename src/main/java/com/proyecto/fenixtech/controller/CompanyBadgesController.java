@@ -29,9 +29,8 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @Tag(name = "CompanyBadges", description = "API para gestión de insignias de empresas")
-@RequestMapping("/company_badges")
+@RequestMapping("/company-badges")
 @RestController
 public class CompanyBadgesController {
     @Autowired
@@ -56,10 +55,25 @@ public class CompanyBadgesController {
         return ResponseEntity.status(HttpStatus.OK).body(companyBadgesService.findById(companyId, badgeId));
     }
 
+    @Operation(summary = "Obtener contador de insignias por ID de empresa", description = "Cualquier usuario puede ver el número total de medallas de una empresa.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Contador de insignias obtenido con éxito"),
+            @ApiResponse(responseCode = "404", description = "Empresa no encontrada")
+    })
+    @GetMapping("/company/{companyId}/count")
+    public ResponseEntity<Map<String, Long>> getCountByCompany(@PathVariable Integer companyId) {
+        Long count = companyBadgesService.countByCompanyId(companyId);
+
+        Map<String, Long> response = new HashMap<>();
+        response.put("totalBadges", count);
+
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "Obtener insignias de empresas por ID de empresa", description = "Devuelve una lista de insignias de empresas asociadas a un ID de empresa")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Insignias de empresas obtenidas con éxito"),
-        @ApiResponse(responseCode = "404", description = "No se encontraron insignias de empresas para la empresa")
+            @ApiResponse(responseCode = "200", description = "Insignias de empresas obtenidas con éxito"),
+            @ApiResponse(responseCode = "404", description = "No se encontraron insignias de empresas para la empresa")
     })
     @GetMapping("/company/{id}")
     public ResponseEntity<List<CompanyBadges>> findByCompanyId(@PathVariable Integer id) {
@@ -68,16 +82,19 @@ public class CompanyBadgesController {
 
     @Operation(summary = "Obtener insignias de empresas por fecha de asignación", description = "Devuelve una lista de insignias de empresas filtradas por fecha de asignación")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Insignias de empresas obtenidas con éxito")
+            @ApiResponse(responseCode = "200", description = "Insignias de empresas obtenidas con éxito")
     })
     @GetMapping("/awarded_at")
-    public ResponseEntity<List<CompanyBadges>> findByAwardedAtBetween(@RequestParam (required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate, @RequestParam (required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return ResponseEntity.status(HttpStatus.OK).body(companyBadgesService.findByAwardedAtBetween(startDate, endDate));
+    public ResponseEntity<List<CompanyBadges>> findByAwardedAtBetween(
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(companyBadgesService.findByAwardedAtBetween(startDate, endDate));
     }
 
     @Operation(summary = "Obtener el número total de insignias de empresas", description = "Devuelve el número total de insignias de empresas")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Número de insignias de empresas obtenido con éxito")
+            @ApiResponse(responseCode = "200", description = "Número de insignias de empresas obtenido con éxito")
     })
     @GetMapping("/count")
     public ResponseEntity<Map<String, Object>> count() {
@@ -89,31 +106,25 @@ public class CompanyBadgesController {
 
     @Operation(summary = "Desasignar una insignia a una empresa", description = "Desasigna una insignia a una empresa a partir del id de la insignia y del id de la empresa")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Insignia revocada con éxito"),
+            @ApiResponse(responseCode = "204", description = "Insignia revocada con éxito"),
             @ApiResponse(responseCode = "404", description = "La empresa no tiene esta insignia asignada")
     })
     @DeleteMapping("/company/{companyId}/badge/{badgeId}")
-    public ResponseEntity<Void> delete(@PathVariable Integer companyId, @PathVariable Integer badgeId){
+    public ResponseEntity<Void> delete(@PathVariable Integer companyId, @PathVariable Integer badgeId) {
         companyBadgesService.deleteById(companyId, badgeId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Operation(summary = "Asignar una insignia a una empresa", description = "Asigna una insignia a una empresa")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description= "Asignación completada con éxito"),
-        @ApiResponse(responseCode = "400", description = "La empresa ya tiene esta insignia asignada"),
-        @ApiResponse(responseCode = "404", description = "Empresa o insignia no encontrada")
+            @ApiResponse(responseCode = "201", description = "Asignación completada con éxito"),
+            @ApiResponse(responseCode = "400", description = "La empresa ya tiene esta insignia asignada"),
+            @ApiResponse(responseCode = "404", description = "Empresa o insignia no encontrada")
     })
     @PostMapping
     public ResponseEntity<CompanyBadges> assignBadgeManual(@Valid @RequestBody CompanyBadgesRequestDTO dto) {
         CompanyBadges newBadge = companyBadgesService.post(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newBadge);
     }
-    
-        
-
-
-
-
 
 }

@@ -30,6 +30,8 @@ public interface CompaniesRepository extends JpaRepository<Companies, Integer> {
         List<Companies> findByCompanyNameContainingIgnoreCaseAndIsActiveTrue(String name);
         List<Companies> findTop3ByIsActiveTrueOrderByReputationScoreDesc();
 
+
+
         Long countByIsActiveTrue();
         
 

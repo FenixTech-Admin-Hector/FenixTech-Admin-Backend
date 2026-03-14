@@ -33,14 +33,16 @@ public class SecurityConfig {
 
                         // Acceso Público
                         .requestMatchers(HttpMethod.GET, "/companies", "/companies/{id}", "/companies/top", "/count",
-                                "/products/**", "/productsImg/**", "/postsImg/**", "/comments/posts/{postId}", "/categories", "/categories/{id}", "/subcategories", "/subcategories/{id}", "/subcategories/category/{id}")
+                                "/products/**", "/productsImg/**", "/postsImg/**", "/comments/posts/{postId}", "/categories", "/categories/{id}", "/subcategories", "/subcategories/{id}", "/subcategories/category/{id}", "/company-badges/company/{companyId}/count", "/company-badges/{companyId}/{badgeId}")
                         .permitAll()
 
                         // Acceso solo admin
                         .requestMatchers(HttpMethod.GET, "/addresses", "/addresses/{id}", "/addresses/filters",
                                 "/addresses/count", "/badges/**", "/cart_items", "/cart_items/{id}",
                                 "/cart_items/product/{id}", "/cart_items/quantity", "/cart_items/count",
-                                "companies/all", "/companies/search/impact", "/comments/users/{userId}", "/comments/count", "/proposals/count", "/proposals/user/{id}", "/proposals/all", "/order-details/**", "/categories/count", "/categories/name", "/subcategories/count", "/subcategories/search", "/orders", "/orders/count", "/orders/filters", "/shipments", "/shipments/filters" )
+                                "companies/all", "/companies/search/impact", "/comments/users/{userId}", "/comments/count", "/proposals/count", "/proposals/user/{id}", "/proposals/all", "/order-details/**", "/categories/count", "/categories/name", "/subcategories/count", "/subcategories/search", "/orders", "/orders/count", "/orders/filters", "/shipments", "/shipments/filters", "/shipments/count", "/company-badges/count", "/company-badges", "/company-badges/company/{id}", "/company-badges/awarded_at"
+                               
+                       )
                         .hasRole("ADMIN")
 
                         // Acceso privado particular
@@ -51,7 +53,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/companies/user/{userId}", "/proposals", "/proposals/{id}", "/follows/company/{companyId}/**").hasAnyRole("EMPRESA", "ADMIN")
 
                         .requestMatchers(HttpMethod.POST, "/addresses", "/comments", "/cart_items", "/proposals", "follows/toggle", "/orders/checkout", "/shipments" ).hasRole("PARTICULAR")
-                        .requestMatchers(HttpMethod.POST, "/badges", "/categories", "/subcategories").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/badges", "/categories", "/subcategories", "/company-badges").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/products").hasRole("EMPRESA")
 
                         .requestMatchers(HttpMethod.PUT, "/addresses/{id}", "/cart_items/{id}").hasRole("PARTICULAR")
@@ -63,7 +65,7 @@ public class SecurityConfig {
                         .hasAnyRole("PARTICULAR", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/companies/{id}", "/products/{id}", "/productsImg/{id}", "/postsImg/post/{postId}/image/{imageId}")
                         .hasAnyRole("EMPRESA", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/badges/{id}", "/proposals/{id}", "/categories", "/subcategories").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/badges/{id}", "/proposals/{id}", "/categories", "/subcategories", "/company/{companyId}/badge/{badgeId}").hasRole("ADMIN")
 
                         // 4. El resto requiere estar logueado
                         .anyRequest().authenticated())

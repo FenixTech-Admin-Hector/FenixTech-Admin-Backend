@@ -13,4 +13,6 @@ public interface CompanyBadgesRepository extends JpaRepository<CompanyBadges, Co
     List<CompanyBadges> findByCompany_CompanyId(Integer id);
     List<CompanyBadges> findByAwardedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
     Boolean existsById_CompanyIdAndId_BadgeId(Integer companyId, Integer badgeId);
+
+    Long countByCompany_CompanyId(Integer companyId);
 }
