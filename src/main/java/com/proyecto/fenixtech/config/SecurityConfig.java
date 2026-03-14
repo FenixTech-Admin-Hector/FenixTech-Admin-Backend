@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/addresses", "/addresses/{id}", "/addresses/filters",
                                 "/addresses/count", "/badges/**", "/cart_items", "/cart_items/{id}",
                                 "/cart_items/product/{id}", "/cart_items/quantity", "/cart_items/count",
-                                "companies/all", "/companies/search/impact", "/comments/users/{userId}", "/comments/count", "/proposals/count", "/proposals/user/{id}", "/proposals/all", "/order-details", "/categories/count", "/categories/name", "/subcategories/count", "/subcategories/search", "/orders", "/orders/count", "/orders/filters"  )
+                                "companies/all", "/companies/search/impact", "/comments/users/{userId}", "/comments/count", "/proposals/count", "/proposals/user/{id}", "/proposals/all", "/order-details/**", "/categories/count", "/categories/name", "/subcategories/count", "/subcategories/search", "/orders", "/orders/count", "/orders/filters"  )
                         .hasRole("ADMIN")
 
                         // Acceso privado particular
