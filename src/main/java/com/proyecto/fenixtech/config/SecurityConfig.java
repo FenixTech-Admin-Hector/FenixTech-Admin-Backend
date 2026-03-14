@@ -40,16 +40,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/addresses", "/addresses/{id}", "/addresses/filters",
                                 "/addresses/count", "/badges/**", "/cart_items", "/cart_items/{id}",
                                 "/cart_items/product/{id}", "/cart_items/quantity", "/cart_items/count",
-                                "companies/all", "/companies/search/impact", "/comments/users/{userId}", "/comments/count" )
+                                "companies/all", "/companies/search/impact", "/comments/users/{userId}", "/comments/count", "/proposals/count", "/proposals/user/{id}", "/proposals/all" )
                         .hasRole("ADMIN")
 
-                        // Acceso privado
-                        .requestMatchers(HttpMethod.GET, "/addresses/user/{id}", "/cart_items/user/{id}",
-                                "/cart_items/my/count")
+                        // Acceso privado particular
+                        .requestMatchers(HttpMethod.GET, "/addresses/user/{id}", "/cart_items/user/{id}", "/cart_items/my/count", "/follows/user/{userId}/**")
                         .hasAnyRole("PARTICULAR", "ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/companies/user/{userId}", "/proposals/").hasAnyRole("EMPRESA", "ADMIN")
 
-                        .requestMatchers(HttpMethod.POST, "/addresses", "/comments", "/cart_items", "/proposals" ).hasRole("PARTICULAR")
+                        //Acceso privado empresas
+                        .requestMatchers(HttpMethod.GET, "/companies/user/{userId}", "/proposals", "/proposals/{id}", "/follows/company/{companyId}/**").hasAnyRole("EMPRESA", "ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/addresses", "/comments", "/cart_items", "/proposals", "follows/toggle" ).hasRole("PARTICULAR")
                         .requestMatchers(HttpMethod.POST, "/badges").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/products").hasRole("EMPRESA")
 
@@ -63,7 +64,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/companies/{id}", "/products/{id}", "/productsImg/{id}",
                                 "/postsImg/post/{postId}/image/{imageId}")
                         .hasAnyRole("EMPRESA", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/badges/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/badges/{id}", "/proposals/{id}").hasRole("ADMIN")
 
                         // 4. El resto requiere estar logueado
                         .anyRequest().authenticated())

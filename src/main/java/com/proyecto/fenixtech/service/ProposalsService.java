@@ -3,6 +3,8 @@ package com.proyecto.fenixtech.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +18,6 @@ import com.proyecto.fenixtech.model.Categories;
 import com.proyecto.fenixtech.model.Proposals;
 import com.proyecto.fenixtech.model.Users;
 import com.proyecto.fenixtech.model.enums.ProposalStatus;
-import com.proyecto.fenixtech.model.enums.Rol;
 
 @Service
 public class ProposalsService {
@@ -33,6 +34,11 @@ public class ProposalsService {
     }
 
     @Transactional(readOnly = true)
+    public List<Proposals> findByStatus(ProposalStatus status) {
+        return proposalsRepository.findByStatus(status);
+    }
+
+    @Transactional(readOnly = true)
     public Proposals findById(Integer id) {
         return proposalsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Propuesta no encontrada con id: " + id));
@@ -40,6 +46,11 @@ public class ProposalsService {
 
     @Transactional(readOnly = true)
     public List<Proposals> findByUserId(Integer id) {
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!currentUser.getRole().name().equals("ADMIN") && !currentUser.getUserId().equals(id)) {
+            throw new AccessDeniedException("No tienes permiso para ver las propuestas de otro usuario");
+        }
+
         usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
         return proposalsRepository.findByRequester_UserId(id);
@@ -52,8 +63,7 @@ public class ProposalsService {
 
     @Transactional
     public Proposals save(ProposalRequestPostDTO dto) {
-        Users user = usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(dto.getUserId(), Rol.ADMIN)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Categories category = categoriesRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
@@ -61,7 +71,7 @@ public class ProposalsService {
         Proposals proposal = new Proposals();
         proposal.setTitle(dto.getTitle());
         proposal.setDescription(dto.getDescription());
-        proposal.setRequester(user);
+        proposal.setRequester(currentUser);
         proposal.setCategory(category);
         proposal.setStatus(ProposalStatus.OPEN);
 
@@ -70,22 +80,30 @@ public class ProposalsService {
 
     @Transactional
     public void deleteById(Integer id) {
-        if (!proposalsRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Propuesta no encontrada con id: " + id);
+        Proposals proposal = proposalsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Propuesta no encontrada"));
+
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!currentUser.getRole().name().equals("ADMIN") &&
+                !proposal.getRequester().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("No puedes eliminar una propuesta que no creaste.");
         }
-        proposalsRepository.deleteById(id);
+
+        proposalsRepository.delete(proposal);
     }
 
     @Transactional
     public Proposals update(Integer id, ProposalRequestUpdateDTO dto) {
-        Proposals existing = proposalsRepository.findById(id).orElseThrow();
+        Proposals existing = proposalsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Propuesta no encontrada con id: " + id));
 
-        if (dto.getTitle() != null)
-            existing.setTitle(dto.getTitle());
-        if (dto.getDescription() != null)
-            existing.setDescription(dto.getDescription());
-        if (dto.getStatus() != null)
+        if (existing.getStatus() != ProposalStatus.OPEN) {
+            throw new IllegalStateException("Esta propuesta ya ha sido procesada.");
+        }
+
+        if (dto.getStatus() != null) {
             existing.setStatus(dto.getStatus());
+        }
 
         return proposalsRepository.save(existing);
     }

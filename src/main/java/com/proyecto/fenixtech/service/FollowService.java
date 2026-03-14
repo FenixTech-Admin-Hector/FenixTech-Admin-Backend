@@ -13,6 +13,8 @@ import com.proyecto.fenixtech.repository.UsersRepository;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,28 +32,22 @@ public class FollowService {
 
     @Transactional
     public Boolean toggleFollow(FollowRequestDTO dto) {
-        Users follower = usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(dto.getFollowerId(), Rol.ADMIN)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario seguidor no encontrado o no esta activo"));
-
-        if (follower.getRole() != Rol.PARTICULAR) {
-            throw new IllegalArgumentException("Solo los usuarios particulares activos pueden seguir empresas.");
-        }
+        Users follower = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Companies company = companiesRepository.findByCompanyIdAndIsActiveTrue(dto.getFollowing())
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa no encontrada o inactiva"));
 
-
-        return followRepository.findByFollower_UserIdAndFollowing_CompanyId(dto.getFollowerId(), dto.getFollowing())
+        return followRepository.findByFollower_UserIdAndFollowing_CompanyId(follower.getUserId(), dto.getFollowing())
                 .map(follow -> {
                     followRepository.delete(follow);
-                    return false; 
+                    return false;
                 })
                 .orElseGet(() -> {
                     Follow newFollow = new Follow();
                     newFollow.setFollower(follower);
                     newFollow.setFollowing(company);
                     followRepository.save(newFollow);
-                    return true; 
+                    return true;
                 });
     }
 
@@ -70,8 +66,19 @@ public class FollowService {
 
     @Transactional(readOnly = true)
     public List<Follow> getFollowersByCompany(Integer companyId) {
-        companiesRepository.findById(companyId)
+        Companies company = companiesRepository.findById(companyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa no encontrada"));
+
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (currentUser.getRole().name().equals("EMPRESA")) {
+            if (!company.getUser().getUserId().equals(currentUser.getUserId())) {
+                throw new AccessDeniedException("No puedes ver los seguidores de otra empresa");
+            }
+        } else if (!currentUser.getRole().name().equals("ADMIN")) {
+            throw new AccessDeniedException("No tienes permiso para ver esta lista de seguidores");
+        }
+
         return followRepository.findByFollowing_CompanyId(companyId);
     }
 
@@ -79,6 +86,13 @@ public class FollowService {
     public List<Follow> getFollowingByUser(Integer userId) {
         usersRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!currentUser.getRole().name().equals("ADMIN") && !currentUser.getUserId().equals(userId)) {
+            throw new AccessDeniedException("No puedes ver la lista de seguidos de otro usuario");
+        }
+
         return followRepository.findByFollower_UserId(userId);
     }
 }

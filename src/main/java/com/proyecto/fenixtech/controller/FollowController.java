@@ -31,8 +31,6 @@ public class FollowController {
     @Autowired
     private FollowService followsService;
 
-    // --- RUTAS PARA LA EMPRESA (Quién la sigue) ---
-
     @Operation(summary = "Obtener lista de seguidores de una empresa", description = "Devuelve los usuarios particulares activos que siguen a una empresa")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de seguidores obtenida con éxito"),

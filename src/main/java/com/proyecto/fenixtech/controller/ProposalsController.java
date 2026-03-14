@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.proyecto.fenixtech.dto.ProposalRequestPostDTO;
 import com.proyecto.fenixtech.dto.ProposalRequestUpdateDTO;
 import com.proyecto.fenixtech.model.Proposals;
+import com.proyecto.fenixtech.model.enums.ProposalStatus;
 import com.proyecto.fenixtech.service.ProposalsService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Tag(name = "Proposals", description = "API para gestión de propuestas")
 @RequestMapping("/proposals")
@@ -41,20 +45,29 @@ public class ProposalsController {
             @ApiResponse(responseCode = "200", description = "Propuestas obtenidas con éxito"),
             @ApiResponse(responseCode = "404", description = "No se encontraron propuestas")
     })
-
-    @GetMapping
-    public List<Proposals> findAllProposals() {
-        return proposalsService.findAllProposals();
+    @GetMapping("/all")
+    public ResponseEntity<List<Proposals>> findAllProposals() {
+        return ResponseEntity.status(HttpStatus.OK).body(proposalsService.findAllProposals());
     }
 
+    @Operation(summary = "Obtener propuestas por estado", description = "Devuelve una lista de propuestas con un estado específico")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Propuestas encontradas con éxito")
+    })
+    @GetMapping
+    public ResponseEntity<List<Proposals>> findAllByStatus (@RequestParam (required = true) ProposalStatus status) {
+        return ResponseEntity.status(HttpStatus.OK).body(proposalsService.findByStatus(status));
+    } 
+    
+    
     @Operation(summary = "Obtener propuesta por ID", description = "Devuelve una propuesta por su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Propuesta obtenida con éxito"),
             @ApiResponse(responseCode = "404", description = "Propuesta no encontrada")
     })
     @GetMapping("/{id}")
-    public Proposals findProposalById(@PathVariable Integer id) {
-        return proposalsService.findById(id);
+    public ResponseEntity<Proposals> findProposalById(@PathVariable Integer id) {
+        return ResponseEntity.status(HttpStatus.OK).body(proposalsService.findById(id));
     }
 
     @Operation(summary = "Obtener propuestas por ID de usuario", description = "Devuelve una lista de propuestas asociadas a un ID de usuario")
@@ -63,8 +76,8 @@ public class ProposalsController {
             @ApiResponse(responseCode = "404", description = "No se encontraron propuestas para el usuario")
     })
     @GetMapping("/user/{id}")
-    public List<Proposals> findProposalsByUserId(@PathVariable Integer id) {
-        return proposalsService.findByUserId(id);
+    public ResponseEntity<List<Proposals>> findProposalsByUserId(@PathVariable Integer id) {
+        return ResponseEntity.status(HttpStatus.OK).body(proposalsService.findByUserId(id));
     }
 
     @Operation(summary = "Obtener el numero de propuestas", description = "Devuelve el número total de propuestas")
