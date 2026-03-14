@@ -3,13 +3,13 @@ package com.proyecto.fenixtech.service;
 import com.proyecto.fenixtech.dto.OrderRequestUpdateDTO;
 import com.proyecto.fenixtech.dto.ShipmentRequestDTO;
 import com.proyecto.fenixtech.dto.ShipmentResponseDTO;
-import com.proyecto.fenixtech.dto.ShipmentUpdateCarrierDTO;
 import com.proyecto.fenixtech.dto.ShipmentUpdateStatusDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Addresses;
 import com.proyecto.fenixtech.model.Orders;
 import com.proyecto.fenixtech.model.Shipments;
 import com.proyecto.fenixtech.model.ShippingCarriers;
+import com.proyecto.fenixtech.model.Users;
 import com.proyecto.fenixtech.model.enums.OrderStatus;
 import com.proyecto.fenixtech.model.enums.ShipmentStatus;
 import com.proyecto.fenixtech.repository.OrdersRepository;
@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +43,6 @@ public class ShipmentsService {
     @Autowired
     private OrdersService ordersService;
 
-
     @Transactional(readOnly = true)
     public List<Shipments> findAllShipments() {
         return shipmentsRepository.findAll();
@@ -52,8 +53,14 @@ public class ShipmentsService {
         Shipments shipment = shipmentsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Envío no encontrado con id: " + id));
 
-        ShipmentResponseDTO dto = new ShipmentResponseDTO();
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+        if (!currentUser.getRole().name().equals("ADMIN") &&
+                !shipment.getOrder().getBuyer().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("No tienes permiso para ver los detalles de este envío.");
+        }
+
+        ShipmentResponseDTO dto = new ShipmentResponseDTO();
         dto.setShipmentId(shipment.getShipmentId());
         dto.setOrderId(shipment.getOrder().getOrderId());
         dto.setCarrierName(shipment.getCarrier().getCarrierName());
@@ -73,8 +80,16 @@ public class ShipmentsService {
 
     @Transactional(readOnly = true)
     public List<Shipments> findByOrderId(Integer orderId) {
-        ordersRepository.findById(orderId)
+        Orders order = ordersRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado con id: " + orderId));
+
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!currentUser.getRole().name().equals("ADMIN") &&
+                !order.getBuyer().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("No puedes ver los envíos de un pedido que no te pertenece.");
+        }
+
         return shipmentsRepository.findByOrder_OrderId(orderId);
     }
 
@@ -92,12 +107,13 @@ public class ShipmentsService {
 
     @Transactional
     public Shipments save(ShipmentRequestDTO dto) {
+        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Orders order = ordersRepository.findById(dto.getOrderId())
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado"));
 
-        if (!order.getRequiresShipping()) {
-            throw new IllegalArgumentException("Este pedido no requiere envío.");
+        if (!order.getBuyer().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("No puedes crear un envío para un pedido que no es tuyo.");
         }
 
         ShippingCarriers carrier = shippingCarriersRepository.findById(dto.getCarrierId())
@@ -146,42 +162,19 @@ public class ShipmentsService {
     }
 
     @Transactional
-    public Shipments update(Integer id, ShipmentUpdateCarrierDTO dto) {
-        Shipments shipment = shipmentsRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Envío no encontrado"));
-
-        Orders order = shipment.getOrder();
-        ShippingCarriers oldCarrier = shipment.getCarrier();
-        ShippingCarriers newCarrier = shippingCarriersRepository.findById(dto.getCarrierId())
-                .orElseThrow(() -> new ResourceNotFoundException("No existe esa empresa de transportes"));
-
-        Double totalSinEnvio = order.getTotalAmount() - oldCarrier.getBasePrice();
-        order.setTotalAmount(totalSinEnvio + newCarrier.getBasePrice());
-        ordersRepository.save(order);
-
-        shipment.setCarrier(newCarrier);
-
-        String prefix = newCarrier.getCarrierName().substring(0, 3).toUpperCase();
-        String randomCode = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-        shipment.setTrackingNumber(prefix + "-" + randomCode);
-
-        return shipmentsRepository.save(shipment);
-    }
-
-    @Transactional
     public Shipments updateStatus(Integer id, ShipmentUpdateStatusDTO dto) {
         Shipments shipment = shipmentsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Envío no encontrado"));
 
         shipment.setStatus(dto.getStatus());
-        
+
         if (dto.getStatus() == ShipmentStatus.DELIVERED) {
             Orders order = shipment.getOrder();
-            
+
             OrderRequestUpdateDTO orderDto = new OrderRequestUpdateDTO();
             orderDto.setStatus(OrderStatus.COMPLETED);
-            
-            ordersService.updateStatus(order.getOrderId(), orderDto); 
+
+            ordersService.updateStatus(order.getOrderId(), orderDto);
         }
 
         return shipmentsRepository.save(shipment);

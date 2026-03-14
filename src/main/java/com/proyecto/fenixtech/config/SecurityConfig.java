@@ -40,17 +40,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/addresses", "/addresses/{id}", "/addresses/filters",
                                 "/addresses/count", "/badges/**", "/cart_items", "/cart_items/{id}",
                                 "/cart_items/product/{id}", "/cart_items/quantity", "/cart_items/count",
-                                "companies/all", "/companies/search/impact", "/comments/users/{userId}", "/comments/count", "/proposals/count", "/proposals/user/{id}", "/proposals/all", "/order-details/**", "/categories/count", "/categories/name", "/subcategories/count", "/subcategories/search", "/orders", "/orders/count", "/orders/filters"  )
+                                "companies/all", "/companies/search/impact", "/comments/users/{userId}", "/comments/count", "/proposals/count", "/proposals/user/{id}", "/proposals/all", "/order-details/**", "/categories/count", "/categories/name", "/subcategories/count", "/subcategories/search", "/orders", "/orders/count", "/orders/filters", "/shipments", "/shipments/filters" )
                         .hasRole("ADMIN")
 
                         // Acceso privado particular
-                        .requestMatchers(HttpMethod.GET, "/addresses/user/{id}", "/cart_items/user/{id}", "/cart_items/my/count", "/follows/user/{userId}/**", "/orders/buyer/{id}", "/orders/{id}")
+                        .requestMatchers(HttpMethod.GET, "/addresses/user/{id}", "/cart_items/user/{id}", "/cart_items/my/count", "/follows/user/{userId}/**", "/orders/buyer/{id}", "/orders/{id}", "/shipments/{id}", "/shipments/order/{id}")
                         .hasAnyRole("PARTICULAR", "ADMIN")
 
                         //Acceso privado empresas
                         .requestMatchers(HttpMethod.GET, "/companies/user/{userId}", "/proposals", "/proposals/{id}", "/follows/company/{companyId}/**").hasAnyRole("EMPRESA", "ADMIN")
 
-                        .requestMatchers(HttpMethod.POST, "/addresses", "/comments", "/cart_items", "/proposals", "follows/toggle", "/orders/checkout" ).hasRole("PARTICULAR")
+                        .requestMatchers(HttpMethod.POST, "/addresses", "/comments", "/cart_items", "/proposals", "follows/toggle", "/orders/checkout", "/shipments" ).hasRole("PARTICULAR")
                         .requestMatchers(HttpMethod.POST, "/badges", "/categories", "/subcategories").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/products").hasRole("EMPRESA")
 
