@@ -1,10 +1,12 @@
 package com.proyecto.fenixtech.service;
 
+import com.proyecto.fenixtech.dto.AuthResponseDTO;
 import com.proyecto.fenixtech.dto.CompanyRequestDTO;
+import com.proyecto.fenixtech.dto.LoginRequestDTO;
 import com.proyecto.fenixtech.dto.ParticularRequestDTO;
 import com.proyecto.fenixtech.model.Users;
 import com.proyecto.fenixtech.repository.UsersRepository;
-import lombok.RequiredArgsConstructor;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class AuthenticatorService {
     @Autowired
     UsersRepository usersRepository;
@@ -30,29 +31,47 @@ public class AuthenticatorService {
     @Autowired
     UsersService usersService;
 
-    // 1. REGISTRO: Crea el usuario y le da su primer Token
-    public String registerParticular(ParticularRequestDTO dto) {
-        // Delegamos la creación compleja a tu UsersService
+    public AuthResponseDTO registerParticular(ParticularRequestDTO dto) {
         Users user = usersService.registerParticular(dto);
-        // Generamos el token con el usuario ya creado
-        return jwtService.generateToken(user);
+        String token = jwtService.generateToken(user);
+        
+        return AuthResponseDTO.builder()
+                .token(token)
+                .email(user.getEmail())
+                .role(user.getRole().name())
+                .userId(user.getUserId())
+                .build();
+
+                
     }
 
-    public String registerCompany(CompanyRequestDTO dto) {
-        // Delegamos la creación de empresa, métricas y dirección a tu UsersService
+    public AuthResponseDTO registerCompany(CompanyRequestDTO dto) {
         Users user = usersService.registerCompany(dto);
-        // Generamos el token
-        return jwtService.generateToken(user);
+        String token = jwtService.generateToken(user);
+
+        return AuthResponseDTO.builder()
+                .token(token)
+                .email(user.getEmail())
+                .role(user.getRole().name())
+                .userId(user.getUserId())
+                .build();
     }
 
-    public String authenticate(String email, String password) {
+    public AuthResponseDTO authenticate(LoginRequestDTO dto) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password));
+                new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
 
-        var user = usersRepository.findByEmailAndIsActiveTrue(email)
-                .orElseThrow();
+        Users user = usersRepository.findByEmailAndIsActiveTrue(dto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-        return jwtService.generateToken(user);
+        String token = jwtService.generateToken(user);
+
+        return AuthResponseDTO.builder()
+                .token(token)
+                .email(user.getEmail())
+                .role(user.getRole().name())
+                .userId(user.getUserId())
+                .build();
     }
 
 }
