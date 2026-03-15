@@ -9,6 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.fenixtech.dto.CompanyRequestDTO;
 import com.proyecto.fenixtech.dto.ParticularRequestDTO;
+import com.proyecto.fenixtech.dto.PasswordUpdateDTO;
+import com.proyecto.fenixtech.dto.UserResponseDTO;
+import com.proyecto.fenixtech.dto.UserUpdateDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Addresses;
 import com.proyecto.fenixtech.model.Companies;
@@ -16,9 +19,13 @@ import com.proyecto.fenixtech.model.Users;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Collections;
 
+import org.springdoc.core.converters.models.Sort;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +42,6 @@ public class UsersService {
     @Autowired
     private ProductsRepository productsRepository;
 
-
     @Autowired
     private PostsRepository postsRepository;
 
@@ -48,163 +54,107 @@ public class UsersService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
     @Transactional(readOnly = true)
-    public List<Users> findAllUsers() {
-        return usersRepository.findAll();
+    public List<Users> findUsers(Rol role, Boolean active, LocalDate start, LocalDate end, String direction) {
+        LocalDateTime startDT = (start != null) ? start.atStartOfDay() : null;
+        LocalDateTime endDT = (end != null) ? end.atTime(java.time.LocalTime.MAX) : null;
+
+        String roleStr = (role != null) ? role.name() : null;
+
+        List<Users> results = usersRepository.findUsersByFiltersNative(roleStr, active, startDT, endDT);
+
+        if ("desc".equalsIgnoreCase(direction)) {
+            Collections.reverse(results);
+        }
+
+        return results;
     }
 
     @Transactional(readOnly = true)
-    public List<Users> findByIsActiveTrue() {
-        return usersRepository.findByIsActiveTrueAndRoleNot(Rol.ADMIN);
-    }
-
-    @Transactional(readOnly = true)
-    public Users findByUsersId(Integer id) {
+    public Users findById(Integer id, boolean onlyActive) {
+        if (onlyActive) {
+            return usersRepository.findByUserIdAndIsActiveTrue(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado o inactivo"));
+        }
         return usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
     }
 
     @Transactional(readOnly = true)
-    public Users findByUserIdAndIsActiveTrue(Integer id) {
-        return usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(id, Rol.ADMIN)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado o es privado"));
-    }
-
-    @Transactional(readOnly = true)
-    public Users findByEmail(String email) {
+    public Users findByEmail(String email, boolean onlyActive) {
+        if (onlyActive) {
+            return usersRepository.findByEmailAndIsActiveTrue(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado o inactivo"));
+        }
         return usersRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User no encontrado con email:" + email));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con email: " + email));
     }
 
     @Transactional(readOnly = true)
-    public Users findByEmailAndIsActiveTrue(String email) {
-        return usersRepository.findByEmailAndIsActiveTrueAndRoleNot(email, Rol.ADMIN)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado o es privado"));
+    public Users getCurrentUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return usersRepository.findByEmailAndIsActiveTrue(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Sesión inválida o usuario no encontrado"));
     }
 
     @Transactional(readOnly = true)
-    public List<Users> findByRole(Rol rol) {
-        return usersRepository.findByRole(rol);
-    }
+    public UserResponseDTO getMyProfile() {
+        Users user = getCurrentUser();
 
-    @Transactional(readOnly = true)
-    public List<Users> findByRoleAndIsActiveTrue(Rol rol) {
-        if (rol == Rol.ADMIN) {
-            throw new SecurityException(
-                    "Operación no permitida: No se pueden buscar administradores por esta vía pública.");
-        }
-        return usersRepository.findByRoleAndIsActiveTrue(rol);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Users> findByCreatedAtOrderByDesc() {
-        return usersRepository.findAllByOrderByCreatedAtDesc();
-    }
-
-    @Transactional(readOnly = true)
-    public List<Users> findByCreatedAtAndIsActiveTrueOrderByDesc() {
-        return usersRepository.findByIsActiveTrueAndRoleNotOrderByCreatedAtDesc(Rol.ADMIN);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Users> findByCreatedAtOrderByAsc() {
-        return usersRepository.findAllByOrderByCreatedAtAsc();
-    }
-
-    @Transactional(readOnly = true)
-    public List<Users> findByCreatedAtAndIsActiveTrueOrderByAsc() {
-        return usersRepository.findByIsActiveTrueAndRoleNotOrderByCreatedAtAsc(Rol.ADMIN);
-    }
-
-    @Transactional(readOnly = true)
-    // Se usa el mismo metodo para buscar por año y para buscar por rango de fechas
-    public List<Users> findByCreatedAt(Integer year) {
-        // Crea un LocalDateTime a partir de un año para revsar desde el 1 de enero a
-        // las 00:00:00 de ese año
-        LocalDateTime inicioDelAno = LocalDateTime.of(year, 1, 1, 0, 0, 0);
-        // Crea un LocalDateTime a partir de un año para revisar hasta el 31 de
-        // diciembre a las 23:59:59 de ese año con los maximos milisegundos
-        LocalDateTime finDelAno = LocalDateTime.of(year, 12, 31, 23, 59, 59, 999999999);
-        return usersRepository.findByCreatedAtBetween(inicioDelAno, finDelAno);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Users> findByCreatedAtAndIsActiveTrue(Integer year) {
-        LocalDateTime inicioDelAno = LocalDateTime.of(year, 1, 1, 0, 0, 0);
-        LocalDateTime finDelAno = LocalDateTime.of(year, 12, 31, 23, 59, 59, 999999999);
-        return usersRepository.findByIsActiveTrueAndRoleNotAndCreatedAtBetween(Rol.ADMIN, inicioDelAno, finDelAno);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Users> findByCreatedAtBetween(LocalDate dateStart, LocalDate dateEnd) {
-        if (dateStart.isAfter(dateEnd)) {
-            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de fin");
-        }
-        // Convierte el LocalDate a LocalDateTime con la fecha con hora 00:00:00
-        LocalDateTime startDateTime = dateStart.atStartOfDay();
-        // Convierte el LocalDate en LocalDateTime con la fecha con hora 23:59:59 con
-        // los maximos milisegundos
-        LocalDateTime endDateTime = dateEnd.atTime(java.time.LocalTime.MAX);
-        return usersRepository.findByCreatedAtBetween(startDateTime, endDateTime);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Users> findByCreatedAtBetweenAndIsActiveTrue(LocalDate dateStart, LocalDate dateEnd) {
-        if (dateStart.isAfter(dateEnd)) {
-            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de fin");
-        }
-        LocalDateTime startDateTime = dateStart.atStartOfDay();
-        LocalDateTime endDateTime = dateEnd.atTime(java.time.LocalTime.MAX);
-        return usersRepository.findByIsActiveTrueAndRoleNotAndCreatedAtBetween(Rol.ADMIN, startDateTime, endDateTime);
-    }
-
-    @Transactional(readOnly = true)
-    public Long count() {
-        return usersRepository.count();
+        return UserResponseDTO.builder()
+                .userId(user.getUserId())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .userImg(user.getUserImg())
+                .role(user.getRole())
+                .build();
     }
 
     @Transactional
-    public Users createAdmin(Users user) {
-        if (usersRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("El email ya está registrado");
+    public UserResponseDTO updateMyProfile(UserUpdateDTO dto) {
+        Users user = getCurrentUser();
+
+        if (!user.getEmail().equalsIgnoreCase(dto.getEmail())) {
+            if (usersRepository.findByEmail(dto.getEmail()).isPresent()) {
+                throw new IllegalArgumentException(
+                        "El email '" + dto.getEmail() + "' ya está registrado por otro usuario.");
+            }
+            user.setEmail(dto.getEmail());
         }
 
-        user.setFirstName(user.getFirstName().trim());
-        user.setLastName(user.getLastName().trim());
-        user.setIsActive(true);
-        user.setRole(Rol.ADMIN);
-        user.setPasswordHash(passwordEncoder.encode(user.getPassword()));
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setUserImg(dto.getUserImg());
 
-        return usersRepository.save(user);
+        usersRepository.save(user);
+
+        return UserResponseDTO.builder()
+                .userId(user.getUserId())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .userImg(user.getUserImg())
+                .role(user.getRole())
+                .build();
     }
 
     @Transactional
-    public Users update(Integer id, Users user) {
+    public void updatePassword(PasswordUpdateDTO dto) {
+        Users user = getCurrentUser();
 
-        Users existingUser = usersRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el usuario con ID: " + id));
-
-        existingUser.setFirstName(user.getFirstName());
-        existingUser.setLastName(user.getLastName());
-        existingUser.setUserImg(user.getUserImg());
-
-        if (!existingUser.getEmail().equals(user.getEmail()) &&
-                usersRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("El email ya está registrado por otro usuario");
-        }
-        existingUser.setEmail(user.getEmail());
-
-        if (user.getPasswordHash() != null && !user.getPasswordHash().isBlank()) {
-            existingUser.setPasswordHash(passwordEncoder.encode(user.getPassword()));
+        if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("La contraseña actual es incorrecta");
         }
 
-        return usersRepository.save(existingUser);
+        user.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
+        usersRepository.save(user);
     }
 
     @Transactional
     public void delete(Integer id) {
-        Users user = usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(id, Rol.ADMIN)
+        Users user = usersRepository.findByUserIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
         if (user.getRole() == Rol.EMPRESA && user.getCompany() != null) {

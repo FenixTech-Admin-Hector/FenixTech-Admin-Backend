@@ -40,10 +40,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/addresses", "/addresses/{id}", "/addresses/filters",
                                 "/addresses/count", "/badges/**", "/cart_items", "/cart_items/{id}",
                                 "/cart_items/product/{id}", "/cart_items/quantity", "/cart_items/count",
-                                "companies/all", "/companies/search/impact", "/comments/users/{userId}", "/comments/count", "/proposals/count", "/proposals/user/{id}", "/proposals/all", "/order-details/**", "/categories/count", "/categories/name", "/subcategories/count", "/subcategories/search", "/orders", "/orders/count", "/orders/filters", "/shipments", "/shipments/filters", "/shipments/count", "/company-badges/count", "/company-badges", "/company-badges/company/{id}", "/company-badges/awarded_at", "/shipping-carriers/admin/**"
+                                "companies/all", "/companies/search/impact", "/comments/users/{userId}", "/comments/count", "/proposals/count", "/proposals/user/{id}", "/proposals/all", "/order-details/**", "/categories/count", "/categories/name", "/subcategories/count", "/subcategories/search", "/orders", "/orders/count", "/orders/filters", "/shipments", "/shipments/filters", "/shipments/count", "/company-badges/count", "/company-badges", "/company-badges/company/{id}", "/company-badges/awarded_at", "/shipping-carriers/admin/**", "/users/{id}", "/users/search", "users/email/**"
                                
                        )
                         .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/users/me").authenticated()
 
                         // Acceso privado particular
                         .requestMatchers(HttpMethod.GET, "/addresses/user/{id}", "/cart_items/user/{id}", "/cart_items/my/count", "/follows/user/{userId}/**", "/orders/buyer/{id}", "/orders/{id}", "/shipments/{id}", "/shipments/order/{id}")
@@ -54,8 +56,9 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST, "/addresses", "/comments", "/cart_items", "/proposals", "follows/toggle", "/orders/checkout", "/shipments" ).hasRole("PARTICULAR")
                         .requestMatchers(HttpMethod.POST, "/badges", "/categories", "/subcategories", "/company-badges", "/shipping-carriers").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/products").hasRole("EMPRESA")
+                        .requestMatchers(HttpMethod.POST, "/products", "users/me/password").hasRole("EMPRESA")
 
+                        .requestMatchers(HttpMethod.PUT, "/users/me").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/addresses/{id}", "/cart_items/{id}").hasRole("PARTICULAR")
                         .requestMatchers(HttpMethod.PUT, "/badges/{id}", "/categories", "/subcategories", "/orders/{id}/status", "shipping-carriers/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/companies/{id}", "/products/{id}", "/proposals/{id}")

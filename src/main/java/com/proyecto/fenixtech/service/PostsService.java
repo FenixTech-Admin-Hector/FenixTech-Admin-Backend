@@ -55,7 +55,7 @@ public class PostsService {
 
     @Transactional
     public Posts save(PostsRequestDTO dto) {
-        Users user = usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(dto.getUserId(), Rol.ADMIN)
+        Users user = usersRepository.findByUserIdAndIsActiveTrue(dto.getUserId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         Posts post = new Posts();
         post.setTitle(dto.getTitle());

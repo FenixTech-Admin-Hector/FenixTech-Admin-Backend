@@ -50,7 +50,7 @@ public class CompaniesService {
             throw new AccessDeniedException("No tienes permiso para ver los datos de esta empresa");
         }
         
-        usersRepository.findByUserIdAndIsActiveTrueAndRoleNot(id, Rol.ADMIN)
+        usersRepository.findByUserIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id:" + id));
 
         return companiesRepository.findByUser_UserIdAndIsActiveTrue(id)

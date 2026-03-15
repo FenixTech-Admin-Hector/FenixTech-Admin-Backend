@@ -1,53 +1,31 @@
 package com.proyecto.fenixtech.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import com.proyecto.fenixtech.model.Users;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.proyecto.fenixtech.model.enums.Rol;
-
 public interface UsersRepository extends JpaRepository<Users, Integer> {
-
-    // ****************************
-    // Métodos HEREDADOS
-    // ****************************
-    /*
-     * findAll()
-     * findById(id)
-     * 
-     * count()
-     * 
-     * equals(User)
-     * exist(User)
-     * existById(id)
-     */
-
-    List<Users> findByRole(Rol role);
-
-    Optional<Users> findByEmail(String email);
 
     Optional<Users> findByEmailAndIsActiveTrue(String email);
 
-    List<Users> findAllByOrderByCreatedAtDesc();
+    Optional<Users> findByEmail(String email);
 
-    List<Users> findAllByOrderByCreatedAtAsc();
+    Optional<Users> findByUserIdAndIsActiveTrue(Integer id);
 
-    List<Users> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
-
-    List<Users> findByIsActiveTrueAndRoleNot(Rol role);
-
-    Optional<Users> findByUserIdAndIsActiveTrueAndRoleNot(Integer id, Rol role);
-
-    Optional<Users> findByEmailAndIsActiveTrueAndRoleNot(String email, Rol role);
-
-    List<Users> findByIsActiveTrueAndRoleNotOrderByCreatedAtDesc(Rol role);
-
-    List<Users> findByIsActiveTrueAndRoleNotOrderByCreatedAtAsc(Rol role);
-
-    List<Users> findByIsActiveTrueAndRoleNotAndCreatedAtBetween(Rol role, LocalDateTime start, LocalDateTime end);
-
-    List<Users> findByRoleAndIsActiveTrue(Rol role);
+    @Query(value = "SELECT * FROM users u WHERE " +
+            "(:role IS NULL OR u.role = :role) AND " +
+            "(:active IS NULL OR u.is_active = :active) AND " +
+            "(:start IS NULL OR u.created_at >= :start) AND " +
+            "(:end IS NULL OR u.created_at <= :end)", nativeQuery = true)
+    List<Users> findUsersByFiltersNative(
+            @Param("role") String role, 
+            @Param("active") Boolean active,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end);
 }

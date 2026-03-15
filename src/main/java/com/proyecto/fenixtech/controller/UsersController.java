@@ -1,18 +1,15 @@
 package com.proyecto.fenixtech.controller;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.proyecto.fenixtech.service.UsersService;
+import com.proyecto.fenixtech.dto.PasswordUpdateDTO;
+import com.proyecto.fenixtech.dto.UserResponseDTO;
+import com.proyecto.fenixtech.dto.UserUpdateDTO;
 import com.proyecto.fenixtech.model.Users;
 import com.proyecto.fenixtech.model.enums.Rol;
 
@@ -36,185 +36,51 @@ public class UsersController {
     @Autowired
     private UsersService usersService;
 
-    @Operation(summary = "Obtener todos los usuarios", description = "Devuelve una lista de todos los usuarios")
+    @Operation(summary = "Filtrar usuarios", description = "Buscador avanzado que permite filtrar por rol, estado, y rango de fechas de creación con ordenamiento dinámico.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito")
+            @ApiResponse(responseCode = "200", description = "Lista de usuarios filtrada obtenida con éxito"),
+            @ApiResponse(responseCode = "400", description = "Parámetros de consulta inválidos")
     })
-    @GetMapping("/all")
-    public ResponseEntity<List<Users>> findAllUsers() {
-        return ResponseEntity.ok(usersService.findAllUsers());
+    @GetMapping("/search")
+    public ResponseEntity<List<Users>> findUsers(
+            @RequestParam(required = false) Rol role,
+            @RequestParam(required = false) Boolean active,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end,
+            @RequestParam(defaultValue = "desc") String direction) {
+        return ResponseEntity.ok(usersService.findUsers(role, active, start, end, direction));
     }
 
-    @Operation(summary = "Obtener solo los usuarios activos", description = "Devuelve una lista de todos los usuarios que no han sido borrados (is_active = true)")
+    @Operation(summary = "Obtener usuario por ID", description = "Busca cualquier usuario por su ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuarios activos obtenidos con éxito")
-    })
-    @GetMapping
-    public ResponseEntity<List<Users>> findByIsActiveTrue() {
-        return ResponseEntity.ok(usersService.findByIsActiveTrue());
-    }
-
-    @Operation(summary = "Obtener usuario por ID", description = "Devuelve un usuario por su ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario obtenido con éxito"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
-    })
-    @GetMapping("/all/{id}")
-    public ResponseEntity<Users> findByUsersId(@PathVariable Integer id) {
-        return ResponseEntity.ok(usersService.findByUsersId(id));
-    }
-
-    @Operation(summary = "Obtener un usuario activo por ID", description = "Devuelve un usuario por su ID solo si está activo")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario activo obtenido con éxito"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado o está inactivo")
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado: Se requiere rol ADMIN")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Users> findByUserIdAndIsActiveTrue(@PathVariable Integer id) {
-        return ResponseEntity.ok(usersService.findByUserIdAndIsActiveTrue(id));
+    public ResponseEntity<Users> findById(
+            @PathVariable Integer id,
+            @RequestParam(defaultValue = "true") boolean onlyActive) {
+        return ResponseEntity.ok(usersService.findById(id, onlyActive));
     }
 
-    @Operation(summary = "Obtener usuario por email", description = "Devuelve un usuario por su email")
+    @Operation(summary = "Obtener usuario por Email", description = "Busca cualquier usuario por email")
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Users> findByEmail(
+            @PathVariable String email,
+            @RequestParam(defaultValue = "true") boolean onlyActive) {
+        return ResponseEntity.ok(usersService.findByEmail(email, onlyActive));
+    }
+
+    @Operation(summary = "Obtener mis datos de perfil", description = "Devuelve la información del usuario autenticado actual utilizando el Token JWT.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario obtenido con éxito"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+            @ApiResponse(responseCode = "200", description = "Datos del perfil obtenidos con éxito"),
+            @ApiResponse(responseCode = "401", description = "No autorizado - Token no válido")
     })
-    @GetMapping("/all/email")
-    public ResponseEntity<Users> findByEmail(@RequestParam String email) {
-        return ResponseEntity.ok(usersService.findByEmail(email));
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDTO> getMyProfile() {
+        // Llamamos al service para obtener el DTO
+        return ResponseEntity.ok(usersService.getMyProfile());
     }
-
-    @Operation(summary = "Obtener un usuario activo por email", description = "Devuelve un usuario por su email solo si está activo")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario activo obtenido con éxito"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado o está inactivo")
-    })
-    @GetMapping("/email")
-    public ResponseEntity<Users> findByEmailAndIsActiveTrue(@RequestParam String email) {
-        return ResponseEntity.ok(usersService.findByEmailAndIsActiveTrue(email));
-    }
-
-    @Operation(summary = "Obtener usuarios por rol", description = "Devuelve una lista de usuarios por su rol")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito"),
-            @ApiResponse(responseCode = "404", description = "El rol introducido no existe")
-    })
-    @GetMapping("/all/role")
-    public ResponseEntity<List<Users>> findByRole(@RequestParam Rol rol) {
-        return ResponseEntity.ok(usersService.findByRole(rol));
-    }
-
-    @Operation(summary = "Obtener usuarios activos por rol", description = "Devuelve una lista de usuarios activos por su rol")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuarios activos obtenidos con éxito")
-    })
-    @GetMapping("/role")
-    public ResponseEntity<List<Users>> findByRoleAndIsActiveTrue(@RequestParam Rol rol) {
-        return ResponseEntity.ok(usersService.findByRoleAndIsActiveTrue(rol));
-    }
-
-    @Operation(summary = "Obtener usuarios por fecha de creación descendente", description = "Devuelve una lista de usuarios por su fecha de creación ordenados de manera descendente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito")
-    })
-    @GetMapping("/all/created_at/desc")
-    public ResponseEntity<List<Users>> findByCreatedAtOrderByDesc() {
-        return ResponseEntity.ok(usersService.findByCreatedAtOrderByDesc());
-    }
-
-    @Operation(summary = "Obtener usuarios activos por fecha de creción descendente", description = "Devuelve una lista de usuarios activos ordenados por fecha de creación descendente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito")
-    })
-    @GetMapping("/created_at/desc")
-    public ResponseEntity<List<Users>> findByCreatedAtAndIsActiveTrueOrderByDesc() {
-        return ResponseEntity.ok(usersService.findByCreatedAtAndIsActiveTrueOrderByDesc());
-    }
-
-    @Operation(summary = "Obtener usuarios por fecha de creación ascendente", description = "Devuelve una lista de usuarios por su fecha de creación ordenados de manera ascendente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito")
-    })
-    @GetMapping("/all/created_at/asc")
-    public ResponseEntity<List<Users>> findByCreatedAtOrderByAsc() {
-        return ResponseEntity.ok(usersService.findByCreatedAtOrderByAsc());
-    }
-
-    @Operation(summary = "Obtener usuarios activos por fecha ascendente", description = "Devuelve una lista de usuarios activos ordenados por fecha de creación ascendente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito")
-    })
-    @GetMapping("/created_at/asc")
-    public ResponseEntity<List<Users>> findByCreatedAtAndIsActiveTrueOrderByAsc() {
-        return ResponseEntity.ok(usersService.findByCreatedAtAndIsActiveTrueOrderByAsc());
-    }
-
-    @Operation(summary = "Obtener usuarios registrados entre dos fechas", description = "Devuelve una lista de usuarios registrados entre dos fechas")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito"),
-            @ApiResponse(responseCode = "400", description = "Fechas introducidas en formato incorrecto")
-    })
-    @GetMapping("/all/created_at/between")
-    public ResponseEntity<List<Users>> findByCreatedAtBetween(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return ResponseEntity.ok(usersService.findByCreatedAtBetween(startDate, endDate));
-    }
-
-    @Operation(summary = "Obtener usuarios activos entre dos fechas", description = "Devuelve una lista de usuarios activos registrados entre dos fechas")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito"),
-            @ApiResponse(responseCode = "400", description = "Fechas introducidas en formato incorrecto")
-    })
-    @GetMapping("/created_at/between")
-    public ResponseEntity<List<Users>> findByCreatedAtBetweenAndIsActiveTrue(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return ResponseEntity.ok(usersService.findByCreatedAtBetweenAndIsActiveTrue(startDate, endDate));
-    }
-
-    @Operation(summary = "Obtener usuarios por año de creación", description = "Devuelve una lista de usuarios por su año de creación")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito")
-    })
-    @GetMapping("/all/created_at/year")
-    public ResponseEntity<List<Users>> findByCreatedAt(@RequestParam Integer year) {
-        return ResponseEntity.ok(usersService.findByCreatedAt(year));
-    }
-
-    @Operation(summary = "Obtener usuarios activos por año de crecaión", description = "Devuelve una lista de usuarios activos registrados por su año de creación")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos con éxito")
-    })
-    @GetMapping("/created_at/year")
-    public ResponseEntity<List<Users>> findByCreatedAtAndIsActiveTrue(@RequestParam Integer year) {
-        return ResponseEntity.ok(usersService.findByCreatedAtAndIsActiveTrue(year));
-    }
-
-    @Operation(summary = "Obtener el numero de usuarios", description = "Devuelve el numero de usuarios")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Numero de usuarios obtenido con éxito")
-    })
-    @GetMapping("/all/count")
-    public ResponseEntity<Map<String, Object>> count() {
-        Long count = usersService.count();
-        Map<String, Object> response = new HashMap<>();
-        response.put("cantidad", count);
-        return ResponseEntity.ok(response);
-    }
-
-
-    @Operation(summary = "Crear un administrador", description = "Crea un nuevo administrador")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Administrador creado con éxito"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos (ej. contraseña débil) o email ya registrado")
-    })
-    @PostMapping("/admin")
-    public ResponseEntity<Users> createAdmin(@Valid @RequestBody Users user) {
-        Users savedAdmin = usersService.createAdmin(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedAdmin);
-    }
-
 
     @Operation(summary = "Borrar un usuario", description = "Borra un usuario existente")
     @ApiResponses(value = {
@@ -227,17 +93,27 @@ public class UsersController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Actualizar un usuario", description = "Actualiza un usuario existente")
+    @Operation(summary = "Actualizar mi perfil", description = "Permite al usuario autenticado actualizar su nombre, apellido, email e imagen. Se valida que el email no esté duplicado.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario actualizado con éxito"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+            @ApiResponse(responseCode = "200", description = "Perfil actualizado con éxito"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos o email ya en uso"),
+            @ApiResponse(responseCode = "401", description = "No autorizado - Token inválido o ausente")
     })
-    @PutMapping("/{id}")
-    public ResponseEntity<Users> updateUser(@PathVariable Integer id, @Valid @RequestBody Users user) {
-        Users updatedUser = usersService.update(id, user);
-        return ResponseEntity.ok(updatedUser);
+    @PutMapping("/me")
+    public ResponseEntity<UserResponseDTO> updateMyProfile(@Valid @RequestBody UserUpdateDTO dto) {
+        return ResponseEntity.ok(usersService.updateMyProfile(dto));
     }
 
-    
+    @Operation(summary = "Cambiar mi contraseña", description = "Endpoint específico para cambio de clave. Requiere la contraseña actual para verificar la identidad del usuario.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Contraseña cambiada correctamente"),
+            @ApiResponse(responseCode = "400", description = "La contraseña actual no coincide o la nueva no cumple los requisitos"),
+            @ApiResponse(responseCode = "401", description = "No autorizado")
+    })
+    @PutMapping("/me/password")
+    public ResponseEntity<Map<String, String>> updatePassword(@Valid @RequestBody PasswordUpdateDTO dto) {
+        usersService.updatePassword(dto);
+        return ResponseEntity.ok(Map.of("message", "Contraseña actualizada correctamente"));
+    }
 
 }
