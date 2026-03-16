@@ -11,7 +11,6 @@ import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -21,6 +20,9 @@ public class AddressesService {
     private AddressesRepository addressesRepository;
     @Autowired
     private UsersRepository usersRepository;
+    @Autowired
+    private UsersService usersService;
+
 
     @Transactional(readOnly = true)
     public List<Addresses> findAllAddresses() {
@@ -35,7 +37,8 @@ public class AddressesService {
 
     @Transactional(readOnly = true)
     public List<Addresses> findByUserId(Integer id) {
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
 
         if (!currentUser.getRole().name().equals("ADMIN") && !currentUser.getUserId().equals(id)) {
             throw new AccessDeniedException("No tienes permiso para consultar las direcciones de este usuario");
@@ -60,7 +63,8 @@ public class AddressesService {
 
     @Transactional
     public Addresses save(AddressRequestDTO dto) {
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
 
         List<Addresses> existingAddresses = addressesRepository.findByConditions(
                 dto.getStreet(), dto.getCity(), dto.getRegion(), dto.getCountry(), dto.getZipCode());
@@ -88,7 +92,7 @@ public class AddressesService {
         Addresses address = addressesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Dirección no encontrada"));
 
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
 
         if (!currentUser.getRole().name().equals("ADMIN") &&
                 !address.getUser().getUserId().equals(currentUser.getUserId())) {
@@ -103,7 +107,7 @@ public class AddressesService {
         Addresses addressUpdate = addressesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró la dirección con ID: " + id));
 
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
 
         if (!currentUser.getRole().name().equals("ADMIN") &&
                 !addressUpdate.getUser().getUserId().equals(currentUser.getUserId())) {

@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,6 +35,10 @@ public class ProductsService {
 
     @Autowired
     private CompaniesRepository companiesRepository;
+
+    @Autowired
+    private UsersService usersService;
+
 
     @Transactional(readOnly = true)
     public List<Products> findAllProducts() {
@@ -109,7 +112,7 @@ public class ProductsService {
 
     @Transactional
     public Products save(ProductsRequestPostDTO dto) {
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
         
         Companies comp = companiesRepository.findByUser_UserIdAndIsActiveTrue(currentUser.getUserId())
             .orElseThrow(() -> new ResourceNotFoundException("No tienes una empresa asociada para crear productos"));
@@ -154,7 +157,8 @@ public class ProductsService {
                 .orElseThrow(
                         () -> new IllegalArgumentException("No existe el producto con id: " + id + " para eliminar"));
         
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
         if (!currentUser.getRole().name().equals("ADMIN") &&
                 !product.getCompany().getUser().getUserId().equals(currentUser.getUserId())) {
             throw new AccessDeniedException("No puedes modificar un producto que no pertenece a tu empresa.");
@@ -171,7 +175,8 @@ public class ProductsService {
         Products product = productsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
 
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
         if (!currentUser.getRole().name().equals("ADMIN") &&
                 !product.getCompany().getUser().getUserId().equals(currentUser.getUserId())) {
             throw new AccessDeniedException("No puedes modificar un producto que no pertenece a tu empresa.");

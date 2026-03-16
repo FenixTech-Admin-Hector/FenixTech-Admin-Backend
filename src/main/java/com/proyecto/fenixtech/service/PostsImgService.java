@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +20,11 @@ public class PostsImgService {
 
     @Autowired
     private PostsRepository postsRepository;
+
+    @Autowired
+    private UsersService usersService;
+
+
 
     @Transactional(readOnly = true)
     public List<PostsImg> findAllPostsImg() {
@@ -50,7 +54,8 @@ public class PostsImgService {
             throw new IllegalArgumentException("La imagen no pertenece al post indicado");
         }
 
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
 
         if (!currentUser.getRole().name().equals("ADMIN") &&
                 !img.getPost().getAuthor().getUserId().equals(currentUser.getUserId())) {

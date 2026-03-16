@@ -9,7 +9,6 @@ import com.proyecto.fenixtech.model.Badges;
 import com.proyecto.fenixtech.model.Companies;
 import com.proyecto.fenixtech.model.CompanyBadgeId;
 import com.proyecto.fenixtech.model.CompanyBadges;
-import com.proyecto.fenixtech.model.Users;
 import com.proyecto.fenixtech.repository.CompaniesRepository;
 import com.proyecto.fenixtech.repository.CompanyBadgesRepository;
 import com.proyecto.fenixtech.repository.BadgesRepository;
@@ -19,8 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 
 @Service
 public class CompanyBadgesService {

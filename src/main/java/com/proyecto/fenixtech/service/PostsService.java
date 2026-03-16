@@ -1,23 +1,21 @@
 package com.proyecto.fenixtech.service;
 
 import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.fenixtech.dto.PostsRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Posts;
 import com.proyecto.fenixtech.model.PostsImg;
 import com.proyecto.fenixtech.model.Users;
+import com.proyecto.fenixtech.model.enums.Rol;
 import com.proyecto.fenixtech.repository.PostsRepository;
 import com.proyecto.fenixtech.repository.UsersRepository;
-
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PostsService {
@@ -25,6 +23,8 @@ public class PostsService {
     private PostsRepository postsRepository;
     @Autowired
     private UsersRepository usersRepository;
+    @Autowired
+    private UsersService usersService;
 
     @Transactional(readOnly = true)
     public Page<Posts> findAllPosts(Pageable pageable) {
@@ -39,6 +39,12 @@ public class PostsService {
 
     @Transactional(readOnly = true)
     public List<Posts> findByUserId(Integer id) {
+        Users currentUser = usersService.getCurrentUser();
+        
+        if (!currentUser.getRole().equals(Rol.ADMIN) && !currentUser.getUserId().equals(id)) {
+            throw new AccessDeniedException("No tienes permiso para ver los posts de otro usuario");
+        }
+
         usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
         return postsRepository.findByAuthor_UserId(id);
@@ -51,8 +57,8 @@ public class PostsService {
 
     @Transactional
     public Posts save(PostsRequestDTO dto) {
-        Users user = usersRepository.findByUserIdAndIsActiveTrue(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Users user = usersService.getCurrentUser();
+        
         Posts post = new Posts();
         post.setTitle(dto.getTitle());
         post.setBody(dto.getBody());
@@ -71,14 +77,14 @@ public class PostsService {
 
     @Transactional
     public void deleteById(Integer id) {
-
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users currentUser = usersService.getCurrentUser();
 
         Posts post = postsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post no encontrado"));
 
-        if (!post.getAuthor().getEmail().equals(email)) {
-            throw new AccessDeniedException("No tienes permiso: este post no te pertenece");
+        if (!post.getAuthor().getUserId().equals(currentUser.getUserId()) && 
+            !currentUser.getRole().equals(Rol.ADMIN)) {
+            throw new AccessDeniedException("No tienes permiso para eliminar este post");
         }
 
         postsRepository.delete(post);
@@ -86,13 +92,13 @@ public class PostsService {
 
     @Transactional
     public Posts update(Integer id, PostsRequestDTO dto) {
-        String emailFromToken = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users currentUser = usersService.getCurrentUser();
 
         Posts postUpdate = postsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post no encontrado con id: " + id));
 
-        if (!postUpdate.getAuthor().getEmail().equals(emailFromToken)) {
-            throw new AccessDeniedException("No tienes permiso para editar este post. Solo el autor puede hacerlo.");
+        if (!postUpdate.getAuthor().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("Solo el autor puede editar este post");
         }
 
         postUpdate.setTitle(dto.getTitle());
@@ -100,7 +106,6 @@ public class PostsService {
 
         if (dto.getImagesUrls() != null) {
             postUpdate.getPostImages().clear();
-
             for (String url : dto.getImagesUrls()) {
                 PostsImg img = new PostsImg();
                 img.setImageUrl(url);
@@ -109,8 +114,6 @@ public class PostsService {
             }
         }
 
-        // 6. Guardamos los cambios
         return postsRepository.save(postUpdate);
     }
-
 }

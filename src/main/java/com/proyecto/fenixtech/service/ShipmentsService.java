@@ -22,7 +22,6 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +42,10 @@ public class ShipmentsService {
     @Autowired
     private OrdersService ordersService;
 
+    @Autowired
+    private UsersService usersService;
+
+
     @Transactional(readOnly = true)
     public List<Shipments> findAllShipments() {
         return shipmentsRepository.findAll();
@@ -53,7 +56,7 @@ public class ShipmentsService {
         Shipments shipment = shipmentsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Envío no encontrado con id: " + id));
 
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
 
         if (!currentUser.getRole().name().equals("ADMIN") &&
                 !shipment.getOrder().getBuyer().getUserId().equals(currentUser.getUserId())) {
@@ -83,7 +86,8 @@ public class ShipmentsService {
         Orders order = ordersRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado con id: " + orderId));
 
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
 
         if (!currentUser.getRole().name().equals("ADMIN") &&
                 !order.getBuyer().getUserId().equals(currentUser.getUserId())) {
@@ -107,7 +111,7 @@ public class ShipmentsService {
 
     @Transactional
     public Shipments save(ShipmentRequestDTO dto) {
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
 
         Orders order = ordersRepository.findById(dto.getOrderId())
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado"));

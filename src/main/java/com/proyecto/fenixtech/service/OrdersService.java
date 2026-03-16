@@ -3,7 +3,6 @@ package com.proyecto.fenixtech.service;
 import com.proyecto.fenixtech.repository.CartItemsRepository;
 import com.proyecto.fenixtech.repository.OrdersRepository;
 import com.proyecto.fenixtech.repository.ProductsRepository;
-import com.proyecto.fenixtech.repository.UsersRepository;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +25,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,7 +33,7 @@ public class OrdersService {
     private OrdersRepository ordersRepository;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UsersService usersService;
 
     @Autowired
     private ProductsRepository productsRepository;
@@ -56,7 +54,8 @@ public class OrdersService {
         Orders order = ordersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado"));
 
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
 
         if (!currentUser.getRole().name().equals("ADMIN") &&
                 !order.getBuyer().getUserId().equals(currentUser.getUserId())) {
@@ -68,7 +67,8 @@ public class OrdersService {
 
     @Transactional(readOnly = true)
     public List<Orders> findByBuyerId(Integer id) {
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
 
         if (!currentUser.getRole().name().equals("ADMIN") && !currentUser.getUserId().equals(id)) {
             throw new AccessDeniedException("No puedes consultar el historial de compras de otro usuario.");
@@ -109,15 +109,13 @@ public class OrdersService {
 
     @Transactional
     public Orders createOrderFromUserCart(OrdersRequestDTO dto) {
-        Users buyer = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users buyer = usersService.getCurrentUser();
 
-        // Recuperar el carrito del usuario autenticado
         List<CartItems> userCart = cartItemsRepository.findByUser_UserId(buyer.getUserId());
         if (userCart.isEmpty()) {
             throw new IllegalArgumentException("El carrito está vacío.");
         }
 
-        // Validar consistencia logística (No mezclar RECOGIDA con ENVIO)
         PickupType tipoReferencia = userCart.get(0).getProduct().getPickupType();
         for (CartItems item : userCart) {
             if (item.getProduct().getPickupType() != tipoReferencia) {
@@ -126,27 +124,23 @@ public class OrdersService {
             }
         }
 
-        // Inicializar la Orden
         Orders newOrder = new Orders();
         newOrder.setBuyer(buyer);
-        newOrder.setOrderDate(LocalDateTime.now()); // Fecha actual del sistema
-        newOrder.setStatus(OrderStatus.PENDING_PAYMENT); // Estado inicial
+        newOrder.setOrderDate(LocalDateTime.now());
+        newOrder.setStatus(OrderStatus.PENDING_PAYMENT); 
         newOrder.setRequiresShipping(tipoReferencia == PickupType.ENVIO_DOMICILIO);
 
         List<OrderDetails> detailsList = new ArrayList<>();
         Double totalCalculado = 0.0;
 
-        // Procesar productos y Stock
         for (CartItems item : userCart) {
             Products product = item.getProduct();
 
-            // Validar disponibilidad
             if (product.getProductStatus() != ProductStatus.ACTIVE) {
                 throw new IllegalArgumentException(
                         "El producto '" + product.getProductTitle() + "' ya no está activo.");
             }
 
-            // Validar y descontar stock
             if (product.getStock() < item.getQuantity()) {
                 throw new IllegalArgumentException("Stock insuficiente para: " + product.getProductTitle());
             }
@@ -157,7 +151,6 @@ public class OrdersService {
             }
             productsRepository.save(product);
 
-            // Crear detalle de línea
             OrderDetails detail = new OrderDetails();
             detail.setProduct(product);
             detail.setQuantity(item.getQuantity());
@@ -168,13 +161,11 @@ public class OrdersService {
             totalCalculado += (product.getPrice() * item.getQuantity());
         }
 
-        // Finalizar cálculo y guardar
         newOrder.setOrderDetails(detailsList);
         newOrder.setTotalAmount(totalCalculado);
 
         Orders savedOrder = ordersRepository.save(newOrder);
 
-        // Limpiar el carrito tras la compra exitosa
         cartItemsRepository.deleteByUser_UserId(buyer.getUserId());
 
         return savedOrder;
@@ -187,11 +178,8 @@ public class OrdersService {
 
         for (OrderDetails detail : order.getOrderDetails()) {
             Products product = detail.getProduct();
-            // Se resetea el stock si se cancela un pedido
             product.setStock(product.getStock() + detail.getQuantity());
 
-            // Se resetea el estado del producto (en el caso de agotarse) si se cancela un
-            // pedido
             if (product.getProductStatus() == ProductStatus.SOLD_OUT) {
                 product.setProductStatus(ProductStatus.ACTIVE);
             }
@@ -206,12 +194,10 @@ public class OrdersService {
         Orders order = ordersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado con ID: " + id));
 
-        // 1. Evitar cambios si el pedido ya está cancelado
         if (order.getStatus() == OrderStatus.CANCELLED) {
             throw new IllegalArgumentException("No se puede modificar un pedido que ya ha sido cancelado.");
         }
 
-        // 2. Lógica especial: Si el nuevo estado es CANCELADO, devolvemos el stock
         if (dto.getStatus() == OrderStatus.CANCELLED) {
             for (OrderDetails detail : order.getOrderDetails()) {
                 Products product = detail.getProduct();
@@ -236,7 +222,6 @@ public class OrdersService {
             }
         }
 
-        // 3. Actualizamos el estado
         order.setStatus(dto.getStatus());
         return ordersRepository.save(order);
     }

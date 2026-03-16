@@ -5,7 +5,6 @@ import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Comments;
 import com.proyecto.fenixtech.model.Posts;
 import com.proyecto.fenixtech.model.Users;
-import com.proyecto.fenixtech.model.enums.Rol;
 import com.proyecto.fenixtech.repository.CommentsRepository;
 import com.proyecto.fenixtech.repository.PostsRepository;
 import com.proyecto.fenixtech.repository.UsersRepository;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +28,10 @@ public class CommentsService {
 
     @Autowired
     private UsersRepository usersRepository;
+
+    @Autowired
+    private UsersService usersService;
+
 
     @Transactional(readOnly = true)
     public Page<Comments> findCommentsByPostId(Integer postId, Pageable pageable) {
@@ -53,7 +55,7 @@ public class CommentsService {
     @Transactional
     public Comments save(CommentsRequest dto) {
 
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
 
         Posts post = postsRepository.findById(dto.getPostId())
                 .orElseThrow(() -> new ResourceNotFoundException("El post no existe"));
@@ -71,7 +73,8 @@ public class CommentsService {
         Comments comment = commentsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comentario no encontrado"));
 
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
 
         if (!currentUser.getRole().name().equals("ADMIN") &&
                 !comment.getAuthor().getUserId().equals(currentUser.getUserId())) {

@@ -1,6 +1,5 @@
 package com.proyecto.fenixtech.model;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +49,7 @@ import lombok.ToString;
 @Schema(description = "Modelo de Usuario", name = "Users")
 @Entity
 @Table(name = "users")
-public class Users implements Serializable, UserDetails {
+public class Users implements UserDetails {
     @Schema(description = "Identificador unico del usuario", example = "1")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

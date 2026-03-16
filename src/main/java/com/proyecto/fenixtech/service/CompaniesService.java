@@ -9,13 +9,11 @@ import com.proyecto.fenixtech.dto.CompaniesRequestUpdateDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Companies;
 import com.proyecto.fenixtech.model.Users;
-import com.proyecto.fenixtech.model.enums.Rol;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +23,10 @@ public class CompaniesService {
 
     @Autowired
     private UsersRepository usersRepository;
+
+    @Autowired
+    private UsersService usersService;
+
 
     @Transactional(readOnly = true)
     public List<Companies> findAll() {
@@ -44,7 +46,7 @@ public class CompaniesService {
 
     @Transactional(readOnly = true)
     public Companies findByUserId(Integer id) {
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
 
         if (!currentUser.getRole().name().equals("ADMIN") && !currentUser.getUserId().equals(id)) {
             throw new AccessDeniedException("No tienes permiso para ver los datos de esta empresa");
@@ -100,7 +102,8 @@ public class CompaniesService {
         Companies company = companiesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa no encontrada"));
 
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
         if (!currentUser.getRole().name().equals("ADMIN") &&
                 !company.getUser().getUserId().equals(currentUser.getUserId())) {
             throw new AccessDeniedException("No tienes permiso para eliminar esta empresa.");
@@ -120,7 +123,8 @@ public class CompaniesService {
         Companies company = companiesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa no encontrada con ID: " + id));
 
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
 
         if (!currentUser.getRole().name().equals("ADMIN") &&
                 !company.getUser().getUserId().equals(currentUser.getUserId())) {

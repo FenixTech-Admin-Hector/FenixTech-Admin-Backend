@@ -5,7 +5,6 @@ import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Companies;
 import com.proyecto.fenixtech.model.Follow;
 import com.proyecto.fenixtech.model.Users;
-import com.proyecto.fenixtech.model.enums.Rol;
 import com.proyecto.fenixtech.repository.CompaniesRepository;
 import com.proyecto.fenixtech.repository.FollowRepository;
 import com.proyecto.fenixtech.repository.UsersRepository;
@@ -14,7 +13,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +28,13 @@ public class FollowService {
     @Autowired
     private CompaniesRepository companiesRepository;
 
+    @Autowired
+    private UsersService usersService;
+
+
     @Transactional
     public Boolean toggleFollow(FollowRequestDTO dto) {
-        Users follower = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users follower = usersService.getCurrentUser();
 
         Companies company = companiesRepository.findByCompanyIdAndIsActiveTrue(dto.getFollowing())
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa no encontrada o inactiva"));
@@ -69,7 +71,8 @@ public class FollowService {
         Companies company = companiesRepository.findById(companyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa no encontrada"));
 
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
 
         if (currentUser.getRole().name().equals("EMPRESA")) {
             if (!company.getUser().getUserId().equals(currentUser.getUserId())) {
@@ -87,7 +90,8 @@ public class FollowService {
         usersRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
 
         if (!currentUser.getRole().name().equals("ADMIN") && !currentUser.getUserId().equals(userId)) {
             throw new AccessDeniedException("No puedes ver la lista de seguidos de otro usuario");

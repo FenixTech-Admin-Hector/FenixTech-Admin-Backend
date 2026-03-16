@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +20,11 @@ public class ProductsImgService {
 
     @Autowired
     private ProductsRepository productsRepository;
+
+    @Autowired
+    private UsersService usersService;
+
+
 
     @Transactional(readOnly = true)
     public List<ProductsImg> findAllProductsImg() {
@@ -41,6 +45,7 @@ public class ProductsImgService {
         return productsImgRepository.findByProduct_ProductId(productId);
     }
 
+
     @Transactional(readOnly = true)
     public Long count() {
         return productsImgRepository.count();
@@ -51,7 +56,9 @@ public class ProductsImgService {
         ProductsImg img = productsImgRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Imagen no encontrada"));
 
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
+
 
         if (!currentUser.getRole().name().equals("ADMIN") &&
                 !img.getProduct().getCompany().getUser().getUserId().equals(currentUser.getUserId())) {

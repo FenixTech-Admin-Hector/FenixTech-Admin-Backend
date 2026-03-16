@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +22,16 @@ import com.proyecto.fenixtech.model.enums.ProposalStatus;
 public class ProposalsService {
     @Autowired
     private ProposalsRepository proposalsRepository;
+
     @Autowired
     private UsersRepository usersRepository;
+
     @Autowired
     private CategoriesRepository categoriesRepository;
+
+    @Autowired
+    private UsersService usersService;
+
 
     @Transactional(readOnly = true)
     public List<Proposals> findAllProposals() {
@@ -46,7 +51,8 @@ public class ProposalsService {
 
     @Transactional(readOnly = true)
     public List<Proposals> findByUserId(Integer id) {
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
         if (!currentUser.getRole().name().equals("ADMIN") && !currentUser.getUserId().equals(id)) {
             throw new AccessDeniedException("No tienes permiso para ver las propuestas de otro usuario");
         }
@@ -63,7 +69,8 @@ public class ProposalsService {
 
     @Transactional
     public Proposals save(ProposalRequestPostDTO dto) {
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
 
         Categories category = categoriesRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
@@ -83,7 +90,8 @@ public class ProposalsService {
         Proposals proposal = proposalsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Propuesta no encontrada"));
 
-        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users currentUser = usersService.getCurrentUser();
+
         if (!currentUser.getRole().name().equals("ADMIN") &&
                 !proposal.getRequester().getUserId().equals(currentUser.getUserId())) {
             throw new AccessDeniedException("No puedes eliminar una propuesta que no creaste.");

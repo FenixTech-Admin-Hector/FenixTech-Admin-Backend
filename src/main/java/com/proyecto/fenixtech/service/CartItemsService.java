@@ -30,9 +30,10 @@ public class CartItemsService {
     @Autowired
     private ProductsRepository productsRepository;
 
-    private Users getAuthenticatedUser() {
-        return (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
+    @Autowired
+    private UsersService usersService;
+
+
 
     @Transactional(readOnly = true)
     public List<CartItems> findAllCartItems() {
@@ -47,7 +48,7 @@ public class CartItemsService {
 
     @Transactional(readOnly = true)
     public List<CartItems> findByUserId(Integer userId) {
-        Users currentUser = getAuthenticatedUser();
+        Users currentUser = usersService.getCurrentUser();
         
         if (!currentUser.getRole().name().equals("ADMIN") && !currentUser.getUserId().equals(userId)) {
             throw new AccessDeniedException("No tienes permiso para ver este carrito");
@@ -94,7 +95,8 @@ public class CartItemsService {
 
     @Transactional
     public CartItems save(CartItemsRequestDTO dto) {
-        Users currentUser = getAuthenticatedUser();
+        Users currentUser = usersService.getCurrentUser();
+
         Integer productId = dto.getProductId();
 
         Products product = productsRepository.findByProductIdAndProductStatusActive(productId)
@@ -131,7 +133,8 @@ public class CartItemsService {
         CartItems item = cartItemsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Item no encontrado"));
 
-        Users currentUser = getAuthenticatedUser();
+        Users currentUser = usersService.getCurrentUser();
+
 
         if (!currentUser.getRole().name().equals("ADMIN") && 
             !item.getUser().getUserId().equals(currentUser.getUserId())) {
@@ -146,7 +149,8 @@ public class CartItemsService {
         CartItems cartUpdate = cartItemsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el item del carrito con ID: " + id));
 
-        Users currentUser = getAuthenticatedUser();
+        Users currentUser = usersService.getCurrentUser();
+
 
         if (!currentUser.getRole().name().equals("ADMIN") && 
             !cartUpdate.getUser().getUserId().equals(currentUser.getUserId())) {
