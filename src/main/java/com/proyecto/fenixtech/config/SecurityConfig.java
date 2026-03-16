@@ -33,14 +33,14 @@ public class SecurityConfig {
 
                         // Acceso Público
                         .requestMatchers(HttpMethod.GET, "/companies", "/companies/{id}", "/companies/top", "/count",
-                                "/products/**", "/productsImg/**", "/postsImg/**", "/comments/posts/{postId}", "/categories", "/categories/{id}", "/subcategories", "/subcategories/{id}", "/subcategories/category/{id}", "/company-badges/company/{companyId}/count", "/company-badges/{companyId}/{badgeId}", "/shipping-carriers", "/shipping-carriers/{id}", "/shipping-carriers/{id}/track/{number}")
+                                "/products/**", "/productsImg/**", "/postsImg/**", "/comments/posts/{postId}", "/categories", "/categories/{id}", "/subcategories", "/subcategories/{id}", "/subcategories/category/{id}", "/company-badges/company/{companyId}/count", "/company-badges/{companyId}/{badgeId}", "/shipping-carriers", "/shipping-carriers/{id}", "/shipping-carriers/{id}/track/{number}", "/posts/user/{userId}", "/posts/{id}")
                         .permitAll()
 
                         // Acceso solo admin
                         .requestMatchers(HttpMethod.GET, "/addresses", "/addresses/{id}", "/addresses/filters",
                                 "/addresses/count", "/badges/**", "/cart_items", "/cart_items/{id}",
                                 "/cart_items/product/{id}", "/cart_items/quantity", "/cart_items/count",
-                                "companies/all", "/companies/search/impact", "/comments/users/{userId}", "/comments/count", "/proposals/count", "/proposals/user/{id}", "/proposals/all", "/order-details/**", "/categories/count", "/categories/name", "/subcategories/count", "/subcategories/search", "/orders", "/orders/count", "/orders/filters", "/shipments", "/shipments/filters", "/shipments/count", "/company-badges/count", "/company-badges", "/company-badges/company/{id}", "/company-badges/awarded_at", "/shipping-carriers/admin/**", "/users/{id}", "/users/search", "users/email/**"
+                                "companies/all", "/companies/search/impact", "/comments/users/{userId}", "/comments/count", "/proposals/count", "/proposals/user/{id}", "/proposals/all", "/order-details/**", "/categories/count", "/categories/name", "/subcategories/count", "/subcategories/search", "/orders", "/orders/count", "/orders/filters", "/shipments", "/shipments/filters", "/shipments/count", "/company-badges/count", "/company-badges", "/company-badges/company/{id}", "/company-badges/awarded_at", "/shipping-carriers/admin/**", "/users/{id}", "/users/search", "users/email/**", "/posts/count", "/posts"
                                
                        )
                         .hasRole("ADMIN")
@@ -56,17 +56,16 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST, "/addresses", "/comments", "/cart_items", "/proposals", "follows/toggle", "/orders/checkout", "/shipments" ).hasRole("PARTICULAR")
                         .requestMatchers(HttpMethod.POST, "/badges", "/categories", "/subcategories", "/company-badges", "/shipping-carriers").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/products", "users/me/password").hasRole("EMPRESA")
+                        .requestMatchers(HttpMethod.POST, "/products", "users/me/password", "/posts").hasRole("EMPRESA")
 
                         .requestMatchers(HttpMethod.PUT, "/users/me").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/addresses/{id}", "/cart_items/{id}").hasRole("PARTICULAR")
+                        .requestMatchers(HttpMethod.PUT, "/addresses/{id}", "/cart_items/{id}").hasAnyRole("PARTICULAR", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/badges/{id}", "/categories", "/subcategories", "/orders/{id}/status", "shipping-carriers/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/companies/{id}", "/products/{id}", "/proposals/{id}")
-                        .hasAnyRole("EMPRESA", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/companies/{id}", "/products/{id}", "/proposals/{id}", "/posts/{id}").hasAnyRole("EMPRESA", "ADMIN")
 
                         .requestMatchers(HttpMethod.DELETE, "/addresses/{id}", "/cart_items/{id}", "/comments/{id}/user/{userId}" )
                         .hasAnyRole("PARTICULAR", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/companies/{id}", "/products/{id}", "/productsImg/{id}", "/postsImg/post/{postId}/image/{imageId}")
+                        .requestMatchers(HttpMethod.DELETE, "/companies/{id}", "/products/{id}", "/productsImg/{id}", "/postsImg/post/{postId}/image/{imageId}", "/posts/{id}")
                         .hasAnyRole("EMPRESA", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/badges/{id}", "/proposals/{id}", "/categories", "/subcategories", "/company/{companyId}/badge/{badgeId}", "/shipping-carriers/{id}").hasRole("ADMIN")
 

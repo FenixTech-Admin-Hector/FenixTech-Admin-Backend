@@ -76,15 +76,6 @@ public class PostsController {
                 return ResponseEntity.ok(postsService.findByUserId(userId));
         }
 
-        @Operation(summary = "Obtener posts recientes", description = "Devuelve una lista de los posts más recientes")
-        @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Posts recientes obtenidos con éxito"),
-                        @ApiResponse(responseCode = "404", description = "No se encontraron posts recientes")
-        })
-        @GetMapping("/recent")
-        public ResponseEntity<List<Posts>> findRecentPosts() {
-                return ResponseEntity.ok(postsService.findRecentPosts());
-        }
 
         @Operation(summary = "Obtener el número total de posts", description = "Devuelve el número total de posts")
         @ApiResponses(value = {

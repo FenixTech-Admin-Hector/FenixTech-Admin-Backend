@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +14,6 @@ import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.Posts;
 import com.proyecto.fenixtech.model.PostsImg;
 import com.proyecto.fenixtech.model.Users;
-import com.proyecto.fenixtech.model.enums.Rol;
 import com.proyecto.fenixtech.repository.PostsRepository;
 import com.proyecto.fenixtech.repository.UsersRepository;
 
@@ -44,11 +45,6 @@ public class PostsService {
     }
 
     @Transactional(readOnly = true)
-    public List<Posts> findRecentPosts() {
-        return postsRepository.findTop5ByOrderByCreatedAtDesc();
-    }
-
-    @Transactional(readOnly = true)
     public Long count() {
         return postsRepository.count();
     }
@@ -75,16 +71,29 @@ public class PostsService {
 
     @Transactional
     public void deleteById(Integer id) {
-        if (!postsRepository.existsById(id)) {
-            throw new IllegalArgumentException("No existe el post con id: " + id + " para eliminar");
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Posts post = postsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Post no encontrado"));
+
+        if (!post.getAuthor().getEmail().equals(email)) {
+            throw new AccessDeniedException("No tienes permiso: este post no te pertenece");
         }
-        postsRepository.deleteById(id);
+
+        postsRepository.delete(post);
     }
 
     @Transactional
     public Posts update(Integer id, PostsRequestDTO dto) {
+        String emailFromToken = SecurityContextHolder.getContext().getAuthentication().getName();
+
         Posts postUpdate = postsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post no encontrado con id: " + id));
+
+        if (!postUpdate.getAuthor().getEmail().equals(emailFromToken)) {
+            throw new AccessDeniedException("No tienes permiso para editar este post. Solo el autor puede hacerlo.");
+        }
 
         postUpdate.setTitle(dto.getTitle());
         postUpdate.setBody(dto.getBody());
@@ -100,6 +109,7 @@ public class PostsService {
             }
         }
 
+        // 6. Guardamos los cambios
         return postsRepository.save(postUpdate);
     }
 
