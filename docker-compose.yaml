@@ -23,6 +23,11 @@ services:
 
       - JWT_EXPIRATION=${JWT_EXPIRATION}
       - JWT_SECRET=${JWT_SECRET}
+
+      - HOST_MAIL=${HOST_MAIL}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
     depends_on:
       - mariadb
     networks:
