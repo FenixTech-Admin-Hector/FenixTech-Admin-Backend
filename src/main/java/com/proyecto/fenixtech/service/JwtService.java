@@ -3,6 +3,10 @@ package com.proyecto.fenixtech.service;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-
 
 @Service
 public class JwtService {
@@ -25,8 +28,15 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(UserDetails userDetails){
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> extraClaims = new HashMap<>();
+        var authorities = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+        extraClaims.put("roles", authorities);
+
         return Jwts.builder()
+                .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
@@ -75,6 +85,5 @@ public class JwtService {
     private Date extractExpiration(String token) {
         return extractClaim(token, io.jsonwebtoken.Claims::getExpiration);
     }
-
 
 }
