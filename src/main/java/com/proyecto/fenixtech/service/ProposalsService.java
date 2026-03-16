@@ -32,6 +32,8 @@ public class ProposalsService {
     @Autowired
     private UsersService usersService;
 
+    @Autowired
+    private EmailService emailService;
 
     @Transactional(readOnly = true)
     public List<Proposals> findAllProposals() {
@@ -71,7 +73,6 @@ public class ProposalsService {
     public Proposals save(ProposalRequestPostDTO dto) {
         Users currentUser = usersService.getCurrentUser();
 
-
         Categories category = categoriesRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
 
@@ -105,13 +106,17 @@ public class ProposalsService {
         Proposals existing = proposalsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Propuesta no encontrada con id: " + id));
 
-        if (existing.getStatus() != ProposalStatus.OPEN) {
-            throw new IllegalStateException("Esta propuesta ya ha sido procesada.");
+        if (existing.getStatus() == ProposalStatus.FULFILLED) {
+            throw new IllegalStateException("Esta propuesta ya ha sido completada y no puede modificarse.");
         }
 
-        if (dto.getStatus() != null) {
+        if (dto.getStatus() == ProposalStatus.FULFILLED && existing.getStatus() != ProposalStatus.FULFILLED) {
             existing.setStatus(dto.getStatus());
-        }
+
+            emailService.sendProposalStatusEmail(
+                    existing.getRequester().getEmail(),
+                    existing.getTitle());
+        } 
 
         return proposalsRepository.save(existing);
     }
