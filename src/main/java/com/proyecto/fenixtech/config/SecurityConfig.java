@@ -54,7 +54,7 @@ public class SecurityConfig {
                                                                 "/cart_items/{id}",
                                                                 "/cart_items/product/{id}", "/cart_items/quantity",
                                                                 "/cart_items/count",
-                                                                "companies/all", "/companies/search/impact",
+                                                                "/companies/all", "/companies/search/impact",
                                                                 "/comments/users/{userId}", "/comments/count",
                                                                 "/proposals/count", "/proposals/user/{id}",
                                                                 "/proposals/all", "/order-details/**",
@@ -66,7 +66,7 @@ public class SecurityConfig {
                                                                 "/company-badges/company/{id}",
                                                                 "/company-badges/awarded_at",
                                                                 "/shipping-carriers/admin/**", "/users/{id}",
-                                                                "/users/search", "users/email/**", "/posts/count",
+                                                                "/users/search", "/users/email/**", "/posts/count",
                                                                 "/posts", "/reviews", "/reviews/count",
                                                                 "/reviews/user/{userId}")
                                                 .hasRole("ADMIN")
@@ -89,14 +89,14 @@ public class SecurityConfig {
 
                                                 //Métodos de inserción 
                                                 .requestMatchers(HttpMethod.POST, "/addresses", "/comments",
-                                                                "/cart_items", "/proposals", "follows/toggle",
+                                                                "/cart_items", "/proposals", "/follows/toggle",
                                                                 "/orders/checkout", "/shipments", "/reviews")
                                                 .hasRole("PARTICULAR")
                                                 .requestMatchers(HttpMethod.POST, "/badges", "/categories",
                                                                 "/subcategories", "/company-badges",
                                                                 "/shipping-carriers")
                                                 .hasRole("ADMIN")
-                                                .requestMatchers(HttpMethod.POST, "/products", "users/me/password",
+                                                .requestMatchers(HttpMethod.POST, "/products", "/users/me/password",
                                                                 "/posts")
                                                 .hasRole("EMPRESA")
 
@@ -107,7 +107,7 @@ public class SecurityConfig {
                                                 .hasAnyRole("PARTICULAR", "ADMIN")
                                                 .requestMatchers(HttpMethod.PUT, "/badges/{id}", "/categories",
                                                                 "/subcategories", "/orders/{id}/status",
-                                                                "shipping-carriers/{id}")
+                                                                "/shipping-carriers/{id}")
                                                 .hasRole("ADMIN")
                                                 .requestMatchers(HttpMethod.PUT, "/companies/{id}", "/products/{id}",
                                                                 "/proposals/{id}", "/posts/{id}")
@@ -116,7 +116,7 @@ public class SecurityConfig {
                                                 //Métodos de eliminación
                                                 .requestMatchers(HttpMethod.DELETE, "/addresses/{id}",
                                                                 "/cart_items/{id}", "/comments/{id}/user/{userId}",
-                                                                "reviews/{id}")
+                                                                "/reviews/{id}")
                                                 .hasAnyRole("PARTICULAR", "ADMIN")
                                                 .requestMatchers(HttpMethod.DELETE, "/companies/{id}", "/products/{id}",
                                                                 "/productsImg/{id}",
