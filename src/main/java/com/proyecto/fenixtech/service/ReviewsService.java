@@ -10,6 +10,7 @@ import com.proyecto.fenixtech.repository.CompaniesRepository;
 import com.proyecto.fenixtech.repository.ReviewsRepository;
 import com.proyecto.fenixtech.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,9 @@ public class ReviewsService {
 
     @Autowired
     private ReputationService reputationService;
+
+    @Autowired
+    private UsersService usersService;
 
     @Transactional(readOnly = true)
     public List<Reviews> findAllReviews() {
@@ -63,11 +67,9 @@ public class ReviewsService {
 
     @Transactional
     public Reviews save(ReviewsRequestDTO dto) {
-        Users reviewer = usersRepository.findById(dto.getUserId())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("El usuario con ID " + dto.getUserId() + " no existe"));
+        Users currentUser = usersService.getCurrentUser();
 
-        if (reviewer.getRole() == Rol.EMPRESA || reviewer.getRole() == Rol.ADMIN) {
+        if (currentUser.getRole() == Rol.EMPRESA || currentUser.getRole() == Rol.ADMIN) {
             throw new IllegalArgumentException("Solo los usuarios particulares pueden dejar reseñas.");
         }
 
@@ -79,14 +81,15 @@ public class ReviewsService {
             throw new IllegalArgumentException("No se pueden dejar reseñas a una empresa inactiva.");
         }
 
-        if (reviewsRepository.existsByReviewer_UserIdAndTargetCompany_CompanyId(dto.getUserId(), dto.getCompanyId())) {
+        if (reviewsRepository.existsByReviewer_UserIdAndTargetCompany_CompanyId(currentUser.getUserId(),
+                dto.getCompanyId())) {
             throw new IllegalArgumentException("Ya has dejado una reseña para esta empresa.");
         }
 
         Reviews review = new Reviews();
         review.setRating(dto.getRating());
         review.setComment(dto.getComment());
-        review.setReviewer(reviewer);
+        review.setReviewer(currentUser);
         review.setTargetCompany(targetCompany);
 
         reputationService.processReviewScore(targetCompany.getCompanyId(), dto.getRating());
@@ -99,6 +102,13 @@ public class ReviewsService {
                 .orElseThrow(
                         () -> new IllegalArgumentException("No existe la review con id: " + id + " para eliminar"));
 
+        Users currentUser = usersService.getCurrentUser();
+
+        if (!review.getReviewer().getUserId().equals(currentUser.getUserId()) &&
+                currentUser.getRole() != Rol.ADMIN) {
+            throw new AccessDeniedException("No tienes permiso para eliminar esta reseña.");
+        }
+
         reputationService.deleteReviewScore(review.getTargetCompany().getCompanyId(), review.getRating());
 
         reviewsRepository.deleteById(id);
@@ -108,6 +118,12 @@ public class ReviewsService {
     public Reviews update(Integer id, ReviewsRequestDTO dto) {
         Reviews reviewUpdate = reviewsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró la review con ID: " + id));
+
+        Users currentUser = usersService.getCurrentUser();
+
+        if (!reviewUpdate.getReviewer().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("No puedes editar una reseña que no te pertenece.");
+        }
 
         if (!reviewUpdate.getReviewer().getUserId().equals(dto.getUserId())) {
             throw new IllegalArgumentException("No puedes editar una reseña que no te pertenece.");
