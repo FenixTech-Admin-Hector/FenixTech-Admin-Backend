@@ -23,7 +23,6 @@ public class AddressesService {
     @Autowired
     private UsersService usersService;
 
-
     @Transactional(readOnly = true)
     public List<Addresses> findAllAddresses() {
         return addressesRepository.findAll();
@@ -38,7 +37,6 @@ public class AddressesService {
     @Transactional(readOnly = true)
     public List<Addresses> findByUserId(Integer id) {
         Users currentUser = usersService.getCurrentUser();
-
 
         if (!currentUser.getRole().name().equals("ADMIN") && !currentUser.getUserId().equals(id)) {
             throw new AccessDeniedException("No tienes permiso para consultar las direcciones de este usuario");
@@ -65,6 +63,12 @@ public class AddressesService {
     public Addresses save(AddressRequestDTO dto) {
         Users currentUser = usersService.getCurrentUser();
 
+        if (currentUser.getRole().name().equals("EMPRESA")) {
+            List<Addresses> companyAddresses = addressesRepository.findByUser_UserId(currentUser.getUserId());
+            if (!companyAddresses.isEmpty()) {
+                throw new IllegalArgumentException("Una empresa solo puede tener una dirección registrada.");
+            }
+        }
 
         List<Addresses> existingAddresses = addressesRepository.findByConditions(
                 dto.getStreet(), dto.getCity(), dto.getRegion(), dto.getCountry(), dto.getZipCode());
@@ -77,7 +81,7 @@ public class AddressesService {
         }
 
         Addresses address = new Addresses();
-        address.setUser(currentUser); 
+        address.setUser(currentUser);
         address.setStreet(dto.getStreet());
         address.setCity(dto.getCity());
         address.setRegion(dto.getRegion());

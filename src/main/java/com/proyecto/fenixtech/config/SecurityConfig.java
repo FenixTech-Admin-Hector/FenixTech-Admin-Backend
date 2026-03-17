@@ -33,6 +33,8 @@ public class SecurityConfig {
                                                 .permitAll()
 
                                                 // Acceso Público
+                                                .requestMatchers(HttpMethod.GET, "/users/me").authenticated()
+                                                
                                                 .requestMatchers(HttpMethod.GET, "/companies", "/companies/{id}",
                                                                 "/companies/top", "/count",
                                                                 "/products/**", "/productsImg/**", "/postsImg/**",
@@ -71,8 +73,6 @@ public class SecurityConfig {
                                                                 "/reviews/user/{userId}")
                                                 .hasRole("ADMIN")
 
-                                                .requestMatchers(HttpMethod.GET, "/users/me").authenticated()
-
                                                 // Acceso privado particular
                                                 .requestMatchers(HttpMethod.GET, "/addresses/user/{id}",
                                                                 "/cart_items/user/{id}", "/cart_items/my/count",
@@ -88,6 +88,7 @@ public class SecurityConfig {
                                                 .hasAnyRole("EMPRESA", "ADMIN")
 
                                                 //Métodos de inserción 
+                                                .requestMatchers(HttpMethod.POST, "/addresses").hasAnyRole("PARTICULAR", "EMPRESA")
                                                 .requestMatchers(HttpMethod.POST, "/addresses", "/comments",
                                                                 "/cart_items", "/proposals", "/follows/toggle",
                                                                 "/orders/checkout", "/shipments", "/reviews")
@@ -101,8 +102,9 @@ public class SecurityConfig {
                                                 .hasRole("EMPRESA")
 
                                                 //Métodos de actualización
-                                                .requestMatchers(HttpMethod.PUT, "/users/me").authenticated()
-                                                .requestMatchers(HttpMethod.PUT, "/addresses/{id}", "/cart_items/{id}",
+                                                
+                                                .requestMatchers(HttpMethod.PUT, "/users/me", "/addresses/{id}").authenticated()
+                                                .requestMatchers(HttpMethod.PUT, "/cart_items/{id}",
                                                                 "/reviews/{id}")
                                                 .hasAnyRole("PARTICULAR", "ADMIN")
                                                 .requestMatchers(HttpMethod.PUT, "/badges/{id}", "/categories",
@@ -113,8 +115,10 @@ public class SecurityConfig {
                                                                 "/proposals/{id}", "/posts/{id}")
                                                 .hasAnyRole("EMPRESA", "ADMIN")
                                                 
+                                                
                                                 //Métodos de eliminación
-                                                .requestMatchers(HttpMethod.DELETE, "/addresses/{id}",
+                                                .requestMatchers(HttpMethod.DELETE, "/addresses/{id}").authenticated()
+                                                .requestMatchers(HttpMethod.DELETE,
                                                                 "/cart_items/{id}", "/comments/{id}/user/{userId}",
                                                                 "/reviews/{id}")
                                                 .hasAnyRole("PARTICULAR", "ADMIN")
