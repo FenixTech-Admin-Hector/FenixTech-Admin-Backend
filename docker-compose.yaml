@@ -7,6 +7,8 @@ services:
       - MARIADB_USER=${DB_USER}
       - MARIADB_PASSWORD=${DB_PASSWORD}
       - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+    ports:
+      - "${DB_LOCAL_PORT}:3306"
     volumes:
       - ./data_mariadb:/var/lib/mysql
     networks:
