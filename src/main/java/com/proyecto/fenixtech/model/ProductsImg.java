@@ -50,11 +50,4 @@ public class ProductsImg implements Serializable{
     @JsonIgnoreProperties({"cartItems", "orderDetails", "company", "subcategory"})
     private Products product;
 
-    @JsonProperty("productId")
-    public void setProductId(Integer productId) {
-        this.product = new Products();
-        this.product.setProductId(productId);
-    }
-
-
 }

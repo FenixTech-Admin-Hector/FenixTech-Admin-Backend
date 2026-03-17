@@ -1,7 +1,7 @@
 services:
   # 1. TU BASE DE DATOS
   mariadb:
-    image: 'mariadb:11.4'
+    image: "mariadb:11.4"
     environment:
       - MARIADB_DATABASE=${DB_NAME}
       - MARIADB_USER=${DB_USER}
@@ -16,7 +16,9 @@ services:
 
   # 2. TU APLICACIÓN SPRING BOOT
   app-spring:
-    build: .  # Le dice a Docker: "Busca el Dockerfile en esta misma carpeta y constrúyelo"
+    build: . # Le dice a Docker: "Busca el Dockerfile en esta misma carpeta y constrúyelo"
+    volumes:
+      - ./uploads:/app/uploads
     environment:
       # Así es como Spring Boot sabrá dónde encontrar a MariaDB
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/${DB_NAME}
