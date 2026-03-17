@@ -62,7 +62,7 @@ public class Users implements UserDetails {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Schema(description = "Contraseña del usuario", example = "password123")
+    @Schema(description = "Contraseña del usuario", example = "1234Abcd$")
     @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!.*]).{8,}$", message = "La contraseña debe contener al menos un número, una letra minúscula, una letra mayúscula y un carácter especial")

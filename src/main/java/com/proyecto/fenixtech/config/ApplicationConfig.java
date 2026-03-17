@@ -2,7 +2,10 @@ package com.proyecto.fenixtech.config;
 
 
 import com.proyecto.fenixtech.repository.UsersRepository;
+
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,13 +20,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-    private final UsersRepository usersRepository;
+    @Autowired
+    private UsersRepository usersRepository;
 
     // 1. Buscador de usuarios en DB
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> usersRepository.findByEmailAndIsActiveTrue(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        return username -> usersRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado en la base de datos"));
     }
 
     // 2. El motor (Cambiamos el nombre del método para evitar conflictos)

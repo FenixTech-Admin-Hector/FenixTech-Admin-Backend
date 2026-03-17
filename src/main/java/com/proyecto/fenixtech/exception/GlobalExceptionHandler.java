@@ -3,6 +3,7 @@ package com.proyecto.fenixtech.exception;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -36,6 +39,19 @@ public class GlobalExceptionHandler {
         response.put("message", ex.getMessage());
         response.put("path", request.getRequestURI());
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler({ DisabledException.class, LockedException.class })
+    public ResponseEntity<Map<String, Object>> handleAccountStatusExceptions(Exception ex, HttpServletRequest request) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", HttpStatus.FORBIDDEN.value());
+        response.put("error", "Acceso Denegado");
+        response.put("message",
+                "Esta cuenta ha sido desactivada, bloqueada o eliminada");
+        response.put("path", request.getRequestURI());
+
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(AccessDeniedException.class)

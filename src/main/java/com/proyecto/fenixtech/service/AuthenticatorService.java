@@ -61,8 +61,7 @@ public class AuthenticatorService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
 
-        Users user = usersRepository.findByEmailAndIsActiveTrue(dto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+        Users user = usersService.findByEmail(dto.getEmail(), true);
 
         String token = jwtService.generateToken(user);
 
