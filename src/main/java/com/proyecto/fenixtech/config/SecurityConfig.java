@@ -34,7 +34,7 @@ public class SecurityConfig {
 
                                                 // Acceso Público
                                                 .requestMatchers(HttpMethod.GET, "/users/me").authenticated()
-                                                
+
                                                 .requestMatchers(HttpMethod.GET, "/companies", "/companies/{id}",
                                                                 "/companies/top", "/count",
                                                                 "/products/**", "/productsImg/**", "/postsImg/**",
@@ -58,7 +58,7 @@ public class SecurityConfig {
                                                                 "/cart_items/count",
                                                                 "/companies/all", "/companies/search/impact",
                                                                 "/comments/users/{userId}", "/comments/count",
-                                                                "/proposals/count", "/proposals/user/{id}",
+                                                                "/proposals/count",
                                                                 "/proposals/all", "/order-details/**",
                                                                 "/categories/count", "/categories/name",
                                                                 "/subcategories/count", "/subcategories/search",
@@ -78,7 +78,7 @@ public class SecurityConfig {
                                                                 "/cart_items/user/{id}", "/cart_items/my/count",
                                                                 "/follows/user/{userId}/**", "/orders/buyer/{id}",
                                                                 "/orders/{id}", "/shipments/{id}",
-                                                                "/shipments/order/{id}")
+                                                                "/shipments/order/{id}", "/proposals/user/{id}")
                                                 .hasAnyRole("PARTICULAR", "ADMIN")
 
                                                 // Acceso privado empresas
@@ -87,51 +87,53 @@ public class SecurityConfig {
                                                                 "/follows/company/{companyId}/**")
                                                 .hasAnyRole("EMPRESA", "ADMIN")
 
-                                                //Métodos de inserción 
+                                                // Métodos de inserción
                                                 .requestMatchers(HttpMethod.POST, "/badges", "/categories",
                                                                 "/subcategories", "/company-badges",
                                                                 "/shipping-carriers")
                                                 .hasRole("ADMIN")
-                                                .requestMatchers(HttpMethod.POST, "/addresses").hasAnyRole("PARTICULAR", "EMPRESA")
+                                                .requestMatchers(HttpMethod.POST, "/addresses")
+                                                .hasAnyRole("PARTICULAR", "EMPRESA")
                                                 .requestMatchers(HttpMethod.POST, "/addresses", "/comments",
                                                                 "/cart_items", "/proposals", "/follows/toggle",
-                                                                "/orders/checkout", "/shipments", "/reviews", "/contact")
+                                                                "/orders/checkout", "/shipments", "/reviews",
+                                                                "/contact")
                                                 .hasRole("PARTICULAR")
                                                 .requestMatchers(HttpMethod.POST, "/products", "/users/me/password",
                                                                 "/posts")
                                                 .hasRole("EMPRESA")
 
-                                                //Métodos de actualización
-                                                
-                                                .requestMatchers(HttpMethod.PUT, "/users/me", "/addresses/{id}").authenticated()
+                                                // Métodos de actualización
+
+                                                .requestMatchers(HttpMethod.PUT, "/users/me", "/addresses/{id}")
+                                                .authenticated()
                                                 .requestMatchers(HttpMethod.PUT, "/cart_items/{id}",
-                                                                "/reviews/{id}")
+                                                                "/reviews/{id}", "/orders/{id}/status")
                                                 .hasAnyRole("PARTICULAR", "ADMIN")
                                                 .requestMatchers(HttpMethod.PUT, "/badges/{id}", "/categories",
-                                                                "/subcategories", "/orders/{id}/status",
+                                                                "/subcategories",
                                                                 "/shipping-carriers/{id}")
                                                 .hasRole("ADMIN")
                                                 .requestMatchers(HttpMethod.PUT, "/companies/{id}", "/products/{id}",
                                                                 "/proposals/{id}", "/posts/{id}")
                                                 .hasAnyRole("EMPRESA", "ADMIN")
-                                                
-                                                
-                                                //Métodos de eliminación
+
+                                                // Métodos de eliminación
                                                 .requestMatchers(HttpMethod.DELETE, "/addresses/{id}").authenticated()
+                                                .requestMatchers(HttpMethod.DELETE, "/badges/{id}",
+                                                                "/categories", "/subcategories",
+                                                                "/company/{companyId}/badge/{badgeId}",
+                                                                "/shipping-carriers/{id}")
+                                                .hasRole("ADMIN")
                                                 .requestMatchers(HttpMethod.DELETE,
                                                                 "/cart_items/{id}", "/comments/{id}/user/{userId}",
-                                                                "/reviews/{id}")
+                                                                "/reviews/{id}", "/proposals/{id}")
                                                 .hasAnyRole("PARTICULAR", "ADMIN")
                                                 .requestMatchers(HttpMethod.DELETE, "/companies/{id}", "/products/{id}",
                                                                 "/productsImg/{id}",
                                                                 "/postsImg/post/{postId}/image/{imageId}",
                                                                 "/posts/{id}")
                                                 .hasAnyRole("EMPRESA", "ADMIN")
-                                                .requestMatchers(HttpMethod.DELETE, "/badges/{id}", "/proposals/{id}",
-                                                                "/categories", "/subcategories",
-                                                                "/company/{companyId}/badge/{badgeId}",
-                                                                "/shipping-carriers/{id}")
-                                                .hasRole("ADMIN")
 
                                                 // 4. El resto requiere estar logueado
                                                 .anyRequest().authenticated())
