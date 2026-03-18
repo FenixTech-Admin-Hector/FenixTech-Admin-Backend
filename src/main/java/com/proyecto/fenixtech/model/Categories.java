@@ -27,7 +27,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Data
 @ToString(exclude = { "subcategories" })
-@EqualsAndHashCode(exclude = { "subcategories" })
+@EqualsAndHashCode(exclude = { "subcategories", "proposals", "contacts"})
 
 @Schema(description = "Modelo de Categorías", name = "Categories")
 @Entity
@@ -60,6 +60,12 @@ public class Categories implements Serializable {
     @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnoreProperties("category")
     private List<Proposals> proposals = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonIgnoreProperties("category")
+    private List<Contact> contacts = new ArrayList<>();
+
+
 
     @PrePersist
     public void prePersist() {

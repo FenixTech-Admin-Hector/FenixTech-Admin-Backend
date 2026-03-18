@@ -267,3 +267,15 @@ CREATE TABLE IF NOT EXISTS company_badges (
     FOREIGN KEY (company_id) REFERENCES companies (company_id) ON DELETE CASCADE,
     FOREIGN KEY (badge_id) REFERENCES badges (badge_id)
 );
+
+CREATE TABLE IF NOT EXISTS contact(
+    contact_id INT PRIMARY KEY AUTO_INCREMENT,
+    category_id INT NOT NULL,
+    user_id INT NOT NULL,
+    title VARCHAR(250) NOT NULL,
+    description TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES categories (category_id),
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
+);
+

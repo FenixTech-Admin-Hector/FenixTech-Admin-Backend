@@ -70,7 +70,7 @@ public class SecurityConfig {
                                                                 "/shipping-carriers/admin/**", "/users/{id}",
                                                                 "/users/search", "/users/email/**", "/posts/count",
                                                                 "/posts", "/reviews", "/reviews/count",
-                                                                "/reviews/user/{userId}")
+                                                                "/reviews/user/{userId}", "/contact/**")
                                                 .hasRole("ADMIN")
 
                                                 // Acceso privado particular
@@ -88,15 +88,15 @@ public class SecurityConfig {
                                                 .hasAnyRole("EMPRESA", "ADMIN")
 
                                                 //Métodos de inserción 
-                                                .requestMatchers(HttpMethod.POST, "/addresses").hasAnyRole("PARTICULAR", "EMPRESA")
-                                                .requestMatchers(HttpMethod.POST, "/addresses", "/comments",
-                                                                "/cart_items", "/proposals", "/follows/toggle",
-                                                                "/orders/checkout", "/shipments", "/reviews")
-                                                .hasRole("PARTICULAR")
                                                 .requestMatchers(HttpMethod.POST, "/badges", "/categories",
                                                                 "/subcategories", "/company-badges",
                                                                 "/shipping-carriers")
                                                 .hasRole("ADMIN")
+                                                .requestMatchers(HttpMethod.POST, "/addresses").hasAnyRole("PARTICULAR", "EMPRESA")
+                                                .requestMatchers(HttpMethod.POST, "/addresses", "/comments",
+                                                                "/cart_items", "/proposals", "/follows/toggle",
+                                                                "/orders/checkout", "/shipments", "/reviews", "/contact")
+                                                .hasRole("PARTICULAR")
                                                 .requestMatchers(HttpMethod.POST, "/products", "/users/me/password",
                                                                 "/posts")
                                                 .hasRole("EMPRESA")

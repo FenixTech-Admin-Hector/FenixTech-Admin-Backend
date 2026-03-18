@@ -6,6 +6,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.proyecto.fenixtech.model.Contact;
+import com.proyecto.fenixtech.model.Users;
+
 @Service
 public class EmailService {
 
@@ -21,5 +24,28 @@ public class EmailService {
                 "' ha sido procesada con éxito y será tenida en cuenta para futuras ofertas.\n\nGracias por formar parte de FenixTech.");
 
         mailSender.send(message);
+    }
+
+    public void sendContactAdminNotification(String adminEmail, Contact contact, Users sender, String categoryName) {
+        String asunto = "NUEVA SOLICITUD EN FENIXTECH: " + contact.getTitle();
+        String mensaje = "¡Hola Admin!\n\n"
+                + "El usuario " + sender.getFirstName() + " " + sender.getLastName() 
+                + " (" + sender.getEmail() + ") ha publicado una nueva solicitud.\n\n"
+                + "DETALLES DE LA SOLICITUD:\n"
+                + "-----------------------------------\n"
+                + "Título: " + contact.getTitle() + "\n"
+                + "Categoría: " + categoryName + "\n"
+                + "Descripción:\n" + contact.getDescription() + "\n"
+                + "-----------------------------------\n\n"
+                + "Revisa la base de datos o el panel de administración para más detalles.";
+
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setTo(adminEmail);
+        email.setSubject(asunto);
+        email.setText(mensaje);
+
+        email.setReplyTo(sender.getEmail());
+        
+        mailSender.send(email); 
     }
 }

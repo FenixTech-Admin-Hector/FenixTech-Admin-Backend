@@ -57,11 +57,11 @@ public class Subcategories implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
-    @JsonIgnoreProperties("subcategories")
+    @JsonIgnoreProperties({"subcategories", "proposals", "contacts"})
     private Categories category;
 
     @OneToMany(mappedBy = "subcategory",cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    @JsonIgnoreProperties({"subcategory", "company"}) 
+    @JsonIgnoreProperties({"subcategory", "company", "cartItems", "orderDetails", "productsImg"}) 
     private List<Products> products = new ArrayList<>();
 
     @PrePersist
