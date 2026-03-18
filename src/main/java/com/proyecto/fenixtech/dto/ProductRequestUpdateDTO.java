@@ -1,5 +1,9 @@
 package com.proyecto.fenixtech.dto;
 
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.proyecto.fenixtech.model.enums.ConditionStatus;
 import com.proyecto.fenixtech.model.enums.ListingType;
 import com.proyecto.fenixtech.model.enums.PickupType;
@@ -53,4 +57,6 @@ public class ProductRequestUpdateDTO {
 
     @NotNull(message = "El ID de la subcategoría es obligatorio")
     private Integer subcategoryId;
+
+    private List<MultipartFile> newImages;
 }

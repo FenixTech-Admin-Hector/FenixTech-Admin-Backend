@@ -2,6 +2,8 @@ package com.proyecto.fenixtech.dto;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -15,6 +17,6 @@ public class PostsRequestDTO {
 
     private Integer userId;
     
-    private List<String> imagesUrls;
+    private List<MultipartFile> imagesUrls;
 
 }

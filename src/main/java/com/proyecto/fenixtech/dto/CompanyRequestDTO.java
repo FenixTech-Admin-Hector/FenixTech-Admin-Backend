@@ -1,5 +1,7 @@
 package com.proyecto.fenixtech.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -24,8 +26,7 @@ public class CompanyRequestDTO {
     @NotBlank(message = "El apellido es obligatorio")
     private String lastName;
 
-    @Pattern(regexp = "^.+\\.(png|jpg|jpeg|PNG|JPG|JPEG)$", message = "La imagen debe ser un archivo .png, .jpg o .jpeg")
-    private String userImg;
+    private MultipartFile userImg;
 
     @NotBlank(message = "El nombre de la empresa es obligatorio")
     private String companyName;
@@ -35,7 +36,7 @@ public class CompanyRequestDTO {
     private String cif;
 
     @Pattern(regexp = "^.+\\.(png|jpg|jpeg|PNG|JPG|JPEG)$", message = "La imagen debe ser un archivo .png, .jpg o .jpeg")
-    private String companyImg;
+    private MultipartFile companyImg;
 
     @NotBlank(message = "La dirección es obligatoria")
     private String street;

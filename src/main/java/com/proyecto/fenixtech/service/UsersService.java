@@ -52,6 +52,10 @@ public class UsersService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ImageService imageService;
+
+
     @Transactional(readOnly = true)
     public List<Users> findUsers(Rol role, Boolean active, LocalDate start, LocalDate end, String direction) {
         LocalDateTime startDT = (start != null) ? start.atStartOfDay() : null;
@@ -124,7 +128,10 @@ public class UsersService {
 
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
-        user.setUserImg(dto.getUserImg());
+        if (dto.getUserImg() != null && !dto.getUserImg().isEmpty()) {
+            String nameImg = imageService.guardarImagen(dto.getUserImg());
+            user.setUserImg("/fenixtech/uploads/" + nameImg);
+        }
 
         usersRepository.save(user);
 
@@ -196,7 +203,10 @@ public class UsersService {
         user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
-        user.setUserImg(dto.getUserImg());
+        if (dto.getUserImg() != null && !dto.getUserImg().isEmpty()) {
+            String nameImg = imageService.guardarImagen(dto.getUserImg());
+            user.setUserImg("/fenixtech/uploads/" + nameImg);
+        }
         user.setRole(Rol.PARTICULAR);
         user.setIsActive(true);
 
@@ -210,7 +220,10 @@ public class UsersService {
         user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
-        user.setUserImg(dto.getUserImg());
+        if (dto.getUserImg() != null && !dto.getUserImg().isEmpty()) {
+            String nameImg = imageService.guardarImagen(dto.getUserImg());
+            user.setUserImg("/fenixtech/uploads/" + nameImg);
+        }
         user.setRole(Rol.EMPRESA);
         user.setIsActive(true);
 
@@ -218,7 +231,10 @@ public class UsersService {
         Companies company = new Companies();
         company.setCompanyName(dto.getCompanyName());
         company.setCif(dto.getCif());
-        company.setCompanyImg(dto.getCompanyImg());
+        if (dto.getCompanyImg() != null && !dto.getCompanyImg().isEmpty()) {
+            String nameImg = imageService.guardarImagen(dto.getCompanyImg());
+            user.setUserImg("/fenixtech/uploads/" + nameImg);
+        }
         company.setReputationScore(0);
 
         // Inicializacion de JSON

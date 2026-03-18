@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.proyecto.fenixtech.service.ProductsService;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.MediaType; 
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -133,10 +134,10 @@ public class ProductsController {
                         @ApiResponse(responseCode = "200", description = "Producto actualizado con éxito"),
                         @ApiResponse(responseCode = "404", description = "Producto no encontrado")
         })
-        @PutMapping("/{id}")
+        @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
         public ResponseEntity<Products> update(
                         @PathVariable Integer id,
-                        @Valid @RequestBody ProductRequestUpdateDTO dto) {
+                        @Valid @ModelAttribute ProductRequestUpdateDTO dto) {
 
                 return ResponseEntity.ok(productsService.update(id, dto));
         }
@@ -146,8 +147,8 @@ public class ProductsController {
                         @ApiResponse(responseCode = "201", description = "Producto creado con éxito"),
                         @ApiResponse(responseCode = "400", description = "Datos inválidos")
         })
-        @PostMapping
-        public ResponseEntity<Products> createProduct(@Valid @RequestBody ProductsRequestPostDTO product) {
+        @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+        public ResponseEntity<Products> createProduct(@Valid @ModelAttribute ProductsRequestPostDTO product) {
                 Products savedProduct = productsService.save(product);
                 return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
         }

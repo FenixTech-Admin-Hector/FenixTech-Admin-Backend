@@ -1,5 +1,7 @@
 package com.proyecto.fenixtech.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -23,6 +25,5 @@ public class ParticularRequestDTO {
     @NotBlank(message = "El apellido es obligatorio")
     private String lastName;
 
-    @Pattern(regexp = "^.+\\.(png|jpg|jpeg|PNG|JPG|JPEG)$", message = "La imagen debe ser un archivo .png, .jpg o .jpeg")
-    private String userImg;
+    private MultipartFile userImg;
 }

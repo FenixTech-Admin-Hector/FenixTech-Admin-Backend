@@ -16,6 +16,10 @@ public class BadgesService {
     @Autowired
     private BadgesRepository badgesRepository;
 
+    @Autowired
+    private ImageService imageService;
+
+
     @Transactional(readOnly = true)
     public List<Badges> findAllBadges() {
         return badgesRepository.findAll();
@@ -80,7 +84,10 @@ public class BadgesService {
 
         Badges badge = new Badges();
         badge.setBadgeName(dto.getBadgeName());
-        badge.setIconUrl(dto.getIconUrl());
+        if (dto.getIconUrl() != null && !dto.getIconUrl().isEmpty()) {
+            String nameImg = imageService.guardarImagen(dto.getIconUrl());
+            badge.setIconUrl("/fenixtech/uploads/" + nameImg);
+        }
         badge.setIsActive(true);
         return badgesRepository.save(badge);
     }
@@ -99,7 +106,10 @@ public class BadgesService {
         
 
         badgesUpdate.setBadgeName(dto.getBadgeName());
-        badgesUpdate.setIconUrl(dto.getIconUrl());
+        if (dto.getIconUrl() != null && !dto.getIconUrl().isEmpty()) {
+            String nameImg = imageService.guardarImagen(dto.getIconUrl());
+            badgesUpdate.setIconUrl("/fenixtech/uploads/" + nameImg);
+        }
 
         return badgesRepository.save(badgesUpdate);
     }

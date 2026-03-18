@@ -7,6 +7,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.proyecto.fenixtech.dto.PostsRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
@@ -25,6 +26,8 @@ public class PostsService {
     private UsersRepository usersRepository;
     @Autowired
     private UsersService usersService;
+    @Autowired
+    private ImageService imagenService;
 
     @Transactional(readOnly = true)
     public Page<Posts> findAllPosts(Pageable pageable) {
@@ -64,10 +67,11 @@ public class PostsService {
         post.setBody(dto.getBody());
         post.setAuthor(user);
 
-        if (dto.getImagesUrls() != null) {
-            for (String url : dto.getImagesUrls()) {
+        if (dto.getImagesUrls() != null && !dto.getImagesUrls().isEmpty()) {
+            for (MultipartFile file : dto.getImagesUrls()) {
+                String nameImg = imagenService.guardarImagen(file);
                 PostsImg img = new PostsImg();
-                img.setImageUrl(url);
+                img.setImageUrl("/fenixtech/uploads/" + nameImg);
                 img.setPost(post);
                 post.getPostImages().add(img);
             }
@@ -104,11 +108,12 @@ public class PostsService {
         postUpdate.setTitle(dto.getTitle());
         postUpdate.setBody(dto.getBody());
 
-        if (dto.getImagesUrls() != null) {
+        if (dto.getImagesUrls() != null && !dto.getImagesUrls().isEmpty()) {
             postUpdate.getPostImages().clear();
-            for (String url : dto.getImagesUrls()) {
+            for (MultipartFile file : dto.getImagesUrls()) {
+                String nombreImagen = imagenService.guardarImagen(file);
                 PostsImg img = new PostsImg();
-                img.setImageUrl(url);
+                img.setImageUrl("/fenixtech/uploads/" + nombreImagen);
                 img.setPost(postUpdate);
                 postUpdate.getPostImages().add(img);
             }

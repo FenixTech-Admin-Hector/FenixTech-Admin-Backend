@@ -1,5 +1,7 @@
 package com.proyecto.fenixtech.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -9,5 +11,5 @@ public class BadgesRequestDTO {
     private String badgeName;
 
     @NotBlank(message = "La URL del icono es obligatoria")
-    private String iconUrl;
+    private MultipartFile iconUrl;
 }

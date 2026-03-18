@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType; 
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.proyecto.fenixtech.dto.ShippingCarrierRequestDTO;
 import com.proyecto.fenixtech.model.ShippingCarriers;
@@ -62,16 +64,16 @@ public class ShippingCarriersController {
 
 
     @Operation(summary = "Crear nuevo transportista", description = "Registra una nueva empresa de transporte en el sistema.")
-    @PostMapping
-    public ResponseEntity<ShippingCarriers> create(@Valid @RequestBody ShippingCarrierRequestDTO dto) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ShippingCarriers> create(@Valid @ModelAttribute ShippingCarrierRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(shippingCarriersService.save(dto));
     }
 
     @Operation(summary = "Actualizar transportista", description = "Modifica los datos de una empresa de transporte existente.")
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ShippingCarriers> update(
             @Parameter(description = "ID del transportista a actualizar") @PathVariable Integer id,
-            @Valid @RequestBody ShippingCarrierRequestDTO dto) {
+            @Valid @ModelAttribute ShippingCarrierRequestDTO dto) {
         return ResponseEntity.ok(shippingCarriersService.update(id, dto));
     }
 

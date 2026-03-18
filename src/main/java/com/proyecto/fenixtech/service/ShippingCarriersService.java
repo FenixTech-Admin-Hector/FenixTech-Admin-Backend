@@ -16,6 +16,9 @@ public class ShippingCarriersService {
     @Autowired
     private ShippingCarriersRepository shippingCarriersRepository;
 
+    @Autowired
+    private ImageService imageService;
+
     @Transactional(readOnly = true)
     public List<ShippingCarriers> findAllActive() {
         return shippingCarriersRepository.findByIsActiveTrue();
@@ -29,9 +32,9 @@ public class ShippingCarriersService {
     @Transactional(readOnly = true)
     public ShippingCarriers findByIdActive(Integer id) {
         return shippingCarriersRepository.findByCarrierIdAndIsActiveTrue(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Empresa de transporte no encontrada con id: " + id +" o inactiva"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Empresa de transporte no encontrada con id: " + id + " o inactiva"));
     }
-
 
     @Transactional(readOnly = true)
     public ShippingCarriers findById(Integer id) {
@@ -54,7 +57,10 @@ public class ShippingCarriersService {
 
         ShippingCarriers carrier = new ShippingCarriers();
         carrier.setCarrierName(dto.getCarrierName());
-        carrier.setCarrierLogo(dto.getCarrierLogo());
+        if (dto.getCarrierLogo() != null && !dto.getCarrierLogo().isEmpty()) {
+            String nameImg = imageService.guardarImagen(dto.getCarrierLogo());
+            carrier.setCarrierLogo("/fenixtech/uploads/" + nameImg);
+        }
         carrier.setTrackingUrl(dto.getTrackingUrl());
         carrier.setBasePrice(dto.getBasePrice());
         carrier.setEstimatedDays(dto.getEstimatedDays());
@@ -84,7 +90,10 @@ public class ShippingCarriersService {
 
         existingCarrier.setTrackingUrl(dto.getTrackingUrl());
         existingCarrier.setCarrierName(dto.getCarrierName());
-        existingCarrier.setCarrierLogo(dto.getCarrierLogo());
+        if (dto.getCarrierLogo() != null && !dto.getCarrierLogo().isEmpty()) {
+            String nameImg = imageService.guardarImagen(dto.getCarrierLogo());
+            existingCarrier.setCarrierLogo("/fenixtech/uploads/" + nameImg);
+        }
         existingCarrier.setTrackingUrl(dto.getTrackingUrl());
         existingCarrier.setBasePrice(dto.getBasePrice());
         existingCarrier.setEstimatedDays(dto.getEstimatedDays());

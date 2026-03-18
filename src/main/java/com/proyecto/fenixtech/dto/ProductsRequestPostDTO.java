@@ -1,6 +1,8 @@
 package com.proyecto.fenixtech.dto;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.proyecto.fenixtech.model.enums.ConditionStatus;
 import com.proyecto.fenixtech.model.enums.ListingType;
 import com.proyecto.fenixtech.model.enums.PickupType;
@@ -62,6 +64,6 @@ public class ProductsRequestPostDTO {
 
     @NotNull(message = "El producto debe tener al menos una imagen")
     @Size(min = 1, message = "Debes proporcionar al menos una URL de imagen")
-    private List<String> imageUrls;
+    private List<MultipartFile> imageUrls;
 }
 

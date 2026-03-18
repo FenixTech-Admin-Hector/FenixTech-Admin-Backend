@@ -5,6 +5,7 @@ import com.proyecto.fenixtech.repository.ProductsRepository;
 import com.proyecto.fenixtech.repository.SubcategoriesRepository;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.proyecto.fenixtech.dto.ProductRequestUpdateDTO;
 import com.proyecto.fenixtech.dto.ProductsRequestPostDTO;
@@ -20,6 +21,7 @@ import com.proyecto.fenixtech.model.enums.PickupType;
 import com.proyecto.fenixtech.model.enums.ProductStatus;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -38,6 +40,10 @@ public class ProductsService {
 
     @Autowired
     private UsersService usersService;
+
+    @Autowired
+    private ImageService imageService;
+
 
 
     @Transactional(readOnly = true)
@@ -135,16 +141,20 @@ public class ProductsService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Subcategoría no encontrada con ID: " + dto.getSubcategoryId()));
         product.setSubcategory(sub);
-
         product.setCompany(comp);
 
-        if (dto.getImageUrls() != null) {
-            List<ProductsImg> images = dto.getImageUrls().stream().map(url -> {
+        if (dto.getImageUrls() != null && !dto.getImageUrls().isEmpty()) {
+            List<ProductsImg> images = dto.getImageUrls().stream().map(file -> {
+                // 1. Guardar archivo físico y obtener nombre único
+                String nombreImagen = imageService.guardarImagen(file);
+                
+                // 2. Crear entidad para la BD con la URL que servirá WebConfig
                 ProductsImg img = new ProductsImg();
-                img.setImageUrl(url);
+                img.setImageUrl("/fenixtech/uploads/" + nombreImagen);
                 img.setProduct(product);
                 return img;
-            }).toList();
+            }).collect(Collectors.toList());
+            
             product.setProductsImg(images);
         }
 
@@ -189,7 +199,6 @@ public class ProductsService {
         product.setStatus(dto.getConditionStatus());
         product.setListingType(dto.getListingType());
         product.setPickupType(dto.getPickupType());
-
         product.setStreet(dto.getStreet());
         product.setCity(dto.getCity());
         product.setRegion(dto.getRegion());
@@ -205,6 +214,18 @@ public class ProductsService {
         Subcategories sub = subcategoriesRepository.findById(dto.getSubcategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Subcategoría no válida"));
         product.setSubcategory(sub);
+
+        if (dto.getNewImages() != null && !dto.getNewImages().isEmpty()) {
+            for (MultipartFile file : dto.getNewImages()) {
+                String nombreImagen = imageService.guardarImagen(file);
+                
+                ProductsImg newImg = new ProductsImg();
+                newImg.setImageUrl("/fenixtech/uploads/" + nombreImagen);
+                newImg.setProduct(product);
+                
+                product.getProductsImg().add(newImg);
+            }
+        }
 
         return productsRepository.save(product);
     }

@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType; 
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.proyecto.fenixtech.dto.BadgesRequestDTO;
 import com.proyecto.fenixtech.model.Badges;
@@ -134,8 +135,8 @@ public class BadgesController {
             @ApiResponse(responseCode = "201", description = "Insignia creada con éxito"),
             @ApiResponse(responseCode = "400", description = "Solicitud inválida")
     })
-    @PostMapping
-    public ResponseEntity<Badges> create(@Valid @RequestBody BadgesRequestDTO dto) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Badges> create(@Valid @ModelAttribute BadgesRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(badgesService.save(dto));
     }
 
@@ -144,8 +145,8 @@ public class BadgesController {
             @ApiResponse(responseCode = "200", description = "Insignia actualizada con éxito"),
             @ApiResponse(responseCode = "404", description = "Insignia no encontrada")
     })
-    @PutMapping("/{id}")
-    public ResponseEntity<Badges> update(@PathVariable Integer id, @Valid @RequestBody BadgesRequestDTO dto) {
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Badges> update(@PathVariable Integer id, @Valid @ModelAttribute BadgesRequestDTO dto) {
         return ResponseEntity.ok(badgesService.update(id, dto));
     }
 

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.MediaType; 
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.proyecto.fenixtech.service.UsersService;
 import com.proyecto.fenixtech.dto.PasswordUpdateDTO;
@@ -78,7 +80,6 @@ public class UsersController {
     })
     @GetMapping("/me")
     public ResponseEntity<UserResponseDTO> getMyProfile() {
-        // Llamamos al service para obtener el DTO
         return ResponseEntity.ok(usersService.getMyProfile());
     }
 
@@ -99,8 +100,8 @@ public class UsersController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos o email ya en uso"),
             @ApiResponse(responseCode = "401", description = "No autorizado - Token inválido o ausente")
     })
-    @PutMapping("/me")
-    public ResponseEntity<UserResponseDTO> updateMyProfile(@Valid @RequestBody UserUpdateDTO dto) {
+    @PutMapping(value ="/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<UserResponseDTO> updateMyProfile(@Valid @ModelAttribute UserUpdateDTO dto) {
         return ResponseEntity.ok(usersService.updateMyProfile(dto));
     }
 
