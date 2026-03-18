@@ -166,7 +166,6 @@ public class OrdersService {
 
         Orders savedOrder = ordersRepository.save(newOrder);
 
-        cartItemsRepository.deleteByUser_UserId(buyer.getUserId());
 
         return savedOrder;
     }
@@ -191,8 +190,14 @@ public class OrdersService {
 
     @Transactional
     public Orders updateStatus(Integer id, OrderRequestUpdateDTO dto) {
+        Users buyer = usersService.getCurrentUser();
+
         Orders order = ordersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado con ID: " + id));
+
+        if(!order.getBuyer().getUserId().equals(buyer.getUserId()) && !buyer.getRole().name().equals("ADMIN")){
+            throw new AccessDeniedException("No tienes permiso para modificar este pedido.");
+        }
 
         if (order.getStatus() == OrderStatus.CANCELLED) {
             throw new IllegalArgumentException("No se puede modificar un pedido que ya ha sido cancelado.");
@@ -220,6 +225,7 @@ public class OrdersService {
                             detail.getQuantity());
                 }
             }
+            cartItemsRepository.deleteByUser_UserId(buyer.getUserId());
         }
 
         order.setStatus(dto.getStatus());
