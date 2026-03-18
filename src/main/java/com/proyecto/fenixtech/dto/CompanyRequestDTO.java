@@ -26,17 +26,12 @@ public class CompanyRequestDTO {
     @NotBlank(message = "El apellido es obligatorio")
     private String lastName;
 
-    private MultipartFile userImg;
-
     @NotBlank(message = "El nombre de la empresa es obligatorio")
     private String companyName;
 
     @NotBlank(message = "El CIF es obligatorio")
     @Pattern(regexp = "^[ABCDEFGHJNPQRSUVW][0-9]{7}[0-9A-J]$", message = "El CIF está en un formato incorrecto")
     private String cif;
-
-    @Pattern(regexp = "^.+\\.(png|jpg|jpeg|PNG|JPG|JPEG)$", message = "La imagen debe ser un archivo .png, .jpg o .jpeg")
-    private MultipartFile companyImg;
 
     @NotBlank(message = "La dirección es obligatoria")
     private String street;

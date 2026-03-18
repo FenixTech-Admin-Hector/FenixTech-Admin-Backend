@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.MediaType; 
-import org.springframework.web.bind.annotation.ModelAttribute;
+
 
 import com.proyecto.fenixtech.dto.AuthResponseDTO;
 import com.proyecto.fenixtech.dto.CompanyRequestDTO;
@@ -30,14 +29,14 @@ public class AuthenticatorController {
     private AuthenticatorService service;
 
     @Operation(summary = "Registro de usuario particular")
-    @PostMapping(value = "/register/particular", consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
-    public ResponseEntity<AuthResponseDTO> register(@Valid @ModelAttribute ParticularRequestDTO dto) {
+    @PostMapping(value = "/register/particular")
+    public ResponseEntity<AuthResponseDTO> register(@Valid @RequestBody ParticularRequestDTO dto) {
         return ResponseEntity.ok(service.registerParticular(dto));
     }
 
     @Operation(summary = "Registro de empresa")
     @PostMapping("/register/company")
-    public ResponseEntity<AuthResponseDTO> registerCompany(@Valid @ModelAttribute CompanyRequestDTO dto) {
+    public ResponseEntity<AuthResponseDTO> registerCompany(@Valid @RequestBody CompanyRequestDTO dto) {
         return ResponseEntity.ok(service.registerCompany(dto));
     }
 
