@@ -6,7 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.proyecto.fenixtech.model.enums.ConditionStatus;
 import com.proyecto.fenixtech.model.enums.ListingType;
-import com.proyecto.fenixtech.model.enums.PickupType;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -35,9 +34,6 @@ public class ProductRequestUpdateDTO {
 
     @NotNull(message = "El tipo de publicación es obligatorio")
     private ListingType listingType;
-
-    @NotNull(message = "El tipo de recogida es obligatorio")
-    private PickupType pickupType;
 
     @NotBlank(message = "La calle es obligatoria")
     private String street;

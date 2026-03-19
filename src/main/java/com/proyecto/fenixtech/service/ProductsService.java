@@ -17,7 +17,6 @@ import com.proyecto.fenixtech.model.Subcategories;
 import com.proyecto.fenixtech.model.Users;
 import com.proyecto.fenixtech.model.enums.ConditionStatus;
 import com.proyecto.fenixtech.model.enums.ListingType;
-import com.proyecto.fenixtech.model.enums.PickupType;
 import com.proyecto.fenixtech.model.enums.ProductStatus;
 
 import java.util.List;
@@ -81,7 +80,7 @@ public class ProductsService {
     @Transactional(readOnly = true)
     public List<Products> findByConditions(
             ListingType lType, ConditionStatus cStatus,
-            Double minPrice, Double maxPrice, Integer minStock, Integer maxStock, String location, PickupType pType) {
+            Double minPrice, Double maxPrice, Integer minStock, Integer maxStock, String location) {
 
         if (minPrice != null && minPrice < 0) {
             throw new IllegalArgumentException("El precio mínimo no puede ser negativo.");
@@ -105,10 +104,9 @@ public class ProductsService {
 
         String lTypeStr = (lType != null) ? lType.name() : null;
         String cStatusStr = (cStatus != null) ? cStatus.name() : null;
-        String pTypeStr = (pType != null) ? pType.name() : null;
 
         return productsRepository.findByConditions(
-                lTypeStr, cStatusStr, minPrice, maxPrice, minStock, maxStock, location, pTypeStr);
+                lTypeStr, cStatusStr, minPrice, maxPrice, minStock, maxStock, location);
     }
 
     @Transactional(readOnly = true)
@@ -133,7 +131,6 @@ public class ProductsService {
         product.setRegion(dto.getRegion());
         product.setCountry(dto.getCountry());
         product.setStock(dto.getStockQuantity());
-        product.setPickupType(dto.getPickupType());
         product.setListingType(dto.getListingType());
         product.setDescription(dto.getDescription());
 
@@ -198,7 +195,6 @@ public class ProductsService {
         product.setStock(dto.getStock());
         product.setStatus(dto.getConditionStatus());
         product.setListingType(dto.getListingType());
-        product.setPickupType(dto.getPickupType());
         product.setStreet(dto.getStreet());
         product.setCity(dto.getCity());
         product.setRegion(dto.getRegion());

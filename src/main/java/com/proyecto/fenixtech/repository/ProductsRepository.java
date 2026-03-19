@@ -26,6 +26,7 @@ public interface ProductsRepository extends JpaRepository<Products, Integer> {
 
         @Query(value = "SELECT * FROM products WHERE status = 'ACTIVE' AND company_id = :companyId", nativeQuery = true)
         List<Products> findByProductStatusActiveAndCompany_CompanyId(@Param("companyId") Integer companyId);
+
         @Query(value = "SELECT * FROM products WHERE company_id = :companyId", nativeQuery = true)
         List<Products> findByCompany_CompanyId(@Param("companyId") Integer companyId);
 
@@ -56,8 +57,7 @@ public interface ProductsRepository extends JpaRepository<Products, Integer> {
                         "AND (:maxPrice IS NULL OR p.price <= :maxPrice) " +
                         "AND (:minStock IS NULL OR p.stock_quantity >= :minStock) " +
                         "AND (:maxStock IS NULL OR p.stock_quantity <= :maxStock)" +
-                        "AND (:location IS NULL OR p.location LIKE CONCAT('%', :location, '%')) " +
-                        "AND (:pType IS NULL OR p.pickup_type = :pType)", nativeQuery = true)
+                        "AND (:location IS NULL OR p.location LIKE CONCAT('%', :location, '%'))", nativeQuery = true)
         List<Products> findByConditions(
                         @Param("lType") String lType,
                         @Param("cStatus") String cStatus,
@@ -65,7 +65,6 @@ public interface ProductsRepository extends JpaRepository<Products, Integer> {
                         @Param("maxPrice") Double maxPrice,
                         @Param("minStock") Integer minStock,
                         @Param("maxStock") Integer maxStock,
-                        @Param("location") String location,
-                        @Param("pType") String pType);
+                        @Param("location") String location);
 
 }
