@@ -46,7 +46,7 @@ public class SecurityConfig {
                                                                 "/shipping-carriers", "/shipping-carriers/{id}",
                                                                 "/shipping-carriers/{id}/track/{number}",
                                                                 "/posts/user/{userId}", "/posts/{id}",
-                                                                "/reviews/company/**", "/reviews/user/{userId}", "/reviews")
+                                                                "/reviews/company/**", "/reviews/user/{userId}", "/reviews", "/posts/company/**")
                                                 .permitAll()
 
                                                 // Acceso solo admin
