@@ -132,7 +132,7 @@ public class UsersService {
             String nameImg = imageService.guardarImagen(dto.getUserImg());
             user.setUserImg("/fenixtech/uploads/" + nameImg);
         }
-
+        user.setDescription(dto.getDescription());
         usersRepository.save(user);
 
         return UserResponseDTO.builder()

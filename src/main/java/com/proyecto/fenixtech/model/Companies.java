@@ -20,6 +20,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -71,6 +72,10 @@ public class Companies implements Serializable {
     @Column(name = "company_img", columnDefinition = "TEXT")
     private String companyImg;
 
+    @Schema(description = "Descripción de la empresa")
+    @Column(name = "company_description", columnDefinition = "TEXT")
+    private String companyDescription;
+
     @Schema(description = "Visibilidad de la empresa", example = "true")
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
@@ -95,6 +100,13 @@ public class Companies implements Serializable {
     @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("following")
     private List<Follow> followers;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.isActive == null) {
+            this.isActive = true;
+        }
+    }
 
     
 }

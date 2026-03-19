@@ -103,6 +103,10 @@ public class Users implements UserDetails {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @Schema(description = "Descripcion del usuario", example = "Soy un usuario ...........")
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({ "user", "companyBadges", "products", "reviews", "followers" })
     private Companies company;

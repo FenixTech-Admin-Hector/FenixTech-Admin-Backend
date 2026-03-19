@@ -1,7 +1,3 @@
--- ==============================================================================
--- PROYECTO: Plataforma E-commerce y Donación de Hardware (Esquema Definitivo)
--- MOTOR: MariaDB / MySQL
--- ==============================================================================
 
 -- ------------------------------------------------------------------------------
 -- MÓDULO 1: USUARIOS, PERFILES Y DIRECCIONES
@@ -22,7 +18,8 @@ CREATE TABLE IF NOT EXISTS users (
     user_img VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP DEFAULT NULL,
-    is_active BOOLEAN DEFAULT TRUE
+    is_active BOOLEAN DEFAULT TRUE,
+    description TEXT DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS companies (
@@ -36,6 +33,7 @@ CREATE TABLE IF NOT EXISTS companies (
     -- JSON: Flexibilidad absoluta para métricas (CO2, e-waste, agua...) sin alterar tablas
     impact_metrics JSON,
     company_img VARCHAR(255) DEFAULT null,
+    company_description TEXT DEFAULT NULL,
     is_active BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
 );

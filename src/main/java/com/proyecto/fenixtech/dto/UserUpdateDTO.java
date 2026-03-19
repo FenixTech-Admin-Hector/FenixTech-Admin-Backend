@@ -18,4 +18,7 @@ public class UserUpdateDTO {
     private String lastName;
 
     private MultipartFile userImg;
+
+    private String description;
+
 }
