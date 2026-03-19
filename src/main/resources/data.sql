@@ -261,13 +261,13 @@ INSERT INTO company_badges (company_id, badge_id, awarded_at) VALUES
 (10, 2, '2023-06-10 19:00:00'), (11, 3, '2023-06-11 20:00:00'), (12, 4, '2023-06-12 21:00:00'),
 (13, 1, '2023-06-13 09:00:00'), (14, 2, '2023-06-14 10:00:00'), (15, 3, '2023-06-15 11:00:00');
 -- Descriptions for testing
-UPDATE companies SET company_description = 'Especialistas en soluciones tecnológicas refurbishadas. Damos segunda vida a equipos de alto rendimiento para empresas y particulares con garantía certificada.' WHERE company_id = 1;
-UPDATE companies SET company_description = 'Comprometidos con el medio ambiente. Recuperamos hardware usado y lo transformamos en productos sostenibles con el menor impacto ecológico posible.' WHERE company_id = 2;
-UPDATE companies SET company_description = 'Líderes en reciclaje de componentes electrónicos. Nuestro proceso garantiza la correcta gestión de residuos tecnológicos y la reutilización de materiales.' WHERE company_id = 3;
-UPDATE companies SET company_description = 'Vendemos PCs de segunda mano completamente revisados y actualizados. Cada equipo pasa por más de 50 pruebas antes de llegar a tus manos.' WHERE company_id = 4;
-UPDATE companies SET company_description = 'Tu tienda de confianza para componentes ecológicos. Primamos la circularidad y el ahorro sin renunciar a la calidad.' WHERE company_id = 5;
+UPDATE companies SET company_description = 'Especialistas en soluciones tecnolï¿½gicas refurbishadas. Damos segunda vida a equipos de alto rendimiento para empresas y particulares con garantï¿½a certificada.' WHERE company_id = 1;
+UPDATE companies SET company_description = 'Comprometidos con el medio ambiente. Recuperamos hardware usado y lo transformamos en productos sostenibles con el menor impacto ecolï¿½gico posible.' WHERE company_id = 2;
+UPDATE companies SET company_description = 'Lï¿½deres en reciclaje de componentes electrï¿½nicos. Nuestro proceso garantiza la correcta gestiï¿½n de residuos tecnolï¿½gicos y la reutilizaciï¿½n de materiales.' WHERE company_id = 3;
+UPDATE companies SET company_description = 'Vendemos PCs de segunda mano completamente revisados y actualizados. Cada equipo pasa por mï¿½s de 50 pruebas antes de llegar a tus manos.' WHERE company_id = 4;
+UPDATE companies SET company_description = 'Tu tienda de confianza para componentes ecolï¿½gicos. Primamos la circularidad y el ahorro sin renunciar a la calidad.' WHERE company_id = 5;
 
-UPDATE users SET description = 'Apasionado de la tecnología y el DIY. Siempre buscando la mejor relación calidad-precio en hardware.' WHERE user_id = 16;
-UPDATE users SET description = 'Técnico informático con 10 años de experiencia. Me encanta restaurar equipos antiguos y darles una nueva vida.' WHERE user_id = 17;
-UPDATE users SET description = 'Diseñadora gráfica freelance. Busco equipos refurbishados para mi estudio creativo sin arruinar el planeta.' WHERE user_id = 18;
-UPDATE users SET description = 'Estudiante de ingeniería informática. Colecciono componentes raros y me gusta montar mis propios equipos.' WHERE user_id = 19;
+UPDATE users SET description = 'Apasionado de la tecnologï¿½a y el DIY. Siempre buscando la mejor relaciï¿½n calidad-precio en hardware.' WHERE user_id = 16;
+UPDATE users SET description = 'Tï¿½cnico informï¿½tico con 10 aï¿½os de experiencia. Me encanta restaurar equipos antiguos y darles una nueva vida.' WHERE user_id = 17;
+UPDATE users SET description = 'Diseï¿½adora grï¿½fica freelance. Busco equipos refurbishados para mi estudio creativo sin arruinar el planeta.' WHERE user_id = 18;
+UPDATE users SET description = 'Estudiante de ingenierï¿½a informï¿½tica. Colecciono componentes raros y me gusta montar mis propios equipos.' WHERE user_id = 19;
