@@ -78,6 +78,16 @@ public class PostsController {
                 return ResponseEntity.ok(postsService.findByUserId(userId));
         }
 
+        @Operation(summary = "Obtener posts públicos de una empresa", description = "Devuelve una lista de posts públicos de una empresa")
+        @ApiResponses(value = {
+                @ApiResponse(responseCode = "200", description = "Posts obtenidos con éxito"),
+                @ApiResponse(responseCode = "404", description = "Empresa no encontrada")
+        })
+        @GetMapping("/company/{companyId}")
+        public ResponseEntity<List<Posts>> getPublicPostsByCompany(@PathVariable Integer companyId) {
+                List<Posts> posts = postsService.getPublicPostsByCompanyId(companyId);
+                return ResponseEntity.ok(posts);
+        }
 
         @Operation(summary = "Obtener el número total de posts", description = "Devuelve el número total de posts")
         @ApiResponses(value = {

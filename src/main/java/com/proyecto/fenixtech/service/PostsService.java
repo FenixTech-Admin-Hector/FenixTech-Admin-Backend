@@ -11,10 +11,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.proyecto.fenixtech.dto.PostsRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
+import com.proyecto.fenixtech.model.Companies;
 import com.proyecto.fenixtech.model.Posts;
 import com.proyecto.fenixtech.model.PostsImg;
 import com.proyecto.fenixtech.model.Users;
 import com.proyecto.fenixtech.model.enums.Rol;
+import com.proyecto.fenixtech.repository.CompaniesRepository;
 import com.proyecto.fenixtech.repository.PostsRepository;
 import com.proyecto.fenixtech.repository.UsersRepository;
 
@@ -28,6 +30,8 @@ public class PostsService {
     private UsersService usersService;
     @Autowired
     private ImageService imagenService;
+    @Autowired
+    private CompaniesRepository companyRepository;
 
     @Transactional(readOnly = true)
     public Page<Posts> findAllPosts(Pageable pageable) {
@@ -43,7 +47,7 @@ public class PostsService {
     @Transactional(readOnly = true)
     public List<Posts> findByUserId(Integer id) {
         Users currentUser = usersService.getCurrentUser();
-        
+
         if (!currentUser.getRole().equals(Rol.ADMIN) && !currentUser.getUserId().equals(id)) {
             throw new AccessDeniedException("No tienes permiso para ver los posts de otro usuario");
         }
@@ -51,6 +55,16 @@ public class PostsService {
         usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
         return postsRepository.findByAuthor_UserId(id);
+    }
+
+    public List<Posts> getPublicPostsByCompanyId(Integer companyId) {
+        Companies company = companyRepository.findByCompanyIdAndIsActiveTrue(companyId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "La empresa con ID " + companyId + " no existe o está inactiva"));
+
+        Integer authorId = company.getUser().getUserId();
+
+        return postsRepository.findByAuthor_UserId(authorId);
     }
 
     @Transactional(readOnly = true)
@@ -61,7 +75,7 @@ public class PostsService {
     @Transactional
     public Posts save(PostsRequestDTO dto) {
         Users user = usersService.getCurrentUser();
-        
+
         Posts post = new Posts();
         post.setTitle(dto.getTitle());
         post.setBody(dto.getBody());
@@ -86,8 +100,8 @@ public class PostsService {
         Posts post = postsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post no encontrado"));
 
-        if (!post.getAuthor().getUserId().equals(currentUser.getUserId()) && 
-            !currentUser.getRole().equals(Rol.ADMIN)) {
+        if (!post.getAuthor().getUserId().equals(currentUser.getUserId()) &&
+                !currentUser.getRole().equals(Rol.ADMIN)) {
             throw new AccessDeniedException("No tienes permiso para eliminar este post");
         }
 

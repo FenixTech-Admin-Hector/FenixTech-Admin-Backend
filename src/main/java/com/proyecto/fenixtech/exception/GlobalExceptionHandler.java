@@ -30,8 +30,12 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ResponseEntity<Map<String, Object>> handleMaxSizeException(MaxUploadSizeExceededException ex) {
-        return buildResponse(HttpStatus.CONTENT_TOO_LARGE, "El archivo es demasiado grande. El límite es de 5MB.");
+    public ResponseEntity<?> handleMaxSizeException(MaxUploadSizeExceededException ex) {
+        ex.printStackTrace();
+        Map<String, Object> response = new HashMap<>();
+        response.put("error", "Content Too Large");
+        response.put("message", "El archivo es demasiado grande. El límite es de 5MB.");
+        return ResponseEntity.status(HttpStatus.CONTENT_TOO_LARGE).body(response);
     }
 
     private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String message) {
@@ -40,7 +44,7 @@ public class GlobalExceptionHandler {
         response.put("status", status.value());
         response.put("error", status.getReasonPhrase());
         response.put("message", message);
-        
+
         return new ResponseEntity<>(response, status);
     }
 
