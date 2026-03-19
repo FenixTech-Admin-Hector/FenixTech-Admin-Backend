@@ -71,6 +71,10 @@ public class Companies implements Serializable {
     @Column(name = "company_img", columnDefinition = "TEXT")
     private String companyImg;
 
+    @Schema(description = "Descripción de la empresa")
+    @Column(name = "company_description", columnDefinition = "TEXT")
+    private String companyDescription;
+
     @Schema(description = "Visibilidad de la empresa", example = "true")
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;

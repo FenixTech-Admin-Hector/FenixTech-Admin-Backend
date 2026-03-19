@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS companies (
     -- JSON: Flexibilidad absoluta para métricas (CO2, e-waste, agua...) sin alterar tablas
     impact_metrics JSON,
     company_img VARCHAR(255) DEFAULT null,
+    company_description TEXT DEFAULT NULL,
     is_active BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
