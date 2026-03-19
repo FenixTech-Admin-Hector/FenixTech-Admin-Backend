@@ -1,7 +1,3 @@
--- ==============================================================================
--- PROYECTO: Plataforma E-commerce y Donación de Hardware (Esquema Definitivo)
--- MOTOR: MariaDB / MySQL
--- ==============================================================================
 
 -- ------------------------------------------------------------------------------
 -- MÓDULO 1: USUARIOS, PERFILES Y DIRECCIONES
@@ -22,7 +18,8 @@ CREATE TABLE IF NOT EXISTS users (
     user_img VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP DEFAULT NULL,
-    is_active BOOLEAN DEFAULT TRUE
+    is_active BOOLEAN DEFAULT TRUE,
+    description TEXT DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS companies (
