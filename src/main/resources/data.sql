@@ -5,20 +5,20 @@ INSERT INTO users (email, password_hash, first_name, last_name, role, created_at
 ('comp3@fenix.com', '$2a$10$fnFtfeeyxag0wmZsE4LIGORvK9O.0vVuxeazfX7fQGg51Jj8KvdwC', 'Carlos', 'Ruiz', 'EMPRESA', '2023-02-01 09:30:00', TRUE),
 ('comp4@fenix.com', '$2a$10$HvA5PKnd2/T3hZyRlni7B.wzY5J3BWRjmQhxxhag0rqBOk13JArXu', 'Ana', 'Lopez', 'EMPRESA', '2023-02-20 14:00:00', TRUE),
 ('comp5@fenix.com', '$2a$10$iHiy/RIxQgCLe0ek3umPn.UBd4r1N79d67TU0VbwrPJGYtg7kSlSa', 'Luis', 'Torres', 'EMPRESA', '2023-03-05 16:20:00', TRUE),
-('comp6@fenix.com', '$2a$10$mOzp04GCyPDY.EwlMByBk.5omEWjGFeCTETiIMlGUGIHM321mEyT2', 'Elena', 'Diaz', 'EMPRESA', '2023-03-15 08:45:00', FALSE),
+('comp6@fenix.com', '$2a$10$mOzp04GCyPDY.EwlMByBk.5omEWjGFeCTETiIMlGUGIHM321mEyT2', 'Elena', 'Diaz', 'EMPRESA', '2023-03-15 08:45:00', TRUE),
 ('comp7@fenix.com', '$2a$10$5BL8aiBXhFJ.iW6rvjQSoO7YepdXC6a17FcN363Hwutys3lsozDT6', 'Pedro', 'Sanchez', 'EMPRESA', '2023-04-01 12:00:00', TRUE),
 ('comp8@fenix.com', '$2a$10$pa5zghEhwWVUFRWjj3NjOeT4EPYcfAGRaJHiEjP2ldlEUUGdQDXwu', 'Sofia', 'Martin', 'EMPRESA', '2023-04-10 10:15:00', TRUE),
-('comp9@fenix.com', '$2a$10$M/Au1kTdgNxV5yRnBhtpteITwcnxKcou4xRtm9RKqRb/o15GE25E6', 'Miguel', 'Hernandez', 'EMPRESA', '2023-05-05 11:30:00', FALSE),
+('comp9@fenix.com', '$2a$10$M/Au1kTdgNxV5yRnBhtpteITwcnxKcou4xRtm9RKqRb/o15GE25E6', 'Miguel', 'Hernandez', 'EMPRESA', '2023-05-05 11:30:00', TRUE),
 ('comp10@fenix.com', '$2a$10$grR1ulh/XQfim4oFpNIwM.05unEvHAkvAl6tfCURV/OQFAScCQNrG', 'Lucia', 'Jimenez', 'EMPRESA', '2023-05-20 15:45:00', FALSE),
 ('comp11@fenix.com', '$2a$10$5UHKu2R3LA5yTN2cMDB4OOqqb.PUiweteeIbTTClN4A36/GqmqCXq', 'David', 'Alvarez', 'EMPRESA', '2023-06-01 09:00:00', TRUE),
 ('comp12@fenix.com', '$2a$10$qTjrRYDSpJeNwyS9I82Rh.vZfbYRu45xqhkmikERdWpq0YxDT6Wl6', 'Carmen', 'Moreno', 'EMPRESA', '2023-06-15 13:20:00', TRUE),
 ('comp13@fenix.com', '$2a$10$OJ3NfgK9157bczIrMCB7Ue8/DgIaRyAnHOZqBr/bqUVEtKtqIkPh.', 'Jorge', 'Munoz', 'EMPRESA', '2023-07-01 17:00:00', TRUE),
-('comp14@fenix.com', '$2a$10$rBOsX.hkH7GwQg14pG8qrejvkArHEav9.F7r9pE3MQCQbPL/dwuc2', 'Raquel', 'Romero', 'EMPRESA', '2023-07-20 10:30:00', FALSE),
+('comp14@fenix.com', '$2a$10$rBOsX.hkH7GwQg14pG8qrejvkArHEav9.F7r9pE3MQCQbPL/dwuc2', 'Raquel', 'Romero', 'EMPRESA', '2023-07-20 10:30:00', TRUE),
 ('comp15@fenix.com', '$2a$10$FryfaZ29Ad/SXD9MvbSJpOzMPF4gOKI3eKaBRmgRDDhmYpks2aHS6', 'Alberto', 'Navarro', 'EMPRESA', '2023-08-05 14:15:00', TRUE),
-('user1@fenix.com', '$2a$10$6MyaSZhcLjmxWPrNnXgFBeNv8ZiP1Y3imZoLxFi4tE5wdVGZz16j.', 'Laura', 'Gil', 'PARTICULAR', '2023-08-15 16:00:00', FALSE),
-('user2@fenix.com', '$2a$10$pxzsm37BrCgTsC05aQFIWuP09.jmsSzy2dFUMXL80X9tuxhCqctRu', 'Roberto', 'Serrano', 'PARTICULAR', '2023-09-01 09:45:00', FALSE),
+('user1@fenix.com', '$2a$10$6MyaSZhcLjmxWPrNnXgFBeNv8ZiP1Y3imZoLxFi4tE5wdVGZz16j.', 'Laura', 'Gil', 'PARTICULAR', '2023-08-15 16:00:00', TRUE),
+('user2@fenix.com', '$2a$10$pxzsm37BrCgTsC05aQFIWuP09.jmsSzy2dFUMXL80X9tuxhCqctRu', 'Roberto', 'Serrano', 'PARTICULAR', '2023-09-01 09:45:00', TRUE),
 ('user3@fenix.com', '$2a$10$fBZ6ai8lEqNoZVUbogN/7.jCV8FmRPWg55BzxRcDJn3Xoc.xhbcWe', 'Isabel', 'Blanco', 'PARTICULAR', '2023-09-20 11:15:00', TRUE),
-('user4@fenix.com', '$2a$10$pPImOFcZZOhZEborkEuW9e.zzvvn0I.oCinjlJWK6HTmEM1FEBgBm', 'Fernando', 'Molina', 'PARTICULAR', '2023-10-05 13:30:00', FALSE),
+('user4@fenix.com', '$2a$10$pPImOFcZZOhZEborkEuW9e.zzvvn0I.oCinjlJWK6HTmEM1FEBgBm', 'Fernando', 'Molina', 'PARTICULAR', '2023-10-05 13:30:00', TRUE),
 ('admin@fenix.com', '$2a$10$3zwvbKLIsf7qYrLKvuWV0eL9zzIPbKKUQRuSmDuPgQeAo5By8LFka', 'Admin', 'System', 'ADMIN', '2023-01-01 00:00:00', TRUE);
 
 -- Companies (15 records)
@@ -59,24 +59,28 @@ INSERT INTO addresses (user_id, street, city, region, zip_code, country) VALUES
 
 -- Categories (5 records)
 INSERT INTO categories (name, description, is_active) VALUES 
-('Ordenadores', 'Equipos completos de sobremesa y portátiles', TRUE),
-('Componentes', 'Piezas internas para PC y servidores', TRUE),
-('Periféricos', 'Dispositivos externos de entrada y salida', TRUE),
-('Redes', 'Equipos de conectividad y redes', TRUE),
-('Impresión', 'Impresoras, escáneres y consumibles', TRUE);
+('Ordenadores', 'Equipos completos, portátiles y estaciones de trabajo para todo tipo de uso', TRUE),
+('Componentes', 'Hardware interno y piezas fundamentales para el montaje y actualización de equipos', TRUE),
+('Periféricos', 'Dispositivos externos de entrada, salida y accesorios de interacción', TRUE),
+('Smartphones', 'Dispositivos móviles inteligentes, tablets y accesorios de telefonía', TRUE),
+('Servidores', 'Sistemas de alto rendimiento para almacenamiento, redes y gestión de datos', TRUE);
 
 -- Subcategories (10 records)
 INSERT INTO subcategories (category_id, name, description, is_active) VALUES
-(1, 'Portátiles', 'Ordenadores portátiles de todo tipo', TRUE),
-(1, 'Sobremesa', 'Torres y equipos all-in-one', TRUE),
-(2, 'Tarjetas Gráficas', 'GPUs para gaming y diseño', TRUE),
-(2, 'Procesadores', 'CPUs Intel y AMD', TRUE),
-(3, 'Teclados', 'Teclados mecánicos y de membrana', TRUE),
-(3, 'Ratones', 'Ratones ópticos y láser', TRUE),
-(4, 'Routers', 'Routers WiFi y neutros', TRUE),
-(4, 'Switches', 'Switches gestionables y no gestionables', TRUE),
-(5, 'Impresoras 3D', 'Impresoras de filamento y resina', TRUE),
-(5, 'Cartuchos', 'Tinta y tóner', TRUE);
+(1, 'Gama Baja', 'Equipos básicos para tareas de ofimática, navegación web y estudio', TRUE),
+(1, 'Gama Media', 'Equipos equilibrados para multitarea, diseño ligero y entretenimiento', TRUE),
+(1, 'Gama Alta', 'Estaciones de trabajo y equipos de alto rendimiento para gaming y edición profesional', TRUE),
+(2, 'Almacenamiento', 'Unidades de estado sólido (SSD) y discos duros rígidos (HDD)', TRUE),
+(2, 'Procesadores', 'Unidades centrales de procesamiento (CPU) de última generación Intel y AMD', TRUE),
+(2, 'Placas Base y Memoria RAM', 'Placas base de diversos chipsets y módulos de memoria RAM DDR4 y DDR5', TRUE),
+(3, 'Teclados y ratones', 'Periféricos de entrada: teclados mecánicos/membrana y ratones ópticos/láser', TRUE),
+(3, 'Audio', 'Altavoces, auriculares y sistemas de sonido de alta fidelidad', TRUE),
+(3, 'Monitores', 'Pantallas de alta resolución, diversas tasas de refresco y tecnologías de panel', TRUE),
+(4, 'Gama Baja', 'Teléfonos móviles esenciales con funciones básicas y alta autonomía', TRUE),
+(4, 'Gama Media', 'Smartphones con gran relación calidad-precio y cámaras versátiles', TRUE),
+(4, 'Gama Alta', 'Dispositivos premium con máxima potencia, mejores cámaras y pantallas OLED', TRUE),
+(5, 'Servidores Torre', 'Servidores con formato de torre para pequeñas y medianas empresas', TRUE),
+(5, 'Servidor Rack', 'Sistemas optimizados para montaje en armarios rack de centros de datos', TRUE);
 
 -- Badges (4 records)
 INSERT INTO badges (name, icon_url, is_active) VALUES

@@ -13,4 +13,10 @@ public class OrdersRequestDTO {
 
     @NotNull(message = "Debes especificar si requiere envío")
     private Boolean requiresShipping;
+
+    private Integer carrierId;
+    private String shippingStreet;
+    private String shippingCity;
+    private String shippingZipCode;
+    private String shippingCountry;
 }

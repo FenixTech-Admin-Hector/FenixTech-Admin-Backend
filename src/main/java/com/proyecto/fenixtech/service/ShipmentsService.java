@@ -1,6 +1,5 @@
 package com.proyecto.fenixtech.service;
 
-import com.proyecto.fenixtech.dto.OrderRequestUpdateDTO;
 import com.proyecto.fenixtech.dto.ShipmentRequestDTO;
 import com.proyecto.fenixtech.dto.ShipmentResponseDTO;
 import com.proyecto.fenixtech.dto.ShipmentUpdateStatusDTO;
@@ -38,10 +37,7 @@ public class ShipmentsService {
 
     @Autowired
     private OrdersRepository ordersRepository;
-
-    @Autowired
-    private OrdersService ordersService;
-
+    
     @Autowired
     private UsersService usersService;
 
@@ -175,10 +171,9 @@ public class ShipmentsService {
         if (dto.getStatus() == ShipmentStatus.DELIVERED) {
             Orders order = shipment.getOrder();
 
-            OrderRequestUpdateDTO orderDto = new OrderRequestUpdateDTO();
-            orderDto.setStatus(OrderStatus.COMPLETED);
+            order.setStatus(OrderStatus.COMPLETED);
 
-            ordersService.updateStatus(order.getOrderId(), orderDto);
+            ordersRepository.save(order);
         }
 
         return shipmentsRepository.save(shipment);

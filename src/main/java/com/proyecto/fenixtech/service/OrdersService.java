@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.fenixtech.dto.OrderRequestUpdateDTO;
 import com.proyecto.fenixtech.dto.OrdersRequestDTO;
+import com.proyecto.fenixtech.dto.ShipmentRequestDTO;
 import com.proyecto.fenixtech.exception.ResourceNotFoundException;
 import com.proyecto.fenixtech.model.CartItems;
 import com.proyecto.fenixtech.model.OrderDetails;
@@ -42,6 +43,9 @@ public class OrdersService {
 
     @Autowired
     private ReputationService reputationService;
+    
+    @Autowired
+    private ShipmentsService shipmentsService;
 
     @Transactional(readOnly = true)
     public List<Orders> findAllOrders() {
@@ -153,6 +157,21 @@ public class OrdersService {
         newOrder.setTotalAmount(totalCalculado);
 
         Orders savedOrder = ordersRepository.save(newOrder);
+
+        if (savedOrder.getRequiresShipping()) {
+            ShipmentRequestDTO dtoShipment = new ShipmentRequestDTO();
+            dtoShipment.setOrderId(savedOrder.getOrderId());
+            dtoShipment.setCarrierId(dto.getCarrierId());
+            dtoShipment.setShippingStreet(dto.getShippingStreet());
+            dtoShipment.setShippingCity(dto.getShippingCity());
+            dtoShipment.setShippingZipCode(dto.getShippingZipCode());
+            dtoShipment.setShippingCountry(dto.getShippingCountry());
+
+            shipmentsService.save(dtoShipment);
+            
+            // Refrescamos la orden para devolverla con el precio final correcto
+            savedOrder = ordersRepository.findById(savedOrder.getOrderId()).get();
+        }
 
         return savedOrder;
     }
