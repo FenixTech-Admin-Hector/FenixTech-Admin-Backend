@@ -91,20 +91,20 @@ INSERT INTO badges (name, icon_url, is_active) VALUES
 
 -- Products (15 records)
 INSERT INTO products (company_id, subcategory_id, title, description, condition_status, listing_type, price, stock_quantity, status, street, city, region, zip_code, country) VALUES
-(1, 1, 'Mini PC Lenovo i3', '8GB RAM, 256GB SSD, ideal ofimática', 'USED_GOOD', 'SALE', 120.00, 5, 'ACTIVE', 'Calle Mayor 1', 'Valencia', 'Valencia', '46001', 'España'),
-(2, 2, 'Laptop HP Pavilion Ryzen 5', '16GB RAM DDR4, 512GB SSD', 'USED_FAIR', 'SALE', 250.00, 2, 'ACTIVE', 'Gran Vía 12', 'Bilbao', 'Vizcaya', '48001', 'España'),
-(3, 3, 'PC Gaming Predator i9', '32GB DDR5, 1TB SSD M.2', 'USED_GOOD', 'SALE', 500.00, 10, 'ACTIVE', 'Paseo Independencia 5', 'Zaragoza', 'Zaragoza', '50001', 'España'),
-(4, 4, 'Samsung Galaxy A14', 'Batería nueva', 'USED_GOOD', 'SALE', 90.00, 8, 'ACTIVE','Avenida del Cid 20', 'Valencia', 'Valencia', '46014', 'España'),
-(5, 5, 'Xiaomi Redmi Note 12', 'Como nuevo, con caja', 'NEW', 'SALE', 180.00, 20, 'ACTIVE','Plaza Circular 3', 'Murcia', 'Murcia', '30001', 'España'),
+(1, 1, 'Mini PC Lenovo i3', '8GB RAM, 256GB SSD, ideal ofimática', 'USED_GOOD', 'SALE', 45.00, 5, 'ACTIVE', 'Calle Mayor 1', 'Valencia', 'Valencia', '46001', 'España'),
+(2, 2, 'Laptop HP Pavilion Ryzen 5', '16GB RAM DDR4, 512GB SSD', 'USED_FAIR', 'SALE', 85.00, 2, 'ACTIVE', 'Gran Vía 12', 'Bilbao', 'Vizcaya', '48001', 'España'),
+(3, 3, 'PC Gaming Predator i9', '32GB DDR5, 1TB SSD M.2', 'USED_GOOD', 'SALE', 150.00, 10, 'ACTIVE', 'Paseo Independencia 5', 'Zaragoza', 'Zaragoza', '50001', 'España'),
+(4, 4, 'Samsung Galaxy A14', 'Batería nueva', 'USED_GOOD', 'SALE', 30.00, 8, 'ACTIVE','Avenida del Cid 20', 'Valencia', 'Valencia', '46014', 'España'),
+(5, 5, 'Xiaomi Redmi Note 12', 'Como nuevo, con caja', 'NEW', 'SALE', 65.00, 20, 'ACTIVE','Plaza Circular 3', 'Murcia', 'Murcia', '30001', 'España'),
 (6, 6, 'iPhone 13 Pro', 'Reacondicionado, 128GB', 'USED_FAIR', 'DONATION', 0.00, 5, 'ACTIVE', 'Calle Alcalá 50', 'Madrid', 'Madrid', '28001', 'España'),
-(7, 7, 'Auriculares HyperX Cloud', 'Con micrófono, poco uso', 'NEW', 'SALE', 45.00, 15, 'ACTIVE', 'Calle Real 15', 'Santander', 'Cantabria', '39001', 'España'),
-(8, 8, 'Teclado Mecánico Logitech', 'Switch Blue', 'USED_GOOD', 'SALE', 50.00, 3, 'ACTIVE', 'Calle Colón 10', 'Valencia', 'Valencia', '46004', 'España'),
-(9, 9, 'Monitor Dell 24"', 'FHD 60Hz', 'USED_GOOD', 'SALE', 80.00, 1, 'ACTIVE', 'Carrer de Balmes 40', 'Barcelona', 'Barcelona', '08001', 'España'),
-(10, 10, 'SSD Kingston 512GB', 'Disco sólido SATA3 512GB', 'NEW', 'SALE', 35.00, 50, 'ACTIVE', 'Calle Sierpes 5', 'Sevilla', 'Sevilla', '41004', 'España'),
-(11, 11, 'Kit Memoria RAM Corsair 32GB', 'DDR4 ideal para placas ATX', 'USED_FAIR', 'SALE', 65.00, 4, 'ACTIVE',  'Calle de la Paz 8', 'Valencia', 'Valencia', '46003', 'España'),
+(7, 7, 'Auriculares HyperX Cloud', 'Con micrófono, poco uso', 'NEW', 'SALE', 15.00, 15, 'ACTIVE', 'Calle Real 15', 'Santander', 'Cantabria', '39001', 'España'),
+(8, 8, 'Teclado Mecánico Logitech', 'Switch Blue', 'USED_GOOD', 'SALE', 18.00, 3, 'ACTIVE', 'Calle Colón 10', 'Valencia', 'Valencia', '46004', 'España'),
+(9, 9, 'Monitor Dell 24"', 'FHD 60Hz', 'USED_GOOD', 'SALE', 25.00, 1, 'ACTIVE', 'Carrer de Balmes 40', 'Barcelona', 'Barcelona', '08001', 'España'),
+(10, 10, 'SSD Kingston 512GB', 'Disco sólido SATA3 512GB', 'NEW', 'SALE', 12.00, 50, 'ACTIVE', 'Calle Sierpes 5', 'Sevilla', 'Sevilla', '41004', 'España'),
+(11, 11, 'Kit Memoria RAM Corsair 32GB', 'DDR4 ideal para placas ATX', 'USED_FAIR', 'SALE', 22.00, 4, 'ACTIVE',  'Calle de la Paz 8', 'Valencia', 'Valencia', '46003', 'España'),
 (12, 12, 'Intel Core i5-10400F', '6 Núcleos, 12 Hilos, 80W TDP', 'USED_GOOD', 'DONATION', 0.00, 10, 'ACTIVE', 'Avinguda Diagonal 100', 'Barcelona', 'Barcelona', '08019', 'España'),
-(13, 13, 'Servidor Torre Dell PowerEdge', 'Intel Xeon, 32GB ECC, 2x2TB HDD', 'USED_GOOD', 'SALE', 350.00, 6, 'ACTIVE','Paseo de la Castellana 120', 'Madrid', 'Madrid', '28046', 'España'),
-(14, 14, 'Servidor Rack 1U HP ProLiant', 'Doble Xeon, 64GB ECC, 4x1TB SSD', 'USED_GOOD', 'SALE', 450.00, 7, 'ACTIVE', 'Calle Betis 30', 'Sevilla', 'Sevilla', '41010', 'España'),
+(13, 13, 'Servidor Torre Dell PowerEdge', 'Intel Xeon, 32GB ECC, 2x2TB HDD', 'USED_GOOD', 'SALE', 125.00, 6, 'ACTIVE','Paseo de la Castellana 120', 'Madrid', 'Madrid', '28046', 'España'),
+(14, 14, 'Servidor Rack 1U HP ProLiant', 'Doble Xeon, 64GB ECC, 4x1TB SSD', 'USED_GOOD', 'SALE', 145.00, 7, 'ACTIVE', 'Calle Betis 30', 'Sevilla', 'Sevilla', '41010', 'España'),
 (15, 8, 'Ratón Razer DeathAdder', 'Ratón gaming básico', 'NEW', 'DONATION', 0.00, 100, 'ACTIVE', 'Plaza Mayor 1', 'Valladolid', 'Valladolid', '47001', 'España');
 
 -- Products Images (15 records) - ¡AÑADIDO! Relacionando cada producto con su imagen
