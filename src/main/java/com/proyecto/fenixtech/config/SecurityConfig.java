@@ -46,7 +46,7 @@ public class SecurityConfig {
                                                                 "/shipping-carriers", "/shipping-carriers/{id}",
                                                                 "/shipping-carriers/{id}/track/{number}",
                                                                 "/posts/user/{userId}", "/posts/{id}",
-                                                                "/reviews/company/**")
+                                                                "/reviews/company/**", "/reviews/user/{userId}", "/reviews")
                                                 .permitAll()
 
                                                 // Acceso solo admin
@@ -69,8 +69,8 @@ public class SecurityConfig {
                                                                 "/company-badges/awarded_at",
                                                                 "/shipping-carriers/admin/**", "/users/{id}",
                                                                 "/users/search", "/users/email/**", "/posts/count",
-                                                                "/posts", "/reviews", "/reviews/count",
-                                                                "/reviews/user/{userId}", "/contact/**")
+                                                                "/posts", "/reviews/count",
+                                                                 "/contact/**")
                                                 .hasRole("ADMIN")
 
                                                 // Acceso privado particular
