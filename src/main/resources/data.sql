@@ -23,21 +23,21 @@ INSERT INTO users (email, password_hash, first_name, last_name, role, created_at
 
 -- Companies (15 records)
 INSERT INTO companies (user_id, company_name, cif, reputation_score, impact_metrics, is_active) VALUES
-(1, 'Tech Solutions', 'B1111111A', 100, '{"environmental": {"totalCo2SavedKg": 50.5}, "social": {"itemsDonated": 10}}', TRUE),
-(2, 'Green Hardware', 'B2222222A', 200, '{"environmental": {"totalCo2SavedKg": 120.0}, "social": {"itemsDonated": 25}}', TRUE),
-(3, 'Recycle IT', 'B3333333C', 150, '{"environmental": {"totalCo2SavedKg": 80.2}, "social": {"itemsDonated": 15}}', TRUE),
-(4, 'Second Life PC', 'B4444444C', 300, '{"environmental": {"totalCo2SavedKg": 200.5}, "social": {"itemsDonated": 40}}', TRUE),
-(5, 'EcoComp', 'B5555555F', 50, '{"environmental": {"totalCo2SavedKg": 20.0}, "social": {"itemsDonated": 5}}', TRUE),
-(6, 'Future Tech', 'B6666666H', 120, '{"environmental": {"totalCo2SavedKg": 60.0}, "social": {"itemsDonated": 12}}', TRUE),
-(7, 'Hardware Heroes', 'B7777777I', 180, '{"environmental": {"totalCo2SavedKg": 90.5}, "social": {"itemsDonated": 18}}', TRUE),
-(8, 'Sustainable Systems', 'B8888888D', 250, '{"environmental": {"totalCo2SavedKg": 150.0}, "social": {"itemsDonated": 30}}', TRUE),
-(9, 'ReNew Devices', 'B9999999E', 80, '{"environmental": {"totalCo2SavedKg": 40.0}, "social": {"itemsDonated": 8}}', TRUE),
-(10, 'Circular Electronics', 'B1010101A', 220, '{"environmental": {"totalCo2SavedKg": 130.5}, "social": {"itemsDonated": 28}}', TRUE),
-(11, 'Green Chip', 'B1212121F', 110, '{"environmental": {"totalCo2SavedKg": 55.0}, "social": {"itemsDonated": 11}}', TRUE),
-(12, 'Eco Parts', 'B1313131G', 160, '{"environmental": {"totalCo2SavedKg": 85.0}, "social": {"itemsDonated": 16}}', TRUE),
-(13, 'Tech Cycle', 'B1414141I', 280, '{"environmental": {"totalCo2SavedKg": 180.0}, "social": {"itemsDonated": 35}}', TRUE),
-(14, 'Planet PC', 'B1515151C', 90, '{"environmental": {"totalCo2SavedKg": 45.0}, "social": {"itemsDonated": 9}}', TRUE),
-(15, 'BioBytes', 'B1616161A', 140, '{"environmental": {"totalCo2SavedKg": 70.0}, "social": {"itemsDonated": 14}}', TRUE);
+(1, 'Tech Solutions', 'B1111111A', 100, '{"environmental": {"totalCo2SavedKg": 50.5, "totalEwasteSavedKg": 200.5}, "social": {"itemsDonated": 10}}', TRUE),
+(2, 'Green Hardware', 'B2222222A', 200, '{"environmental": {"totalCo2SavedKg": 120.0, "totalEwasteSavedKg": 120.0}, "social": {"itemsDonated": 25}}', TRUE),
+(3, 'Recycle IT', 'B3333333C', 150, '{"environmental": {"totalCo2SavedKg": 80.2, "totalEwasteSavedKg": 80.2}, "social": {"itemsDonated": 15}}', TRUE),
+(4, 'Second Life PC', 'B4444444C', 300, '{"environmental": {"totalCo2SavedKg": 200.5, "totalEwasteSavedKg": 150.0}, "social": {"itemsDonated": 40}}', TRUE),
+(5, 'EcoComp', 'B5555555F', 50, '{"environmental": {"totalCo2SavedKg": 20.0, "totalEwasteSavedKg": 20.0}, "social": {"itemsDonated": 5}}', TRUE),
+(6, 'Future Tech', 'B6666666H', 120, '{"environmental": {"totalCo2SavedKg": 60.0, "totalEwasteSavedKg": 60.0}, "social": {"itemsDonated": 12}}', TRUE),
+(7, 'Hardware Heroes', 'B7777777I', 180, '{"environmental": {"totalCo2SavedKg": 90.5, "totalEwasteSavedKg": 90.5}, "social": {"itemsDonated": 18}}', TRUE),
+(8, 'Sustainable Systems', 'B8888888D', 250, '{"environmental": {"totalCo2SavedKg": 150.0, "totalEwasteSavedKg": 120.0}, "social": {"itemsDonated": 30}}', TRUE),
+(9, 'ReNew Devices', 'B9999999E', 80, '{"environmental": {"totalCo2SavedKg": 40.0, "totalEwasteSavedKg": 40.0}, "social": {"itemsDonated": 8}}', TRUE),
+(10, 'Circular Electronics', 'B1010101A', 220, '{"environmental": {"totalCo2SavedKg": 130.5, "totalEwasteSavedKg": 130.5}, "social": {"itemsDonated": 28}}', TRUE),
+(11, 'Green Chip', 'B1212121F', 110, '{"environmental": {"totalCo2SavedKg": 55.0, "totalEwasteSavedKg": 55.0}, "social": {"itemsDonated": 11}}', TRUE),
+(12, 'Eco Parts', 'B1313131G', 160, '{"environmental": {"totalCo2SavedKg": 85.0, "totalEwasteSavedKg": 85.0}, "social": {"itemsDonated": 16}}', TRUE),
+(13, 'Tech Cycle', 'B1414141I', 280, '{"environmental": {"totalCo2SavedKg": 180.0, "totalEwasteSavedKg": 180.0}, "social": {"itemsDonated": 35}}', TRUE),
+(14, 'Planet PC', 'B1515151C', 90, '{"environmental": {"totalCo2SavedKg": 45.0, "totalEwasteSavedKg": 45.0}, "social": {"itemsDonated": 9}}', TRUE),
+(15, 'BioBytes', 'B1616161A', 140, '{"environmental": {"totalCo2SavedKg": 70.0, "totalEwasteSavedKg": 70.0}, "social": {"itemsDonated": 14}}', TRUE);
 
 -- Addresses (15 records)
 INSERT INTO addresses (user_id, street, city, region, zip_code, country) VALUES
@@ -256,13 +256,13 @@ INSERT INTO company_badges (company_id, badge_id, awarded_at) VALUES
 (10, 2, '2023-06-10 19:00:00'), (11, 3, '2023-06-11 20:00:00'), (12, 4, '2023-06-12 21:00:00'),
 (13, 1, '2023-06-13 09:00:00'), (14, 2, '2023-06-14 10:00:00'), (15, 3, '2023-06-15 11:00:00');
 -- Descriptions for testing
-UPDATE companies SET company_description = 'Especialistas en soluciones tecnológicas refurbishadas. Damos segunda vida a equipos de alto rendimiento para empresas y particulares con garantía certificada.' WHERE company_id = 1;
-UPDATE companies SET company_description = 'Comprometidos con el medio ambiente. Recuperamos hardware usado y lo transformamos en productos sostenibles con el menor impacto ecológico posible.' WHERE company_id = 2;
-UPDATE companies SET company_description = 'Líderes en reciclaje de componentes electrónicos. Nuestro proceso garantiza la correcta gestión de residuos tecnológicos y la reutilización de materiales.' WHERE company_id = 3;
-UPDATE companies SET company_description = 'Vendemos PCs de segunda mano completamente revisados y actualizados. Cada equipo pasa por más de 50 pruebas antes de llegar a tus manos.' WHERE company_id = 4;
-UPDATE companies SET company_description = 'Tu tienda de confianza para componentes ecológicos. Primamos la circularidad y el ahorro sin renunciar a la calidad.' WHERE company_id = 5;
+UPDATE companies SET company_description = 'Especialistas en soluciones tecnolï¿½gicas refurbishadas. Damos segunda vida a equipos de alto rendimiento para empresas y particulares con garantï¿½a certificada.' WHERE company_id = 1;
+UPDATE companies SET company_description = 'Comprometidos con el medio ambiente. Recuperamos hardware usado y lo transformamos en productos sostenibles con el menor impacto ecolï¿½gico posible.' WHERE company_id = 2;
+UPDATE companies SET company_description = 'Lï¿½deres en reciclaje de componentes electrï¿½nicos. Nuestro proceso garantiza la correcta gestiï¿½n de residuos tecnolï¿½gicos y la reutilizaciï¿½n de materiales.' WHERE company_id = 3;
+UPDATE companies SET company_description = 'Vendemos PCs de segunda mano completamente revisados y actualizados. Cada equipo pasa por mï¿½s de 50 pruebas antes de llegar a tus manos.' WHERE company_id = 4;
+UPDATE companies SET company_description = 'Tu tienda de confianza para componentes ecolï¿½gicos. Primamos la circularidad y el ahorro sin renunciar a la calidad.' WHERE company_id = 5;
 
-UPDATE users SET description = 'Apasionado de la tecnología y el DIY. Siempre buscando la mejor relación calidad-precio en hardware.' WHERE user_id = 16;
-UPDATE users SET description = 'Técnico informático con 10 años de experiencia. Me encanta restaurar equipos antiguos y darles una nueva vida.' WHERE user_id = 17;
-UPDATE users SET description = 'Diseñadora gráfica freelance. Busco equipos refurbishados para mi estudio creativo sin arruinar el planeta.' WHERE user_id = 18;
-UPDATE users SET description = 'Estudiante de ingeniería informática. Colecciono componentes raros y me gusta montar mis propios equipos.' WHERE user_id = 19;
+UPDATE users SET description = 'Apasionado de la tecnologï¿½a y el DIY. Siempre buscando la mejor relaciï¿½n calidad-precio en hardware.' WHERE user_id = 16;
+UPDATE users SET description = 'Tï¿½cnico informï¿½tico con 10 aï¿½os de experiencia. Me encanta restaurar equipos antiguos y darles una nueva vida.' WHERE user_id = 17;
+UPDATE users SET description = 'Diseï¿½adora grï¿½fica freelance. Busco equipos refurbishados para mi estudio creativo sin arruinar el planeta.' WHERE user_id = 18;
+UPDATE users SET description = 'Estudiante de ingenierï¿½a informï¿½tica. Colecciono componentes raros y me gusta montar mis propios equipos.' WHERE user_id = 19;
