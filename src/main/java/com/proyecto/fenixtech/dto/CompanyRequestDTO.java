@@ -1,7 +1,5 @@
 package com.proyecto.fenixtech.dto;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import jakarta.validation.constraints.*;
 import lombok.Data;
 

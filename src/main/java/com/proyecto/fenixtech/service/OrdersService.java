@@ -15,7 +15,6 @@ import com.proyecto.fenixtech.model.Orders;
 import com.proyecto.fenixtech.model.Products;
 import com.proyecto.fenixtech.model.Users;
 import com.proyecto.fenixtech.model.enums.OrderStatus;
-import com.proyecto.fenixtech.model.enums.PickupType;
 import com.proyecto.fenixtech.model.enums.ProductStatus;
 
 import java.time.LocalDate;
@@ -56,7 +55,6 @@ public class OrdersService {
 
         Users currentUser = usersService.getCurrentUser();
 
-
         if (!currentUser.getRole().name().equals("ADMIN") &&
                 !order.getBuyer().getUserId().equals(currentUser.getUserId())) {
             throw new AccessDeniedException("No tienes permiso para ver este pedido.");
@@ -68,7 +66,6 @@ public class OrdersService {
     @Transactional(readOnly = true)
     public List<Orders> findByBuyerId(Integer id) {
         Users currentUser = usersService.getCurrentUser();
-
 
         if (!currentUser.getRole().name().equals("ADMIN") && !currentUser.getUserId().equals(id)) {
             throw new AccessDeniedException("No puedes consultar el historial de compras de otro usuario.");
@@ -116,20 +113,11 @@ public class OrdersService {
             throw new IllegalArgumentException("El carrito está vacío.");
         }
 
-        PickupType tipoReferencia = userCart.get(0).getProduct().getPickupType();
-        for (CartItems item : userCart) {
-            if (item.getProduct().getPickupType() != tipoReferencia) {
-                throw new IllegalArgumentException(
-                        "Incompatibilidad en el carrito: No puedes mezclar productos de recogida local con envío a domicilio.");
-            }
-        }
-
         Orders newOrder = new Orders();
         newOrder.setBuyer(buyer);
         newOrder.setOrderDate(LocalDateTime.now());
-        newOrder.setStatus(OrderStatus.PENDING_PAYMENT); 
-        newOrder.setRequiresShipping(tipoReferencia == PickupType.ENVIO_DOMICILIO);
-
+        newOrder.setStatus(OrderStatus.PENDING_PAYMENT);
+        newOrder.setRequiresShipping(dto.getRequiresShipping());
         List<OrderDetails> detailsList = new ArrayList<>();
         Double totalCalculado = 0.0;
 
@@ -166,7 +154,6 @@ public class OrdersService {
 
         Orders savedOrder = ordersRepository.save(newOrder);
 
-
         return savedOrder;
     }
 
@@ -195,7 +182,7 @@ public class OrdersService {
         Orders order = ordersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado con ID: " + id));
 
-        if(!order.getBuyer().getUserId().equals(buyer.getUserId()) && !buyer.getRole().name().equals("ADMIN")){
+        if (!order.getBuyer().getUserId().equals(buyer.getUserId()) && !buyer.getRole().name().equals("ADMIN")) {
             throw new AccessDeniedException("No tienes permiso para modificar este pedido.");
         }
 
@@ -215,17 +202,21 @@ public class OrdersService {
             }
         }
 
-        if (dto.getStatus() == OrderStatus.COMPLETED && order.getStatus() != OrderStatus.COMPLETED) {
-            for (OrderDetails detail : order.getOrderDetails()) {
-                Products product = detail.getProduct();
-                if (product.getCompany() != null) {
-                    reputationService.proccessTransaction(
-                            product.getCompany().getCompanyId(),
-                            product,
-                            detail.getQuantity());
+        if (dto.getStatus() == OrderStatus.PAID && order.getStatus() != OrderStatus.PAID) {
+
+            cartItemsRepository.deleteByUser_UserId(order.getBuyer().getUserId());
+
+            if (dto.getStatus() == OrderStatus.PAID) {
+                for (OrderDetails detail : order.getOrderDetails()) {
+                    Products product = detail.getProduct();
+                    if (product.getCompany() != null) {
+                        reputationService.proccessTransaction(
+                                product.getCompany().getCompanyId(),
+                                product,
+                                detail.getQuantity());
+                    }
                 }
             }
-            cartItemsRepository.deleteByUser_UserId(buyer.getUserId());
         }
 
         order.setStatus(dto.getStatus());

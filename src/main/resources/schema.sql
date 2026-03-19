@@ -103,10 +103,6 @@ CREATE TABLE IF NOT EXISTS products (
         'SOLD_OUT',
         'HIDDEN'
     ) DEFAULT 'ACTIVE',
-    pickup_type ENUM(
-        'RECOGIDA_LOCAL',
-        'ENVIO_DOMICILIO'
-    ) DEFAULT 'RECOGIDA_LOCAL',
     street VARCHAR(255) NOT NULL,
     city VARCHAR(100) NOT NULL,
     region VARCHAR(100) NOT NULL,
