@@ -109,9 +109,14 @@ INSERT INTO products (company_id, subcategory_id, title, description, condition_
 
 -- Products Images (15 records) - ¡AÑADIDO! Relacionando cada producto con su imagen
 INSERT INTO products_img (product_id, image_url) VALUES
-(1, 'url1'), (2, 'url2'), (3, 'url3'), (4, 'url4'), (5, 'url5'), 
-(6, 'url6'), (7, 'url7'), (8, 'url8'), (9, 'url9'), (10, 'url10'), 
-(11, 'url11'), (12, 'url12'), (13, 'url13'), (14, 'url14'), (15, 'url15');
+(1, '/uploads/mini-pc-lenovo-i3.jpg'), (2, '/uploads/laptop-hp-pavilion-ryzen-5.jpg'), 
+(3, '/uploads/pc-gaming-predator-i9.jpg'), (4, '/uploads/samsung-galaxy-a14.jpg'), 
+(5, '/uploads/xiaomi-redmi-note-12.jpg'), (6, '/uploads/iphone-13-pro.jpg'), 
+(7, '/uploads/auriculares-hyperx-cloud.jpg'), (8, '/uploads/teclado-mecanico-logitech.jpg'), 
+(9, '/uploads/monitor-dell-24.jpg'), (10, '/uploads/ssd-kingston-512gb.jpg'), 
+(11, '/uploads/kit-memoria-ram-corsair-32gb.jpg'), (12, '/uploads/intel-core-i5-10400f.jpg'), 
+(13, '/uploads/servidor-torre-dell-poweredge.jpg'), (14, '/uploads/servidor-rack-1u-hp-proliant.jpg'), 
+(15, '/uploads/raton-razer-deathadder.jpg');
 
 -- Cart Items (15 records)
 INSERT INTO cart_items (user_id, product_id, quantity) VALUES
