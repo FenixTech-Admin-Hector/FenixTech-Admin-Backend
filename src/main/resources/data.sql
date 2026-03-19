@@ -23,21 +23,21 @@ INSERT INTO users (email, password_hash, first_name, last_name, role, created_at
 
 -- Companies (15 records)
 INSERT INTO companies (user_id, company_name, cif, reputation_score, impact_metrics, is_active) VALUES
-(1, 'Tech Solutions', 'B1111111A', 100, '{"environmental": {"totalCo2SavedKg": 50.5}, "social": {"itemsDonated": 10}}', TRUE),
-(2, 'Green Hardware', 'B2222222A', 200, '{"environmental": {"totalCo2SavedKg": 120.0}, "social": {"itemsDonated": 25}}', TRUE),
-(3, 'Recycle IT', 'B3333333C', 150, '{"environmental": {"totalCo2SavedKg": 80.2}, "social": {"itemsDonated": 15}}', TRUE),
-(4, 'Second Life PC', 'B4444444C', 300, '{"environmental": {"totalCo2SavedKg": 200.5}, "social": {"itemsDonated": 40}}', TRUE),
-(5, 'EcoComp', 'B5555555F', 50, '{"environmental": {"totalCo2SavedKg": 20.0}, "social": {"itemsDonated": 5}}', TRUE),
-(6, 'Future Tech', 'B6666666H', 120, '{"environmental": {"totalCo2SavedKg": 60.0}, "social": {"itemsDonated": 12}}', TRUE),
-(7, 'Hardware Heroes', 'B7777777I', 180, '{"environmental": {"totalCo2SavedKg": 90.5}, "social": {"itemsDonated": 18}}', TRUE),
-(8, 'Sustainable Systems', 'B8888888D', 250, '{"environmental": {"totalCo2SavedKg": 150.0}, "social": {"itemsDonated": 30}}', TRUE),
-(9, 'ReNew Devices', 'B9999999E', 80, '{"environmental": {"totalCo2SavedKg": 40.0}, "social": {"itemsDonated": 8}}', TRUE),
-(10, 'Circular Electronics', 'B1010101A', 220, '{"environmental": {"totalCo2SavedKg": 130.5}, "social": {"itemsDonated": 28}}', TRUE),
-(11, 'Green Chip', 'B1212121F', 110, '{"environmental": {"totalCo2SavedKg": 55.0}, "social": {"itemsDonated": 11}}', TRUE),
-(12, 'Eco Parts', 'B1313131G', 160, '{"environmental": {"totalCo2SavedKg": 85.0}, "social": {"itemsDonated": 16}}', TRUE),
-(13, 'Tech Cycle', 'B1414141I', 280, '{"environmental": {"totalCo2SavedKg": 180.0}, "social": {"itemsDonated": 35}}', TRUE),
-(14, 'Planet PC', 'B1515151C', 90, '{"environmental": {"totalCo2SavedKg": 45.0}, "social": {"itemsDonated": 9}}', TRUE),
-(15, 'BioBytes', 'B1616161A', 140, '{"environmental": {"totalCo2SavedKg": 70.0}, "social": {"itemsDonated": 14}}', TRUE);
+(1, 'Tech Solutions', 'B1111111A', 100, '{"environmental": {"totalCo2SavedKg": 50.5, "totalEwasteSavedKg": 200.5}, "social": {"itemsDonated": 10}}', TRUE),
+(2, 'Green Hardware', 'B2222222A', 200, '{"environmental": {"totalCo2SavedKg": 120.0, "totalEwasteSavedKg": 120.0}, "social": {"itemsDonated": 25}}', TRUE),
+(3, 'Recycle IT', 'B3333333C', 150, '{"environmental": {"totalCo2SavedKg": 80.2, "totalEwasteSavedKg": 80.2}, "social": {"itemsDonated": 15}}', TRUE),
+(4, 'Second Life PC', 'B4444444C', 300, '{"environmental": {"totalCo2SavedKg": 200.5, "totalEwasteSavedKg": 150.0}, "social": {"itemsDonated": 40}}', TRUE),
+(5, 'EcoComp', 'B5555555F', 50, '{"environmental": {"totalCo2SavedKg": 20.0, "totalEwasteSavedKg": 20.0}, "social": {"itemsDonated": 5}}', TRUE),
+(6, 'Future Tech', 'B6666666H', 120, '{"environmental": {"totalCo2SavedKg": 60.0, "totalEwasteSavedKg": 60.0}, "social": {"itemsDonated": 12}}', TRUE),
+(7, 'Hardware Heroes', 'B7777777I', 180, '{"environmental": {"totalCo2SavedKg": 90.5, "totalEwasteSavedKg": 90.5}, "social": {"itemsDonated": 18}}', TRUE),
+(8, 'Sustainable Systems', 'B8888888D', 250, '{"environmental": {"totalCo2SavedKg": 150.0, "totalEwasteSavedKg": 120.0}, "social": {"itemsDonated": 30}}', TRUE),
+(9, 'ReNew Devices', 'B9999999E', 80, '{"environmental": {"totalCo2SavedKg": 40.0, "totalEwasteSavedKg": 40.0}, "social": {"itemsDonated": 8}}', TRUE),
+(10, 'Circular Electronics', 'B1010101A', 220, '{"environmental": {"totalCo2SavedKg": 130.5, "totalEwasteSavedKg": 130.5}, "social": {"itemsDonated": 28}}', TRUE),
+(11, 'Green Chip', 'B1212121F', 110, '{"environmental": {"totalCo2SavedKg": 55.0, "totalEwasteSavedKg": 55.0}, "social": {"itemsDonated": 11}}', TRUE),
+(12, 'Eco Parts', 'B1313131G', 160, '{"environmental": {"totalCo2SavedKg": 85.0, "totalEwasteSavedKg": 85.0}, "social": {"itemsDonated": 16}}', TRUE),
+(13, 'Tech Cycle', 'B1414141I', 280, '{"environmental": {"totalCo2SavedKg": 180.0, "totalEwasteSavedKg": 180.0}, "social": {"itemsDonated": 35}}', TRUE),
+(14, 'Planet PC', 'B1515151C', 90, '{"environmental": {"totalCo2SavedKg": 45.0, "totalEwasteSavedKg": 45.0}, "social": {"itemsDonated": 9}}', TRUE),
+(15, 'BioBytes', 'B1616161A', 140, '{"environmental": {"totalCo2SavedKg": 70.0, "totalEwasteSavedKg": 70.0}, "social": {"itemsDonated": 14}}', TRUE);
 
 -- Addresses (15 records)
 INSERT INTO addresses (user_id, street, city, region, zip_code, country) VALUES
