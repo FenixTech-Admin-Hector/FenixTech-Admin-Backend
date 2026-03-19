@@ -109,14 +109,14 @@ INSERT INTO products (company_id, subcategory_id, title, description, condition_
 
 -- Products Images (15 records) - ¡AÑADIDO! Relacionando cada producto con su imagen
 INSERT INTO products_img (product_id, image_url) VALUES
-(1, '/uploads/mini-pc-lenovo-i3.jpg'), (2, '/uploads/laptop-hp-pavilion-ryzen-5.jpg'), 
-(3, '/uploads/pc-gaming-predator-i9.jpg'), (4, '/uploads/samsung-galaxy-a14.jpg'), 
-(5, '/uploads/xiaomi-redmi-note-12.jpg'), (6, '/uploads/iphone-13-pro.jpg'), 
-(7, '/uploads/auriculares-hyperx-cloud.jpg'), (8, '/uploads/teclado-mecanico-logitech.jpg'), 
-(9, '/uploads/monitor-dell-24.jpg'), (10, '/uploads/ssd-kingston-512gb.jpg'), 
-(11, '/uploads/kit-memoria-ram-corsair-32gb.jpg'), (12, '/uploads/intel-core-i5-10400f.jpg'), 
-(13, '/uploads/servidor-torre-dell-poweredge.jpg'), (14, '/uploads/servidor-rack-1u-hp-proliant.jpg'), 
-(15, '/uploads/raton-razer-deathadder.jpg');
+(1, 'uploads/mini-pc-lenovo-i3.png'), (2, 'uploads/laptop-hp-pavilion-ryzen-5.png'), 
+(3, 'uploads/pc-gaming-predator-i9.png'), (4, 'uploads/samsung-galaxy-a14.png'), 
+(5, 'uploads/xiaomi-redmi-note-12.png'), (6, 'uploads/iphone-13-pro.png'), 
+(7, 'uploads/auriculares-hyperx-cloud.png'), (8, 'uploads/teclado-mecanico-logitech.png'), 
+(9, 'uploads/monitor-dell-24.png'), (10, 'uploads/ssd-kingston-512gb.png'), 
+(11, 'uploads/kit-memoria-ram-corsair-32gb.png'), (12, 'uploads/intel-core-i5-10400f.png'), 
+(13, 'uploads/servidor-torre-dell-poweredge.png'), (14, 'uploads/servidor-rack-1u-hp-proliant.png'), 
+(15, 'uploads/raton-razer-deathadder.png');
 
 -- Cart Items (15 records)
 INSERT INTO cart_items (user_id, product_id, quantity) VALUES
