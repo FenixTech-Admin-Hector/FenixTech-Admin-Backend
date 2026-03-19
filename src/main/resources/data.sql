@@ -65,22 +65,22 @@ INSERT INTO categories (name, description, is_active) VALUES
 ('Smartphones', 'Dispositivos móviles inteligentes, tablets y accesorios de telefonía', TRUE),
 ('Servidores', 'Sistemas de alto rendimiento para almacenamiento, redes y gestión de datos', TRUE);
 
--- Subcategories (10 records)
+-- Subcategories (14 records) alineadas con el frontend
 INSERT INTO subcategories (category_id, name, description, is_active) VALUES
-(1, 'Gama Baja', 'Equipos básicos para tareas de ofimática, navegación web y estudio', TRUE),
-(1, 'Gama Media', 'Equipos equilibrados para multitarea, diseño ligero y entretenimiento', TRUE),
-(1, 'Gama Alta', 'Estaciones de trabajo y equipos de alto rendimiento para gaming y edición profesional', TRUE),
-(2, 'Almacenamiento', 'Unidades de estado sólido (SSD) y discos duros rígidos (HDD)', TRUE),
-(2, 'Procesadores', 'Unidades centrales de procesamiento (CPU) de última generación Intel y AMD', TRUE),
-(2, 'Placas Base y Memoria RAM', 'Placas base de diversos chipsets y módulos de memoria RAM DDR4 y DDR5', TRUE),
-(3, 'Teclados y ratones', 'Periféricos de entrada: teclados mecánicos/membrana y ratones ópticos/láser', TRUE),
-(3, 'Audio', 'Altavoces, auriculares y sistemas de sonido de alta fidelidad', TRUE),
-(3, 'Monitores', 'Pantallas de alta resolución, diversas tasas de refresco y tecnologías de panel', TRUE),
-(4, 'Gama Baja', 'Teléfonos móviles esenciales con funciones básicas y alta autonomía', TRUE),
-(4, 'Gama Media', 'Smartphones con gran relación calidad-precio y cámaras versátiles', TRUE),
-(4, 'Gama Alta', 'Dispositivos premium con máxima potencia, mejores cámaras y pantallas OLED', TRUE),
-(5, 'Servidores Torre', 'Servidores con formato de torre para pequeñas y medianas empresas', TRUE),
-(5, 'Servidor Rack', 'Sistemas optimizados para montaje en armarios rack de centros de datos', TRUE);
+(1, 'Gama Baja', 'Equipos básicos para tareas de ofimática, navegación web y estudio', TRUE), -- ID 1 (Ordenadores)
+(1, 'Gama Media', 'Equipos equilibrados para multitarea, diseño ligero y entretenimiento', TRUE), -- ID 2 (Ordenadores)
+(1, 'Gama Alta', 'Estaciones de trabajo y equipos de alto rendimiento para gaming y edición profesional', TRUE), -- ID 3 (Ordenadores)
+(4, 'Gama Baja', 'Teléfonos móviles esenciales con funciones básicas y alta autonomía', TRUE), -- ID 4 (Smartphones)
+(4, 'Gama Media', 'Smartphones con gran relación calidad-precio y cámaras versátiles', TRUE), -- ID 5 (Smartphones)
+(4, 'Gama Alta', 'Dispositivos premium con máxima potencia, mejores cámaras y pantallas OLED', TRUE), -- ID 6 (Smartphones)
+(3, 'Audio', 'Altavoces, auriculares y sistemas de sonido de alta fidelidad', TRUE), -- ID 7 (Periféricos)
+(3, 'Teclados y Ratones', 'Periféricos de entrada: teclados mecánicos/membrana y ratones ópticos/láser', TRUE), -- ID 8 (Periféricos)
+(3, 'Monitores', 'Pantallas de alta resolución, diversas tasas de refresco y tecnologías de panel', TRUE), -- ID 9 (Periféricos)
+(2, 'Almacenamiento', 'Unidades de estado sólido (SSD) y discos duros rígidos (HDD)', TRUE), -- ID 10 (Componentes)
+(2, 'Placas Base y RAM', 'Placas base de diversos chipsets y módulos de memoria RAM DDR4 y DDR5', TRUE), -- ID 11 (Componentes)
+(2, 'Procesadores', 'Unidades centrales de procesamiento (CPU) de última generación Intel y AMD', TRUE), -- ID 12 (Componentes)
+(5, 'Servidor Torre', 'Servidores con formato de torre para pequeñas y medianas empresas', TRUE), -- ID 13 (Servidores)
+(5, 'Servidor Rack', 'Sistemas optimizados para montaje en armarios rack de centros de datos', TRUE); -- ID 14 (Servidores)
 
 -- Badges (4 records)
 INSERT INTO badges (name, icon_url, is_active) VALUES
@@ -91,21 +91,21 @@ INSERT INTO badges (name, icon_url, is_active) VALUES
 
 -- Products (15 records)
 INSERT INTO products (company_id, subcategory_id, title, description, condition_status, listing_type, price, stock_quantity, status, street, city, region, zip_code, country) VALUES
-(1, 1, 'Laptop Dell Latitude', 'Buen estado, i5 8th gen', 'USED_GOOD', 'SALE', 250.00, 5, 'ACTIVE', 'Calle Mayor 1', 'Valencia', 'Valencia', '46001', 'España'),
-(2, 2, 'PC Gaming Entry', 'GTX 1050, i3', 'USED_FAIR', 'SALE', 300.00, 2, 'ACTIVE', 'Gran Vía 12', 'Bilbao', 'Vizcaya', '48001', 'España'),
-(3, 3, 'Nvidia GTX 1080', 'Usada para diseño', 'USED_GOOD', 'SALE', 150.00, 10, 'ACTIVE', 'Paseo Independencia 5', 'Zaragoza', 'Zaragoza', '50001', 'España'),
-(4, 4, 'Intel i7 7700K', 'Sin caja original', 'USED_GOOD', 'SALE', 120.00, 8, 'ACTIVE','Avenida del Cid 20', 'Valencia', 'Valencia', '46014', 'España'),
-(5, 5, 'Teclado Mecánico Logitech', 'Switch Blue', 'NEW', 'SALE', 80.00, 20, 'ACTIVE','Plaza Circular 3', 'Murcia', 'Murcia', '30001', 'España'),
-(6, 6, 'Raton Razer', 'Modelo antiguo', 'USED_FAIR', 'DONATION', 0.00, 5, 'ACTIVE', 'Calle Alcalá 50', 'Madrid', 'Madrid', '28001', 'España'),
-(7, 7, 'Router Asus', 'WiFi 6', 'NEW', 'SALE', 100.00, 15, 'ACTIVE', 'Calle Real 15', 'Santander', 'Cantabria', '39001', 'España'),
-(8, 8, 'Switch Cisco 24p', 'Reacondicionado', 'USED_GOOD', 'SALE', 50.00, 3, 'ACTIVE', 'Calle Colón 10', 'Valencia', 'Valencia', '46004', 'España'),
-(9, 9, 'Ender 3 Pro', 'Con mejoras', 'USED_GOOD', 'SALE', 110.00, 1, 'ACTIVE', 'Carrer de Balmes 40', 'Barcelona', 'Barcelona', '08001', 'España'),
-(10, 10, 'Toner HP 85A', 'Compatible nuevo', 'NEW', 'SALE', 15.00, 50, 'ACTIVE', 'Calle Sierpes 5', 'Sevilla', 'Sevilla', '41004', 'España'),
-(11, 1, 'MacBook Air 2015', 'Bateria nueva', 'USED_FAIR', 'SALE', 350.00, 4, 'ACTIVE',  'Calle de la Paz 8', 'Valencia', 'Valencia', '46003', 'España'),
-(12, 2, 'HP EliteDesk', 'Mini PC oficina', 'USED_GOOD', 'DONATION', 0.00, 10, 'ACTIVE', 'Avinguda Diagonal 100', 'Barcelona', 'Barcelona', '08019', 'España'),
-(13, 3, 'AMD RX 580', '8GB VRAM', 'USED_GOOD', 'SALE', 90.00, 6, 'ACTIVE','Paseo de la Castellana 120', 'Madrid', 'Madrid', '28046', 'España'),
-(14, 4, 'Ryzen 5 3600', 'Con disipador', 'USED_GOOD', 'SALE', 85.00, 7, 'ACTIVE', 'Calle Betis 30', 'Sevilla', 'Sevilla', '41010', 'España'),
-(15, 5, 'Teclado Membrana HP', 'Basico', 'NEW', 'DONATION', 0.00, 100, 'ACTIVE', 'Plaza Mayor 1', 'Valladolid', 'Valladolid', '47001', 'España');
+(1, 1, 'Mini PC Lenovo i3', '8GB RAM, 256GB SSD, ideal ofimática', 'USED_GOOD', 'SALE', 120.00, 5, 'ACTIVE', 'Calle Mayor 1', 'Valencia', 'Valencia', '46001', 'España'),
+(2, 2, 'Laptop HP Pavilion Ryzen 5', '16GB RAM DDR4, 512GB SSD', 'USED_FAIR', 'SALE', 250.00, 2, 'ACTIVE', 'Gran Vía 12', 'Bilbao', 'Vizcaya', '48001', 'España'),
+(3, 3, 'PC Gaming Predator i9', '32GB DDR5, 1TB SSD M.2', 'USED_GOOD', 'SALE', 500.00, 10, 'ACTIVE', 'Paseo Independencia 5', 'Zaragoza', 'Zaragoza', '50001', 'España'),
+(4, 4, 'Samsung Galaxy A14', 'Batería nueva', 'USED_GOOD', 'SALE', 90.00, 8, 'ACTIVE','Avenida del Cid 20', 'Valencia', 'Valencia', '46014', 'España'),
+(5, 5, 'Xiaomi Redmi Note 12', 'Como nuevo, con caja', 'NEW', 'SALE', 180.00, 20, 'ACTIVE','Plaza Circular 3', 'Murcia', 'Murcia', '30001', 'España'),
+(6, 6, 'iPhone 13 Pro', 'Reacondicionado, 128GB', 'USED_FAIR', 'DONATION', 0.00, 5, 'ACTIVE', 'Calle Alcalá 50', 'Madrid', 'Madrid', '28001', 'España'),
+(7, 7, 'Auriculares HyperX Cloud', 'Con micrófono, poco uso', 'NEW', 'SALE', 45.00, 15, 'ACTIVE', 'Calle Real 15', 'Santander', 'Cantabria', '39001', 'España'),
+(8, 8, 'Teclado Mecánico Logitech', 'Switch Blue', 'USED_GOOD', 'SALE', 50.00, 3, 'ACTIVE', 'Calle Colón 10', 'Valencia', 'Valencia', '46004', 'España'),
+(9, 9, 'Monitor Dell 24"', 'FHD 60Hz', 'USED_GOOD', 'SALE', 80.00, 1, 'ACTIVE', 'Carrer de Balmes 40', 'Barcelona', 'Barcelona', '08001', 'España'),
+(10, 10, 'SSD Kingston 512GB', 'Disco sólido SATA3 512GB', 'NEW', 'SALE', 35.00, 50, 'ACTIVE', 'Calle Sierpes 5', 'Sevilla', 'Sevilla', '41004', 'España'),
+(11, 11, 'Kit Memoria RAM Corsair 32GB', 'DDR4 ideal para placas ATX', 'USED_FAIR', 'SALE', 65.00, 4, 'ACTIVE',  'Calle de la Paz 8', 'Valencia', 'Valencia', '46003', 'España'),
+(12, 12, 'Intel Core i5-10400F', '6 Núcleos, 12 Hilos, 80W TDP', 'USED_GOOD', 'DONATION', 0.00, 10, 'ACTIVE', 'Avinguda Diagonal 100', 'Barcelona', 'Barcelona', '08019', 'España'),
+(13, 13, 'Servidor Torre Dell PowerEdge', 'Intel Xeon, 32GB ECC, 2x2TB HDD', 'USED_GOOD', 'SALE', 350.00, 6, 'ACTIVE','Paseo de la Castellana 120', 'Madrid', 'Madrid', '28046', 'España'),
+(14, 14, 'Servidor Rack 1U HP ProLiant', 'Doble Xeon, 64GB ECC, 4x1TB SSD', 'USED_GOOD', 'SALE', 450.00, 7, 'ACTIVE', 'Calle Betis 30', 'Sevilla', 'Sevilla', '41010', 'España'),
+(15, 8, 'Ratón Razer DeathAdder', 'Ratón gaming básico', 'NEW', 'DONATION', 0.00, 100, 'ACTIVE', 'Plaza Mayor 1', 'Valladolid', 'Valladolid', '47001', 'España');
 
 -- Products Images (15 records) - ¡AÑADIDO! Relacionando cada producto con su imagen
 INSERT INTO products_img (product_id, image_url) VALUES
