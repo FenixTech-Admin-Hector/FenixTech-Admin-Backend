@@ -178,6 +178,9 @@ INSERT INTO shipments (order_id, carrier_id, shipping_street, shipping_city, shi
 -- Posts (15 records)
 INSERT INTO posts (author_user_id, title, body, created_at) VALUES
 (1, 'Bienvenida', 'Hola a todos', '2023-11-01 10:00:00'),
+(1, 'Nuevas llegadas de portátiles', 'Acaban de llegar varios modelos reacondicionados de Dell y Lenovo en perfecto estado. Aprovecha los precios.', '2024-02-01 09:00:00'),
+(1, 'Consejo de mantenimiento', 'Limpiad el polvo de vuestros equipos al menos cada 6 meses. Os alargará la vida útil considerablemente.', '2024-02-15 10:30:00'),
+(1, 'Descuento del 15% esta semana', 'Por el aniversario de Tech Solutions aplicamos un 15% de descuento en todos nuestros productos hasta el domingo.', '2024-03-01 08:00:00'),
 (2, 'Oferta especial', 'Descuentos en portatiles', '2023-11-05 11:00:00'),
 (3, 'Reciclaje', 'Importancia de reciclar', '2023-11-10 12:00:00'),
 (4, 'Nuevos productos', 'Llegada de stock', '2023-11-15 13:00:00'),
@@ -202,7 +205,12 @@ INSERT INTO comments (post_id, author_user_id, body, created_at) VALUES
 (5, 19, 'Donde es?', '2023-11-20 18:00:00'), (5, 20, 'Ire seguro', '2023-11-20 19:00:00'),
 (6, 16, 'Gracias por la guia', '2023-11-25 20:00:00'), (6, 17, 'Muy util', '2023-11-25 21:00:00'),
 (7, 18, 'Buen consejo', '2023-12-01 22:00:00'), (7, 19, 'Lo probare', '2023-12-01 23:00:00'),
-(8, 20, 'Increible', '2023-12-05 09:00:00');
+(8, 20, 'Increible', '2023-12-05 09:00:00'),
+(16, 17, 'Genial, mirare los modelos disponibles', '2024-02-01 10:00:00'),
+(16, 18, 'Tienen Lenovo ThinkPad disponible?', '2024-02-01 11:30:00'),
+(17, 19, 'Muy buen consejo, lo hare este fin de semana', '2024-02-15 12:00:00'),
+(18, 20, 'Perfecto, justo lo que necesitaba', '2024-03-01 09:00:00'),
+(18, 16, 'Aproveche el descuento ayer, trato excelente', '2024-03-02 10:00:00');
 
 -- Proposals (15 records)
 INSERT INTO proposals (requester_user_id, category_id, title, description, status, created_at) VALUES
