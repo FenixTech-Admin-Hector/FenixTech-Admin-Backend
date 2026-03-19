@@ -46,7 +46,7 @@ public class SecurityConfig {
                                                                 "/shipping-carriers", "/shipping-carriers/{id}",
                                                                 "/shipping-carriers/{id}/track/{number}",
                                                                 "/posts/user/{userId}", "/posts/{id}",
-                                                                "/reviews/company/**", "/reviews/user/{userId}", "/reviews", "/posts/company/**")
+                                                                "/reviews/company/**", "/reviews/user/{userId}", "/reviews", "/posts/company/**", "/addresses/user/{id}")
                                                 .permitAll()
 
                                                 // Acceso solo admin
@@ -74,7 +74,7 @@ public class SecurityConfig {
                                                 .hasRole("ADMIN")
 
                                                 // Acceso privado particular
-                                                .requestMatchers(HttpMethod.GET, "/addresses/user/{id}",
+                                                .requestMatchers(HttpMethod.GET,
                                                                 "/cart_items/user/{id}", "/cart_items/my/count",
                                                                 "/follows/user/{userId}/**", "/orders/buyer/{id}",
                                                                 "/orders/{id}", "/shipments/{id}",
@@ -94,7 +94,7 @@ public class SecurityConfig {
                                                 .hasRole("ADMIN")
                                                 .requestMatchers(HttpMethod.POST, "/addresses")
                                                 .hasAnyRole("PARTICULAR", "EMPRESA")
-                                                .requestMatchers(HttpMethod.POST, "/addresses", "/comments",
+                                                .requestMatchers(HttpMethod.POST, "/comments",
                                                                 "/cart_items", "/proposals", "/follows/toggle",
                                                                 "/orders/checkout", "/shipments", "/reviews",
                                                                 "/contact")
