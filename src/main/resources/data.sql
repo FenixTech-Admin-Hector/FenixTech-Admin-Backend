@@ -260,14 +260,64 @@ INSERT INTO company_badges (company_id, badge_id, awarded_at) VALUES
 (7, 3, '2023-06-07 16:00:00'), (8, 4, '2023-06-08 17:00:00'), (9, 1, '2023-06-09 18:00:00'),
 (10, 2, '2023-06-10 19:00:00'), (11, 3, '2023-06-11 20:00:00'), (12, 4, '2023-06-12 21:00:00'),
 (13, 1, '2023-06-13 09:00:00'), (14, 2, '2023-06-14 10:00:00'), (15, 3, '2023-06-15 11:00:00');
--- Descriptions for testing
-UPDATE companies SET company_description = 'Especialistas en soluciones tecnol�gicas refurbishadas. Damos segunda vida a equipos de alto rendimiento para empresas y particulares con garant�a certificada.' WHERE company_id = 1;
-UPDATE companies SET company_description = 'Comprometidos con el medio ambiente. Recuperamos hardware usado y lo transformamos en productos sostenibles con el menor impacto ecol�gico posible.' WHERE company_id = 2;
-UPDATE companies SET company_description = 'L�deres en reciclaje de componentes electr�nicos. Nuestro proceso garantiza la correcta gesti�n de residuos tecnol�gicos y la reutilizaci�n de materiales.' WHERE company_id = 3;
-UPDATE companies SET company_description = 'Vendemos PCs de segunda mano completamente revisados y actualizados. Cada equipo pasa por m�s de 50 pruebas antes de llegar a tus manos.' WHERE company_id = 4;
-UPDATE companies SET company_description = 'Tu tienda de confianza para componentes ecol�gicos. Primamos la circularidad y el ahorro sin renunciar a la calidad.' WHERE company_id = 5;
 
-UPDATE users SET description = 'Apasionado de la tecnolog�a y el DIY. Siempre buscando la mejor relaci�n calidad-precio en hardware.' WHERE user_id = 16;
-UPDATE users SET description = 'T�cnico inform�tico con 10 a�os de experiencia. Me encanta restaurar equipos antiguos y darles una nueva vida.' WHERE user_id = 17;
-UPDATE users SET description = 'Dise�adora gr�fica freelance. Busco equipos refurbishados para mi estudio creativo sin arruinar el planeta.' WHERE user_id = 18;
-UPDATE users SET description = 'Estudiante de ingenier�a inform�tica. Colecciono componentes raros y me gusta montar mis propios equipos.' WHERE user_id = 19;
+-- Descriptions
+UPDATE companies SET company_description = 'Especialistas en soluciones tecnológicas refurbishadas. Damos segunda vida a equipos de alto rendimiento para empresas y particulares con garantía certificada.' WHERE company_id = 1;
+UPDATE companies SET company_description = 'Comprometidos con el medio ambiente. Recuperamos hardware usado y lo transformamos en productos sostenibles con el menor impacto ecológico posible.' WHERE company_id = 2;
+UPDATE companies SET company_description = 'Líderes en reciclaje de componentes electrónicos. Nuestro proceso garantiza la correcta gestión de residuos tecnológicos y la reutilización de materiales.' WHERE company_id = 3;
+UPDATE companies SET company_description = 'Vendemos PCs de segunda mano completamente revisados y actualizados. Cada equipo pasa por más de 50 pruebas antes de llegar a tus manos.' WHERE company_id = 4;
+UPDATE companies SET company_description = 'Tu tienda de confianza para componentes ecológicos. Primamos la circularidad y el ahorro sin renunciar a la calidad.' WHERE company_id = 5;
+
+UPDATE users SET description = 'Apasionado de la tecnología y el DIY. Siempre buscando la mejor relación calidad-precio en hardware.' WHERE user_id = 16;
+UPDATE users SET description = 'Técnico informático con 10 años de experiencia. Me encanta restaurar equipos antiguos y darles una nueva vida.' WHERE user_id = 17;
+UPDATE users SET description = 'Diseñadora gráfica freelance. Busco equipos refurbishados para mi estudio creativo sin arruinar el planeta.' WHERE user_id = 18;
+UPDATE users SET description = 'Estudiante de ingeniería informática. Colecciono componentes raros y me gusta montar mis propios equipos.' WHERE user_id = 19;
+
+-- Follows (20 records — users 16-20 siguiendo empresas)
+INSERT INTO follows (follower_id, following_id, created_at) VALUES
+(16, 1, '2024-01-10 10:00:00'), (16, 2, '2024-01-10 11:00:00'),
+(16, 3, '2024-01-11 09:00:00'), (16, 4, '2024-02-01 10:00:00'),
+(17, 1, '2024-01-15 10:00:00'), (17, 5, '2024-01-16 11:00:00'),
+(17, 6, '2024-01-17 12:00:00'), (17, 7, '2024-02-05 09:00:00'),
+(18, 2, '2024-01-20 10:00:00'), (18, 8, '2024-01-21 11:00:00'),
+(18, 9, '2024-02-10 09:00:00'), (18, 10, '2024-02-11 10:00:00'),
+(19, 3, '2024-01-25 10:00:00'), (19, 11, '2024-01-26 11:00:00'),
+(19, 12, '2024-02-15 09:00:00'), (19, 13, '2024-02-16 10:00:00'),
+(20, 4, '2024-01-30 10:00:00'), (20, 14, '2024-02-01 11:00:00'),
+(20, 15, '2024-02-20 09:00:00'), (20, 1, '2024-03-01 10:00:00');
+
+-- Additional Comments (15 more records)
+INSERT INTO comments (post_id, author_user_id, body, created_at) VALUES
+(9, 16, 'Muy útil la guía, me ha ayudado a decidirme', '2023-11-26 09:00:00'),
+(9, 20, 'Le echaré un vistazo al monitor LG 4K también', '2023-11-26 10:00:00'),
+(10, 17, 'Imprescindible hacerlo cada vez que cambia el tiempo', '2023-12-02 08:00:00'),
+(10, 18, 'Yo uso aire comprimido y funciona genial', '2023-12-02 09:30:00'),
+(11, 19, 'Los chips de nueva generación van a cambiar todo', '2023-12-06 11:00:00'),
+(12, 16, 'Ya estoy participando, mucha suerte a todos', '2023-12-11 09:00:00'),
+(13, 17, 'Gracias por la review, me ha sido muy útil', '2023-12-16 10:00:00'),
+(14, 18, 'Tutorial muy claro, lo seguí paso a paso sin problemas', '2023-12-21 11:00:00'),
+(15, 19, 'Yo tuve ese mismo problema con una placa MSI', '2023-12-26 12:00:00'),
+(15, 20, 'Te recomiendo revisar la lista de compatibilidad oficial', '2023-12-26 13:00:00'),
+(16, 16, 'AMD sigue mejorando mucho en relación calidad-precio', '2024-01-02 10:00:00'),
+(17, 17, 'Increíble cómo han evolucionado los procesadores en 20 años', '2024-01-06 11:00:00'),
+(18, 18, 'De nada, es un placer ayudar a la comunidad', '2024-01-11 12:00:00'),
+(2, 20, 'Perfecto, justo necesitaba un portátil para trabajar en casa', '2024-02-03 14:00:00'),
+(4, 16, 'Aproveché el descuento, excelente trato como siempre', '2024-03-02 09:30:00');
+
+-- Additional Reviews (15 more records)
+INSERT INTO reviews (reviewer_user_id, target_company_id, rating, review_comment, created_at) VALUES
+(17, 1, 4, 'Muy buena atención al cliente', '2024-03-01 10:00:00'),
+(18, 2, 5, 'Productos en perfecto estado, muy recomendados', '2024-03-02 11:00:00'),
+(19, 3, 4, 'Reciclaje responsable y rápido', '2024-03-03 12:00:00'),
+(20, 4, 5, 'El equipo llegó impecable y completamente revisado', '2024-03-04 13:00:00'),
+(16, 5, 3, 'Correctos pero algo lentos en responder', '2024-03-05 14:00:00'),
+(17, 8, 4, 'Sistemas bien configurados de fábrica', '2024-03-06 15:00:00'),
+(18, 9, 5, 'Servicio excelente, totalmente recomendados', '2024-03-07 16:00:00'),
+(19, 10, 4, 'Buena calidad de componentes y buen precio', '2024-03-08 17:00:00'),
+(20, 11, 3, 'Precio justo, la presentación es mejorable', '2024-03-09 18:00:00'),
+(16, 12, 5, 'Las piezas llegaron perfectamente embaladas', '2024-03-10 19:00:00'),
+(17, 13, 4, 'Ciclo de vida del producto muy bien gestionado', '2024-03-11 20:00:00'),
+(18, 14, 5, 'Servidores de gran calidad a buen precio', '2024-03-12 09:00:00'),
+(19, 15, 4, 'BioBytes cumple con sus promesas ecológicas', '2024-03-13 10:00:00'),
+(20, 6, 4, 'Future Tech tiene productos realmente innovadores', '2024-03-14 11:00:00'),
+(16, 7, 5, 'Hardware Heroes, el nombre lo dice todo', '2024-03-15 12:00:00');
