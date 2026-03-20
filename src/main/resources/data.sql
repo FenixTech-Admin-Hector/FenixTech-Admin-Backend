@@ -22,23 +22,22 @@ INSERT INTO users (email, password_hash, first_name, last_name, role, created_at
 ('admin@fenix.com', '$2a$10$3zwvbKLIsf7qYrLKvuWV0eL9zzIPbKKUQRuSmDuPgQeAo5By8LFka', 'Admin', 'System', 'ADMIN', '2023-01-01 00:00:00', TRUE);
 
 -- Companies (15 records)
-INSERT INTO companies (user_id, company_name, cif, reputation_score, impact_metrics, is_active) VALUES
-(1, 'Tech Solutions', 'B1111111A', 100, '{"environmental": {"totalCo2SavedKg": 50.5, "totalEwasteSavedKg": 200.5}, "social": {"itemsDonated": 10}}', TRUE),
-(2, 'Green Hardware', 'B2222222A', 200, '{"environmental": {"totalCo2SavedKg": 120.0, "totalEwasteSavedKg": 120.0}, "social": {"itemsDonated": 25}}', TRUE),
-(3, 'Recycle IT', 'B3333333C', 150, '{"environmental": {"totalCo2SavedKg": 80.2, "totalEwasteSavedKg": 80.2}, "social": {"itemsDonated": 15}}', TRUE),
-(4, 'Second Life PC', 'B4444444C', 300, '{"environmental": {"totalCo2SavedKg": 200.5, "totalEwasteSavedKg": 150.0}, "social": {"itemsDonated": 40}}', TRUE),
-(5, 'EcoComp', 'B5555555F', 50, '{"environmental": {"totalCo2SavedKg": 20.0, "totalEwasteSavedKg": 20.0}, "social": {"itemsDonated": 5}}', TRUE),
-(6, 'Future Tech', 'B6666666H', 120, '{"environmental": {"totalCo2SavedKg": 60.0, "totalEwasteSavedKg": 60.0}, "social": {"itemsDonated": 12}}', TRUE),
-(7, 'Hardware Heroes', 'B7777777I', 180, '{"environmental": {"totalCo2SavedKg": 90.5, "totalEwasteSavedKg": 90.5}, "social": {"itemsDonated": 18}}', TRUE),
-(8, 'Sustainable Systems', 'B8888888D', 250, '{"environmental": {"totalCo2SavedKg": 150.0, "totalEwasteSavedKg": 120.0}, "social": {"itemsDonated": 30}}', TRUE),
-(9, 'ReNew Devices', 'B9999999E', 80, '{"environmental": {"totalCo2SavedKg": 40.0, "totalEwasteSavedKg": 40.0}, "social": {"itemsDonated": 8}}', TRUE),
-(10, 'Circular Electronics', 'B1010101A', 220, '{"environmental": {"totalCo2SavedKg": 130.5, "totalEwasteSavedKg": 130.5}, "social": {"itemsDonated": 28}}', TRUE),
-(11, 'Green Chip', 'B1212121F', 110, '{"environmental": {"totalCo2SavedKg": 55.0, "totalEwasteSavedKg": 55.0}, "social": {"itemsDonated": 11}}', TRUE),
-(12, 'Eco Parts', 'B1313131G', 160, '{"environmental": {"totalCo2SavedKg": 85.0, "totalEwasteSavedKg": 85.0}, "social": {"itemsDonated": 16}}', TRUE),
-(13, 'Tech Cycle', 'B1414141I', 280, '{"environmental": {"totalCo2SavedKg": 180.0, "totalEwasteSavedKg": 180.0}, "social": {"itemsDonated": 35}}', TRUE),
-(14, 'Planet PC', 'B1515151C', 90, '{"environmental": {"totalCo2SavedKg": 45.0, "totalEwasteSavedKg": 45.0}, "social": {"itemsDonated": 9}}', TRUE),
-(15, 'BioBytes', 'B1616161A', 140, '{"environmental": {"totalCo2SavedKg": 70.0, "totalEwasteSavedKg": 70.0}, "social": {"itemsDonated": 14}}', TRUE);
-
+INSERT INTO companies (user_id, company_name, cif, reputation_score, impact_metrics, company_img, is_active) VALUES
+(1, 'Tech Solutions', 'B1111111A', 100, '{"environmental": {"totalCo2SavedKg": 50.5, "totalEwasteSavedKg": 200.5}, "social": {"itemsDonated": 10}}', 'uploads/Tech-Solutions.png', TRUE),
+(2, 'Green Hardware', 'B2222222A', 200, '{"environmental": {"totalCo2SavedKg": 120.0, "totalEwasteSavedKg": 120.0}, "social": {"itemsDonated": 25}}', 'uploads/Green-Hardware.png', TRUE),
+(3, 'Recycle IT', 'B3333333C', 150, '{"environmental": {"totalCo2SavedKg": 80.2, "totalEwasteSavedKg": 80.2}, "social": {"itemsDonated": 15}}', 'uploads/Recycle-It.png', TRUE),
+(4, 'Second Life PC', 'B4444444C', 300, '{"environmental": {"totalCo2SavedKg": 200.5, "totalEwasteSavedKg": 150.0}, "social": {"itemsDonated": 40}}', 'uploads/Second-Life-PC.png', TRUE),
+(5, 'EcoComp', 'B5555555F', 50, '{"environmental": {"totalCo2SavedKg": 20.0, "totalEwasteSavedKg": 20.0}, "social": {"itemsDonated": 5}}', 'uploads/EcoComp.png', TRUE),
+(6, 'Future Tech', 'B6666666H', 120, '{"environmental": {"totalCo2SavedKg": 60.0, "totalEwasteSavedKg": 60.0}, "social": {"itemsDonated": 12}}', 'uploads/FutureTech.png', TRUE),
+(7, 'Hardware Heroes', 'B7777777I', 180, '{"environmental": {"totalCo2SavedKg": 90.5, "totalEwasteSavedKg": 90.5}, "social": {"itemsDonated": 18}}', 'uploads/Hardware-Heroes.png', TRUE),
+(8, 'Sustainable Systems', 'B8888888D', 250, '{"environmental": {"totalCo2SavedKg": 150.0, "totalEwasteSavedKg": 120.0}, "social": {"itemsDonated": 30}}', 'uploads/Suitanable-Service.jpg', TRUE),
+(9, 'ReNew Devices', 'B9999999E', 80, '{"environmental": {"totalCo2SavedKg": 40.0, "totalEwasteSavedKg": 40.0}, "social": {"itemsDonated": 8}}', 'uploads/Renew-Devices.jpg', TRUE),
+(10, 'Circular Electronics', 'B1010101A', 220, '{"environmental": {"totalCo2SavedKg": 130.5, "totalEwasteSavedKg": 130.5}, "social": {"itemsDonated": 28}}', 'uploads/Circular-Electronics.png', TRUE),
+(11, 'Green Chip', 'B1212121F', 110, '{"environmental": {"totalCo2SavedKg": 55.0, "totalEwasteSavedKg": 55.0}, "social": {"itemsDonated": 11}}', 'uploads/Green-Chips.png', TRUE),
+(12, 'Eco Parts', 'B1313131G', 160, '{"environmental": {"totalCo2SavedKg": 85.0, "totalEwasteSavedKg": 85.0}, "social": {"itemsDonated": 16}}', 'uploads/Eco-Parts.jpg', TRUE),
+(13, 'Tech Cycle', 'B1414141I', 280, '{"environmental": {"totalCo2SavedKg": 180.0, "totalEwasteSavedKg": 180.0}, "social": {"itemsDonated": 35}}', 'uploads/Tech-Cycle.png', TRUE),
+(14, 'Planet PC', 'B1515151C', 90, '{"environmental": {"totalCo2SavedKg": 45.0, "totalEwasteSavedKg": 45.0}, "social": {"itemsDonated": 9}}', 'uploads/Planet-PC.png', TRUE),
+(15, 'BioBytes', 'B1616161A', 140, '{"environmental": {"totalCo2SavedKg": 70.0, "totalEwasteSavedKg": 70.0}, "social": {"itemsDonated": 14}}', 'uploads/BioBytes.png', TRUE);
 -- Addresses (15 records)
 INSERT INTO addresses (user_id, street, city, region, zip_code, country) VALUES
 (1, 'Calle Mayor 1', 'Madrid', 'Madrid', '28001', 'Spain'),
@@ -109,14 +108,14 @@ INSERT INTO products (company_id, subcategory_id, title, description, condition_
 
 -- Products Images (15 records) - ¡AÑADIDO! Relacionando cada producto con su imagen
 INSERT INTO products_img (product_id, image_url) VALUES
-(1, '/uploads/mini-pc-lenovo-i3.jpg'), (2, '/uploads/laptop-hp-pavilion-ryzen-5.jpg'), 
-(3, '/uploads/pc-gaming-predator-i9.jpg'), (4, '/uploads/samsung-galaxy-a14.jpg'), 
-(5, '/uploads/xiaomi-redmi-note-12.jpg'), (6, '/uploads/iphone-13-pro.jpg'), 
-(7, '/uploads/auriculares-hyperx-cloud.jpg'), (8, '/uploads/teclado-mecanico-logitech.jpg'), 
-(9, '/uploads/monitor-dell-24.jpg'), (10, '/uploads/ssd-kingston-512gb.jpg'), 
-(11, '/uploads/kit-memoria-ram-corsair-32gb.jpg'), (12, '/uploads/intel-core-i5-10400f.jpg'), 
-(13, '/uploads/servidor-torre-dell-poweredge.jpg'), (14, '/uploads/servidor-rack-1u-hp-proliant.jpg'), 
-(15, '/uploads/raton-razer-deathadder.jpg');
+(1, 'uploads/mini-pc-lenovo-i3.png'), (2, 'uploads/laptop-hp-pavilion-ryzen-5.png'), 
+(3, 'uploads/pc-gaming-predator-i9.png'), (4, 'uploads/samsung-galaxy-a14.png'), 
+(5, 'uploads/xiaomi-redmi-note-12.png'), (6, 'uploads/iphone-13-pro.png'), 
+(7, 'uploads/auriculares-hyperx-cloud.png'), (8, 'uploads/teclado-mecanico-logitech.png'), 
+(9, 'uploads/monitor-dell-24.png'), (10, 'uploads/ssd-kingston-512gb.png'), 
+(11, 'uploads/kit-memoria-ram-corsair-32gb.png'), (12, 'uploads/intel-core-i5-10400f.png'), 
+(13, 'uploads/servidor-torre-dell-poweredge.png'), (14, 'uploads/servidor-rack-1u-hp-proliant.png'), 
+(15, 'uploads/raton-razer-deathadder.png');
 
 -- Cart Items (15 records)
 INSERT INTO cart_items (user_id, product_id, quantity) VALUES
