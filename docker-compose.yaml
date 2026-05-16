@@ -18,6 +18,8 @@ services:
   # 2. TU APLICACIÓN SPRING BOOT
   app-spring:
     build: . # Le dice a Docker: "Busca el Dockerfile en esta misma carpeta y constrúyelo"
+    ports:
+      - "8080:8080"  # 🚀 El puente hacia tu PC.
     volumes:
       - ./uploads:/app/uploads
     environment:
