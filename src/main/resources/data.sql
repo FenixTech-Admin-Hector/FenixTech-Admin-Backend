@@ -145,11 +145,11 @@ INSERT INTO orders (buyer_user_id, order_date, total_amount, status, requires_sh
 
 -- Order Details (15 records)
 INSERT INTO order_details (order_id, product_id, quantity, unit_price_at_purchase) VALUES
-(1, 1, 1, 250.00), (2, 2, 1, 300.00), (3, 3, 1, 150.00),
-(4, 4, 1, 120.00), (5, 5, 1, 80.00), (6, 7, 1, 100.00),
-(7, 8, 1, 50.00), (8, 9, 1, 110.00), (9, 10, 1, 15.00),
-(10, 11, 1, 350.00), (11, 13, 1, 90.00), (12, 14, 1, 85.00),
-(13, 1, 1, 250.00), (14, 2, 1, 300.00), (15, 3, 1, 150.00);
+(1, 1, 3, 250.00), (2, 2, 1, 300.00), (3, 3, 1, 150.00),
+(4, 4, 2, 120.00), (5, 5, 1, 80.00), (6, 7, 1, 100.00),
+(7, 8, 1, 50.00), (8, 9, 3, 110.00), (9, 10, 5, 15.00),
+(10, 11, 7, 350.00), (11, 13, 1, 90.00), (12, 14, 1, 85.00),
+(13, 1, 1, 250.00), (14, 2, 2, 300.00), (15, 3, 1, 150.00);
 
 -- Carriers
 INSERT INTO shipping_carriers (carrier_name, base_price, estimated_days, carrier_logo, tracking_url, is_active) VALUES
@@ -320,3 +320,10 @@ INSERT INTO reviews (reviewer_user_id, target_company_id, rating, review_comment
 (19, 15, 4, 'BioBytes cumple con sus promesas ecológicas', '2024-03-13 10:00:00'),
 (20, 6, 4, 'Future Tech tiene productos realmente innovadores', '2024-03-14 11:00:00'),
 (16, 7, 5, 'Hardware Heroes, el nombre lo dice todo', '2024-03-15 12:00:00');
+
+UPDATE orders o 
+SET total_amount = (
+    SELECT SUM(quantity * unit_price_at_purchase)
+    FROM order_details od 
+    WHERE od.order_id = o.order_id
+);

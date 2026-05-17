@@ -16,10 +16,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-@Tag(name = "Admin Users", description = "API exclusiva para la gestión de usuarios por parte del Administrador")
-@RequestMapping("/api/admin/users") // Añadido /api por convención
+@Tag(name = "Admin Users", description = "API exclusiva para la gestión de usuarios")
+@RequestMapping("/admin/users") // 🚀 CORREGIDO: Le quitamos el /api sobrante
 @RestController
 public class AdminUsersController {
+   // ... todo lo demás se queda exactamente igual
 
     @Autowired
     private AdminUsersService adminUsersService;

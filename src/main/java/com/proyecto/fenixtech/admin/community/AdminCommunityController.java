@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Admin Community", description = "API para la moderación de la comunidad (Posts y Comentarios)")
-@RequestMapping("/api/admin/community")
+@RequestMapping("/admin/community")
 @RestController
 public class AdminCommunityController {
 

@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Admin Proposals", description = "API exclusiva para la moderación de solicitudes (demandas) por el Administrador")
-@RequestMapping("/api/admin/proposals")
+@RequestMapping("/admin/proposals")
 @RestController
 public class AdminProposalsController {
 

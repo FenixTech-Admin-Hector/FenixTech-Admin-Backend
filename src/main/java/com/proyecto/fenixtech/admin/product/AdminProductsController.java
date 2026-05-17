@@ -13,9 +13,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Admin Products", description = "API exclusiva para la moderación del catálogo por parte del Administrador")
-@RequestMapping("/api/admin/products")
+@RequestMapping("/admin/products")
 @RestController
 public class AdminProductsController {
+    // ... el resto del código se queda igual ...
 
     @Autowired
     private AdminProductsService adminProductsService;

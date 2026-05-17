@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @Tag(name = "Admin Categories", description = "API exclusiva para organizar el catálogo de FenixTech")
-@RequestMapping("/api/admin")
+@RequestMapping("/admin")
 @RestController
 public class AdminCategoriesController {
 

@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Admin Orders", description = "API para la gestión y control de ventas por parte del Administrador")
-@RequestMapping("/api/admin/orders")
+@RequestMapping("/admin/orders")
 @RestController
 public class AdminOrdersController {
 
