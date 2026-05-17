@@ -1,4 +1,4 @@
-package com.proyecto.fenixtech.admin.proposal;
+package com.proyecto.fenixtech.admin.proposals;
 
 import java.util.List;
 

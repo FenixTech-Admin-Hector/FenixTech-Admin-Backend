@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Admin Dashboard", description = "Endpoint para obtener las métricas globales del panel")
-@RequestMapping("/api/admin/stats")
+@RequestMapping("/admin/dashboard") // La ruta corregida para que Angular la encuentre
 @RestController
 public class AdminDashboardController {
 

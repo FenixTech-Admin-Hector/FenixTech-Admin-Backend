@@ -1,8 +1,13 @@
-package com.proyecto.fenixtech.admin.proposal;
+package com.proyecto.fenixtech.admin.proposals;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.proyecto.fenixtech.model.Proposals;
+import org.springframework.stereotype.Repository;
 
+import com.proyecto.fenixtech.model.Proposals;
+import com.proyecto.fenixtech.model.enums.ProposalStatus; // El import del Enum
+
+@Repository
 public interface AdminProposalsRepository extends JpaRepository<Proposals, Integer> {
-    // JpaRepository ya incluye findAll(), findById() y delete() por defecto.
+    
+    long countByStatus(ProposalStatus status); 
 }

@@ -1,4 +1,4 @@
-package com.proyecto.fenixtech.admin.proposal;
+package com.proyecto.fenixtech.admin.proposals;
 
 import java.util.List;
 
@@ -32,7 +32,6 @@ public class AdminProposalsService {
                 .orElseThrow(() -> new ResourceNotFoundException("Propuesta no encontrada con id: " + id));
         
         // Al ser Admin, no necesitamos comprobar si somos el dueño de la propuesta.
-        // Directamente la borramos por moderación.
         adminProposalsRepository.delete(proposal);
     }
 }

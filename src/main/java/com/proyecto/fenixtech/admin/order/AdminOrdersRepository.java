@@ -10,25 +10,25 @@ import org.springframework.data.repository.query.Param;
 import com.proyecto.fenixtech.model.Orders;
 
 public interface AdminOrdersRepository extends JpaRepository<Orders, Integer> {
-    
+    // En Java el tinyint (1 o 0) de requires_shipping se lee como un Boolean
+    long countByRequiresShipping(Boolean requiresShipping);
+
     @Query(value = "SELECT * FROM orders WHERE " +
-           "(:minAmount IS NULL OR total_amount >= :minAmount) AND " +
-           "(:maxAmount IS NULL OR total_amount <= :maxAmount) AND " +
-           "(:minDate IS NULL OR order_date >= :minDate) AND " +
-           "(:maxDate IS NULL OR order_date <= :maxDate) AND " +
-           "(:status IS NULL OR status = :status) AND " +
-           "(:requiresShipping IS NULL OR requires_shipping = :requiresShipping)", 
-           nativeQuery = true)
+            "(:minAmount IS NULL OR total_amount >= :minAmount) AND " +
+            "(:maxAmount IS NULL OR total_amount <= :maxAmount) AND " +
+            "(:minDate IS NULL OR order_date >= :minDate) AND " +
+            "(:maxDate IS NULL OR order_date <= :maxDate) AND " +
+            "(:status IS NULL OR status = :status) AND " +
+            "(:requiresShipping IS NULL OR requires_shipping = :requiresShipping)", nativeQuery = true)
     List<Orders> findByConditions(
             @Param("minAmount") Double minAmount,
             @Param("maxAmount") Double maxAmount,
             @Param("minDate") LocalDateTime minDate,
             @Param("maxDate") LocalDateTime maxDate,
             @Param("status") String status,
-            @Param("requiresShipping") Boolean requiresShipping
-    );
+            @Param("requiresShipping") Boolean requiresShipping);
 
-    // 🚀 MÉTODO AÑADIDO PARA EL DASHBOARD (Suma total de ingresos)
+    // MÉTODO AÑADIDO PARA EL DASHBOARD (Suma total de ingresos)
     @Query(value = "SELECT SUM(total_amount) FROM orders WHERE status = :status", nativeQuery = true)
     Double sumTotalAmountByStatus(@Param("status") String status);
 }
